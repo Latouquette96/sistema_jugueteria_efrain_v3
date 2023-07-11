@@ -4,22 +4,24 @@ import 'package:jugueteriaefrain_logic_manager/mixin/mixin_mapping_model.dart';
 class Distributor with MixinMappingModel<Distributor> {
   //Atributos de instancia
   late int _id;
-  late int _cuit;
-  late String _name;
-  late String? _address;
-  late String? _email;
-  late String? _cel;
-  late String? _website;
+  late String _cuit; //RN-D1.
+  late String _name; //RN-D2.
+  late String? _address; //RN-D3.
+  late String? _email; //RN-D3.
+  late String? _cel; //RN-D3.
+  late String? _website; //RN-D7.
+  late double _iva; //RN-D5.
 
   ///Constructor de Distributor.
   Distributor({
     int id = 0,
-    int cuit = 0,
+    String cuit = "0",
     String name = "",
     String? address,
     String? email,
     String? cel,
     String? website,
+    double iva = 1.00,
   }) {
     _id = id;
     _cuit = cuit;
@@ -28,6 +30,7 @@ class Distributor with MixinMappingModel<Distributor> {
     _email = email;
     _cel = cel;
     _website = website;
+    _iva = iva;
   }
 
   @override
@@ -39,7 +42,8 @@ class Distributor with MixinMappingModel<Distributor> {
       "d_address": _address,
       "d_email": _email,
       "d_cel": _cel,
-      "d_website": _website
+      "d_website": _website,
+      "d_iva": _iva,
     };
   }
 
@@ -52,5 +56,6 @@ class Distributor with MixinMappingModel<Distributor> {
     _email = map['d_email'];
     _cel = map['d_cel'];
     _website = map['d_website'];
+    _iva = map['d_iva'];
   }
 }
