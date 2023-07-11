@@ -33,6 +33,107 @@ class Distributor with MixinMappingModel<Distributor> {
     _iva = iva;
   }
 
+  //-------------------------ID----------------------------
+
+  ///Distributor: Devuelve el identificador.
+  int getID() {
+    return _id;
+  }
+
+  ///Distributor: Establece el identificador.
+  void setID(int id) {
+    _id = id;
+  }
+
+  //-------------------------CUIT----------------------------
+
+  ///Distributor: Devuelve el numero de CUIT.
+  String getCUIT() {
+    return _cuit;
+  }
+
+  ///Distributor: Establece el numero de CUIT.
+  void setCUIT(String value) {
+    _cuit = value;
+  }
+
+  //-------------------------NOMBRE----------------------------
+
+  ///Distributor: Devuelve el nombre de distribuidora.
+  String getName() {
+    return _name;
+  }
+
+  ///Distributor: Establece el nombre de distribuidora.
+  void setName(String value) {
+    _name = value;
+  }
+
+  //-------------------------DIRECCION----------------------------
+
+  ///Distributor: Devuelve la dirección de distribuidora (o nulo).
+  String? getAddress() {
+    return _address;
+  }
+
+  ///Distributor: Establece la dirección de distribuidora.
+  void setAddress(String? value) {
+    _address = value;
+  }
+
+  //-------------------------EMAIL----------------------------
+
+  ///Distributor: Devuelve el correo electrónico de distribuidora (o nulo).
+  String? getEmail() {
+    return _email;
+  }
+
+  ///Distributor: Establece el correo electrónico de distribuidora.
+  void setEmail(String? value) {
+    _email = value;
+  }
+
+  //-------------------------CELULAR----------------------------
+
+  ///Distributor: Devuelve el celular de distribuidora (o nulo).
+  String? getPhone() {
+    return _cel;
+  }
+
+  ///Distributor: Establece el celular de distribuidora.
+  void setPhone(String? value) {
+    _cel = value;
+  }
+
+  //-------------------------SITIO WEB----------------------------
+
+  ///Distributor: Devuelve el sitio web de la distribuidora (o nulo).
+  String? getWebsite() {
+    return _website;
+  }
+
+  ///Distributor: Establece el sitio web de la distribuidora.
+  void setWebsite(String? value) {
+    _website = value;
+  }
+
+  //-------------------------IVA----------------------------
+
+  ///Distributor: Devuelve el porcentaje de IVA que aplica la distribuidora (generalmente, 1.00 o 1.21).
+  double getIVA() {
+    return _iva;
+  }
+
+  ///Distributor: Establece el porcentaje de IVA que aplica la distribuidora (generalmente, 1.00 o 1.21).
+  void setIVA(double value) {
+    _iva = value;
+  }
+
+  ///Distributor: Devuelve TRUE si la distribuidora aplica un IVA del 21%. Caso contrario, FALSE.
+  bool isIVA121() {
+    return _iva == 1.21;
+  }
+
   @override
   Map<String, dynamic> getMap() {
     return {

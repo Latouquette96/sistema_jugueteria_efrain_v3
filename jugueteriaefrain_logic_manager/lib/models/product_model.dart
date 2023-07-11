@@ -1,4 +1,5 @@
 import 'package:jugueteriaefrain_logic_manager/mixin/mixin_mapping_model.dart';
+import 'package:jugueteriaefrain_logic_manager/structure_data/triple.dart';
 import 'package:jugueteriaefrain_logic_manager/utils/link_image.dart';
 
 ///Clase Product: Modela a un producto con todos sus atributos.
@@ -13,6 +14,7 @@ class Product with MixinMappingModel<Product> {
   late int _stock; //RN-P6.
   late int _subcategory; //RN-P9.
   late List<String> _images; //RN-P13, RN-P14
+  late List<String> _listSize; //RN-P10.
 
   //Atributos de clase
   static const int _maxCharsBarcode = 48; //RN-P15
@@ -31,6 +33,7 @@ class Product with MixinMappingModel<Product> {
     int stock = 0,
     int subcategory = 0,
     String? images,
+    String? sizes,
   }) {
     _barcode = barcode;
     _internalCode = internalCode;
@@ -41,6 +44,7 @@ class Product with MixinMappingModel<Product> {
     _stock = stock;
     _subcategory = 0;
     _images = (images == null) ? [] : images.split(",");
+    _listSize = (sizes == null) ? [] : sizes.split(",");
   }
 
   //------------------CONSULTAS ESTÁTICAS---------------------------------------------
@@ -184,6 +188,31 @@ class Product with MixinMappingModel<Product> {
     _images.insert(newPos - 1, str);
   }
 
+  //------------------MEDIDAS---------------------------------------------
+
+  ///Product: Inserta una nueva medida en la lista.
+  void insertSize(String label, Triple<int, int?, int?> values) {
+    String medida = "Medida ($label): ${values.getValue1().toString()}";
+    if (values.getValue2() != null) {
+      medida = "$medida x ${values.getValue2().toString()}";
+
+      if (values.getValue3() != null) {
+        medida = "$medida x ${values.getValue3().toString()}";
+      }
+    }
+    _listSize.add(medida);
+  }
+
+  ///Product: Remueve el elemento de la posicion dada (entre 0 y N-1).
+  void removeSize(int index) {
+    _listSize.removeAt(index);
+  }
+
+  ///Product: Devuelve todas las medidas almacenadas.
+  List<String> getSizes() {
+    return _listSize;
+  }
+
   //-----------------------------------------------------------------------
 
   @override
@@ -199,6 +228,7 @@ class Product with MixinMappingModel<Product> {
       "p_subcategory": _subcategory,
       //Construye una cadena con todos los elementos de la lista separados por ','.
       "p_images": _images.join(','),
+      "p_sizes": _listSize.join(','),
     };
   }
 
@@ -213,5 +243,6 @@ class Product with MixinMappingModel<Product> {
     _stock = map['p_stock'];
     _subcategory = map['p_subcategory'];
     _images = (map['p_images'] == null) ? [] : map['p_images'].split(",");
+    _listSize = (map['p_sizes'] == null) ? [] : map['p_sizes'].split(",");
   }
 }
