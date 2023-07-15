@@ -1,0 +1,13 @@
+{
+  "name": "api-jugueteriaefrain",
+  "version": "1.0.0",
+  "description": "API REST realizada en Node.JS, Express y PostgreSQL.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.1"
+  }
+}
