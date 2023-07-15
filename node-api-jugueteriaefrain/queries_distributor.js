@@ -6,6 +6,7 @@ const pool = new Pool({
   password: '39925523',
   port: 5432,
 })
+
 const getDistributors = (request, response) => {
   pool.query('SELECT * FROM distributors ORDER BY d_name ASC', (error, results) => {
     if (error) {
