@@ -1,10 +1,10 @@
-import 'package:sistema_jugueteria_efrain_v3/mixin/mixin_mapping_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/structure_data/triple.dart';
-import 'package:sistema_jugueteria_efrain_v3/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/utils/link_image.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/link_image.dart';
 
 ///Clase Product: Modela a un producto con todos sus atributos.
-class Product with MixinMappingModel<Product> {
+class Product with MixinJSONalizable<Product> {
   ///Atributos de instancia
   late String? _barcode; //RN-P1.
   late String? _internalCode; //RN-P2.
@@ -53,6 +53,27 @@ class Product with MixinMappingModel<Product> {
     _dateCreate =
         (dateCreate == 0) ? DatetimeCustom.getDatetimeIntegerNow() : dateCreate;
     _dateUpdate = dateUpdate;
+  }
+
+  ///Product: Constructor de Product con datos JSON.
+  Product.fromJSON(Map<String, dynamic> map) {
+    fromJSON(map);
+  }
+
+  ///Product: Constructor de Product limpio (sin datos definidos).
+  Product.clean() {
+    _barcode = "-";
+    _internalCode = "-";
+    _title = "-";
+    _description = "-";
+    _brand = "IMPORT.";
+    _pricePublic = 0.00;
+    _stock = 0;
+    _subcategory = 0;
+    _images = [];
+    _listSize = [];
+    _dateCreate = 0;
+    _dateUpdate = 0;
   }
 
   //------------------CONSULTAS ESTÁTICAS---------------------------------------------
@@ -236,7 +257,7 @@ class Product with MixinMappingModel<Product> {
   //-----------------------------------------------------------------------
 
   @override
-  Map<String, dynamic> getMap() {
+  Map<String, dynamic> getJSON() {
     return {
       "p_barcode": _barcode,
       "p_internal_code": _internalCode,
@@ -253,7 +274,7 @@ class Product with MixinMappingModel<Product> {
   }
 
   @override
-  void loadingWithMap(Map<String, dynamic> map) {
+  void fromJSON(Map<String, dynamic> map) {
     _barcode = map['p_barcode'];
     _internalCode = map['p_internal_code'];
     _title = map['p_title'];

@@ -1,4 +1,4 @@
-import 'package:sistema_jugueteria_efrain_v3/structure_data/pair.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
 ///Clase Triple: Modela una tripla de elementos (V1, V2, V3), donde V2 y V3 pueden ser valores nulos.
 class Triple<V1, V2, V3> extends Pair<V1, V2> {

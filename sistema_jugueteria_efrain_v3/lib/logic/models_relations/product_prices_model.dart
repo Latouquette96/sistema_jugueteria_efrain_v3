@@ -1,6 +1,6 @@
-import 'package:sistema_jugueteria_efrain_v3/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 
 ///Clase ProductPrice: Modela un precio para un producto de una determinada distribuidora.
 class ProductPrice {

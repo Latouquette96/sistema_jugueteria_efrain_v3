@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:sistema_jugueteria_efrain_v3/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 
 ///Clase DistributorBilling: Modela una factura de una distribuidora.
 class DistributorBilling {

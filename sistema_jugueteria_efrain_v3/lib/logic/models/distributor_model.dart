@@ -1,7 +1,7 @@
-import 'package:sistema_jugueteria_efrain_v3/mixin/mixin_mapping_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
 
 ///Clase Distributor: Modela la distribuidora de donde provienen los productos.
-class Distributor with MixinMappingModel<Distributor> {
+class Distributor with MixinJSONalizable<Distributor> {
   //Atributos de instancia
   late int _id;
   late String _cuit; //RN-D1.
@@ -31,6 +31,11 @@ class Distributor with MixinMappingModel<Distributor> {
     _cel = cel;
     _website = website;
     _iva = iva;
+  }
+
+  ///Distributor: Constructor de distribuidora con datos JSON.
+  Distributor.fromJSON(Map<String, dynamic> map) {
+    fromJSON(map);
   }
 
   //-------------------------ID----------------------------
@@ -135,7 +140,7 @@ class Distributor with MixinMappingModel<Distributor> {
   }
 
   @override
-  Map<String, dynamic> getMap() {
+  Map<String, dynamic> getJSON() {
     return {
       "d_id": _id,
       "d_cuit": _cuit,
@@ -149,7 +154,7 @@ class Distributor with MixinMappingModel<Distributor> {
   }
 
   @override
-  void loadingWithMap(Map<String, dynamic> map) {
+  void fromJSON(Map<String, dynamic> map) {
     _id = map['d_id'];
     _cuit = map['d_cuit'];
     _name = map['d_name'];
@@ -157,6 +162,6 @@ class Distributor with MixinMappingModel<Distributor> {
     _email = map['d_email'];
     _cel = map['d_cel'];
     _website = map['d_website'];
-    _iva = map['d_iva'];
+    _iva = double.parse(map['d_iva']);
   }
 }
