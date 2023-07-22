@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/link_image.dart';
 ///Clase Product: Modela a un producto con todos sus atributos.
 class Product with MixinJSONalizable<Product> {
   ///Atributos de instancia
+  late int _id;
   late String? _barcode; //RN-P1.
   late String? _internalCode; //RN-P2.
   late String _title; //RN-P8
@@ -16,8 +17,8 @@ class Product with MixinJSONalizable<Product> {
   late int _subcategory; //RN-P9.
   late List<String> _images; //RN-P13, RN-P14
   late List<String> _listSize; //RN-P10.
-  late int _dateUpdate;
-  late int _dateCreate;
+  late int _dateUpdate; //RN-P22.
+  late int _dateCreate; //RN-P22.
 
   //Atributos de clase
   static const int _maxCharsBarcode = 48; //RN-P15
@@ -25,8 +26,24 @@ class Product with MixinJSONalizable<Product> {
   static const int _maxCharsDescription = 9999; //RN-P17
   static const int _maxCharsBrand = 100; //RN-P18.
 
+  static const String _keyID           = "p_id";
+  static const String _keyBarcode      = "p_barcode";
+  static const String _keyInternalCode = "p_internal_code";
+  static const String _keyTitle        = "p_title";
+  static const String _keyDescription  = "p_description";
+  static const String _keyBrand        = "p_brand";
+  static const String _keyPricePublic  = "p_price_public";
+  static const String _keyStock        = "p_stock";
+  static const String _keySubcategory  = "p_subcategory";
+  static const String _keyImages       = "p_images";
+  static const String _keySizes        = "p_sizes";
+  static const String _keyDateUpdated  = "p_date_updated";
+  static const String _keyDateCreated  = "p_date_created";
+
+
   ///Product: Constructor genérico de producto.
   Product({
+    int id = 0,
     String? barcode,
     String? internalCode,
     required String title,
@@ -40,6 +57,7 @@ class Product with MixinJSONalizable<Product> {
     int dateCreate = 0,
     int dateUpdate = 0,
   }) {
+    _id = id;
     _barcode = barcode;
     _internalCode = internalCode;
     _title = title;
@@ -50,8 +68,7 @@ class Product with MixinJSONalizable<Product> {
     _subcategory = 0;
     _images = (images == null) ? [] : images.split(",");
     _listSize = (sizes == null) ? [] : sizes.split(",");
-    _dateCreate =
-        (dateCreate == 0) ? DatetimeCustom.getDatetimeIntegerNow() : dateCreate;
+    _dateCreate = (dateCreate == 0) ? DatetimeCustom.getDatetimeIntegerNow() : dateCreate;
     _dateUpdate = dateUpdate;
   }
 
@@ -62,6 +79,7 @@ class Product with MixinJSONalizable<Product> {
 
   ///Product: Constructor de Product limpio (sin datos definidos).
   Product.clean() {
+    _id = 0;
     _barcode = "-";
     _internalCode = "-";
     _title = "-";
@@ -96,6 +114,13 @@ class Product with MixinJSONalizable<Product> {
   ///Product: Devuelve la cantidad máxima de chars permitidos para una marca/importadora.
   static int getMaxCharsBrand() {
     return _maxCharsBrand;
+  }
+
+  //------------------ID---------------------------------------------
+
+  ///Product: Devuelve el ID del producto.
+  int getID() {
+    return _id;
   }
 
   //------------------CODIGO DE BARRAS---------------------------------------------
@@ -259,31 +284,37 @@ class Product with MixinJSONalizable<Product> {
   @override
   Map<String, dynamic> getJSON() {
     return {
-      "p_barcode": _barcode,
-      "p_internal_code": _internalCode,
-      "p_title": _title,
-      "p_description": _description,
-      "p_brand": _brand,
-      "p_price_public": _pricePublic,
-      "p_stock": _stock,
-      "p_subcategory": _subcategory,
+      _keyID: _id,
+      _keyBarcode: _barcode,
+      _keyInternalCode: _internalCode,
+      _keyTitle: _title,
+      _keyDescription: _description,
+      _keyBrand: _brand,
+      _keyPricePublic: _pricePublic,
+      _keyStock: _stock,
+      _keySubcategory: _subcategory,
       //Construye una cadena con todos los elementos de la lista separados por ','.
-      "p_images": _images.join(','),
-      "p_sizes": _listSize.join(','),
+      _keyImages: _images.join(','),
+      _keySizes: _listSize.join(','),
+      _keyDateCreated: _dateCreate,
+      _keyDateUpdated: _dateUpdate
     };
   }
 
   @override
   void fromJSON(Map<String, dynamic> map) {
-    _barcode = map['p_barcode'];
-    _internalCode = map['p_internal_code'];
-    _title = map['p_title'];
-    _description = map['p_description'];
-    _brand = map['p_brand'];
-    _pricePublic = map['p_price_public'];
-    _stock = map['p_stock'];
-    _subcategory = map['p_subcategory'];
-    _images = (map['p_images'] == null) ? [] : map['p_images'].split(",");
-    _listSize = (map['p_sizes'] == null) ? [] : map['p_sizes'].split(",");
+    _id = map[_keyID];
+    _barcode = map[_keyBarcode];
+    _internalCode = map[_keyInternalCode];
+    _title = map[_keyTitle];
+    _description = map[_keyDescription];
+    _brand = map[_keyBrand];
+    _pricePublic = map[_keyPricePublic];
+    _stock = map[_keyStock];
+    _subcategory = map[_keySubcategory];
+    _images = (map[_keyImages] == null) ? [] : map[_keyImages].split(",");
+    _listSize = (map[_keySizes] == null) ? [] : map[_keySizes].split(",");
+    _dateCreate = int.parse(map[_keyDateCreated]);
+    _dateUpdate = int.parse(map[_keyDateUpdated]);
   }
 }

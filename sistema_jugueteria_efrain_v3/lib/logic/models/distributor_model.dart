@@ -12,6 +12,16 @@ class Distributor with MixinJSONalizable<Distributor> {
   late String? _website; //RN-D7.
   late double _iva; //RN-D5.
 
+  //Atributos de clase
+  static const String _keyID      = "d_id";
+  static const String _keyCUIT    = "d_cuit";
+  static const String _keyName    = "d_name";
+  static const String _keyAddress = "d_address";
+  static const String _keyEmail   = "d_email";
+  static const String _keyCel     = "d_cel";
+  static const String _keyWebsite = "d_website";
+  static const String _keyIVA     = "d_iva";
+
   ///Constructor de Distributor.
   Distributor({
     int id = 0,
@@ -38,16 +48,53 @@ class Distributor with MixinJSONalizable<Distributor> {
     fromJSON(map);
   }
 
+  //-------------------------------------------------------
+
+  ///Distributor: Devuelve la clave ID.
+  static String getKeyID() {
+    return _keyID;
+  }
+
+  ///Distributor: Devuelve la clave CUIT.
+  static String getKeyCUIT(){
+    return _keyCUIT;
+  }
+
+  ///Distributor: Devuelve la clave Address.
+  static String getKeyAddress(){
+    return _keyAddress;
+  }
+
+  ///Distributor: Devuelve la clave IVA.
+  static String getKeyIVA(){
+    return _keyIVA;
+  }
+
+  ///Distributor: Devuelve la clave Name.
+  static String getKeyName(){
+    return _keyName;
+  }
+
+  ///Distributor: Devuelve la clave Email.
+  static String getKeyEmail(){
+    return _keyEmail;
+  }
+
+  ///Distributor: Devuelve la clave Cel.
+  static String getKeyCel(){
+    return _keyCel;
+  }
+
+  ///Distributor: Devuelve la clave Website.
+  static String getKeyWebsite(){
+    return _keyWebsite;
+  }
+
   //-------------------------ID----------------------------
 
   ///Distributor: Devuelve el identificador.
   int getID() {
     return _id;
-  }
-
-  ///Distributor: Establece el identificador.
-  void setID(int id) {
-    _id = id;
   }
 
   //-------------------------CUIT----------------------------
@@ -142,26 +189,31 @@ class Distributor with MixinJSONalizable<Distributor> {
   @override
   Map<String, dynamic> getJSON() {
     return {
-      "d_id": _id,
-      "d_cuit": _cuit,
-      "d_name": _name,
-      "d_address": _address,
-      "d_email": _email,
-      "d_cel": _cel,
-      "d_website": _website,
-      "d_iva": _iva,
+      _keyID: _id,
+      _keyCUIT: _cuit,
+      _keyName: _name,
+      _keyAddress: _address,
+      _keyEmail: _email,
+      _keyCel: _cel,
+      _keyWebsite: _website,
+      _keyIVA: _iva,
     };
   }
 
   @override
   void fromJSON(Map<String, dynamic> map) {
-    _id = map['d_id'];
-    _cuit = map['d_cuit'];
-    _name = map['d_name'];
-    _address = map['d_address'];
-    _email = map['d_email'];
-    _cel = map['d_cel'];
-    _website = map['d_website'];
-    _iva = double.parse(map['d_iva']);
+    _id = map[_keyID];
+    _cuit = map[_keyCUIT];
+    _name = map[_keyName];
+    _address = map[_keyAddress];
+    _email = map[_keyEmail];
+    _cel = map[_keyCel];
+    _website = map[_keyWebsite];
+    try{
+      _iva = map[_keyIVA];
+    }
+    catch(e){
+      _iva = double.parse(map[_keyIVA]);
+    }
   }
 }

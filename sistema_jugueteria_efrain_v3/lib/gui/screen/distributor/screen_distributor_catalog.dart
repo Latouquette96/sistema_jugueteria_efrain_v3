@@ -3,10 +3,12 @@ import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/distributor_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
 class ScreenDistributorCatalog extends ConsumerStatefulWidget {
@@ -18,8 +20,10 @@ class ScreenDistributorCatalog extends ConsumerStatefulWidget {
   }
 }
 
-class ScreenDistributorCatalogState
-    extends ConsumerState<ScreenDistributorCatalog> {
+class ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCatalog> {
+  
+  
+  
   ///ScreenDistributorCatalog: Devuelve un listado de ListTile de los distribuidores.
   Widget _getListDistributor(BuildContext context, List<Distributor> list) {
     DaviModel<Distributor>? model = DaviModel<Distributor>(rows: list, columns: [
@@ -141,16 +145,28 @@ class ScreenDistributorCatalogState
             expandableName: false,
           ),
         ),
-        child:
-            Davi<Distributor>(model, rowColor: (DaviRow<Distributor>? rowData) {
-          if (rowData == null) {
-            return Colors.white;
-          } else {
-            return (rowData.index % 2 == 0)
-                ? Colors.blue.shade50
-                : Colors.blueGrey.shade50;
-          }
-        }));
+        child: Davi<Distributor>(
+            model, 
+            rowColor: (DaviRow<Distributor>? rowData) {
+              if (rowData == null) {
+                return Colors.white;
+              } 
+              else {
+                return (rowData.index % 2 == 0)
+                  ? Colors.blue.shade50
+                  : Colors.blueGrey.shade50;
+              }
+            },
+            onRowDoubleTap:(Distributor data) {
+              if (ref.read(distributorProvider)==null){
+                ref.read(distributorProvider.notifier).loadDistributor(data);
+              }
+              else{
+                ref.read(distributorProvider.notifier).freeDistributor();
+              }
+            },
+        )
+      );
   }
 
   @override
@@ -174,47 +190,21 @@ class ScreenDistributorCatalogState
       },
       error: (err, stack) => Text('Error: $err'),
       data: (message) {
-        return _getListDistributor(context, message);
+        return Row(
+          children: [
+            Expanded(child: _getListDistributor(context, message)),
+            Visibility(
+              visible: ref.watch(distributorProvider) != null,
+              child: const Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(child: DistributorInformationWidget())
+                ],
+              )
+            )
+          ],
+        );
       },
     );
   }
-/*
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Catalogo de Distribuidores"),
-        primary: false,
-        centerTitle: true,
-        backgroundColor: Colors.blueGrey.shade700,
-      ),
-      body: Container(
-          margin: const EdgeInsets.all(10),
-          child: StreamBuilder(
-            stream: http.get(Uri.http(url, '/distributors')).asStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<dynamic> map = convert.jsonDecode(snapshot.data!.body);
-                List<Distributor> list = map.map((e) {
-                  return Distributor.fromJSON(e);
-                }).toList();
-                return _getListDistributor(context, list);
-              } else {
-                if (snapshot.hasError) {
-                  return const CircularProgressIndicator(color: Colors.red);
-                } else {
-                  return FadeShimmer(
-                    baseColor: Colors.blue,
-                    highlightColor: Colors.red,
-                    width: ancho,
-                    radius: 25,
-                    height: 25,
-                    fadeTheme: FadeTheme.light,
-                  );
-                }
-              }
-            },
-          )),
-      endDrawerEnableOpenDragGesture: true,
-      drawerScrimColor: Colors.blueAccent.withOpacity(0.3),
-    );
-  }*/
 }

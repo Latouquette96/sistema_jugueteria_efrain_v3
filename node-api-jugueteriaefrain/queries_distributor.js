@@ -40,19 +40,19 @@ const createDistributor = (request, response) => {
 }
 
 const updateDistributor = (request, response) => {
-  const id = parseInt(request.params.id)
-  const { cuit, name, address, email, cel, website, iva } = request.body
+  //const d_id = parseInt(request.params.id)
+  const {d_id, d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva } = request.body
 
   pool.query(
-    'UPDATE public.distributors' + 
-	'SET d_cuit=$1, d_name=$2, d_address=$3, d_email=$4, d_cel=$5, d_website=$6, d_iva=$7' +
-	'WHERE d_id = $8',
-    [cuit, name, address, email, cel, website, iva, id],
+    'UPDATE public.distributors ' + 
+	  '   SET d_cuit=$1, d_name=$2, d_address=$3, d_email=$4, d_cel=$5, d_website=$6, d_iva=$7 ' +
+	  '   WHERE d_id=$8',
+    [d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva, d_id],
     (error, results) => {
       if (error) {
         throw error
       }
-      response.status(200).send(`Distributor modified with ID: ${id}`)
+      response.status(200).send(`Distributor modified with ID: ${d_id}`)
     }
   )
 }
