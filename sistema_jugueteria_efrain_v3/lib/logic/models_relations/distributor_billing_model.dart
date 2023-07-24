@@ -30,6 +30,18 @@ class DistributorBilling with MixinJSONalizable<DistributorBilling> {
     _total = total;
   }
 
+  ///Constructor de DistributorBilling.
+  DistributorBilling.fromJSON(Map<String, dynamic> map){
+    fromJSON(map);
+  }
+
+  //--------------------------ID-----------------------------
+
+  ///DistributorBilling: Devuelve el ID del archivo.
+  int getID(){
+    return _id;
+  }
+
   //-------------------------FILE----------------------------
 
   ///DistributorBilling: Establece los datos del archivo.

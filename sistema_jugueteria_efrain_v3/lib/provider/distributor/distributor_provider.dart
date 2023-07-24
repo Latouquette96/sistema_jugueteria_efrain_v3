@@ -19,8 +19,11 @@ class DistributorProvider extends StateNotifier<Distributor?> {
   }
 }
 
-///distributorProvider es un proveedor que sirve para almacenar el estado de un producto que será actualizado o creado.
+///distributorProvider es un proveedor que sirve para almacenar el estado de una distribuidora que será actualizado o creado.
 final distributorProvider = StateNotifierProvider<DistributorProvider, Distributor?>((ref) => DistributorProvider());
 
-///distributorRemoveProvider es un proveedor que sirve para almacenar el estado de un producto que será eliminado.
+///distributorRemoveProvider es un proveedor que sirve para almacenar el estado de una distribuidora que será eliminado.
 final distributorRemoveProvider = StateNotifierProvider<DistributorProvider, Distributor?>((ref) => DistributorProvider());
+
+///distributorBillingProvider es un proveedor que sirve para almacenar el estado de una distribuidora que será utilizada para recuperar facturas.
+final distributorBillingProvider = StateNotifierProvider<DistributorProvider, Distributor?>((ref) => DistributorProvider());

@@ -13,12 +13,12 @@ class ScreenDistributorCatalog extends ConsumerStatefulWidget {
   const ScreenDistributorCatalog({super.key});
 
   @override
-  ScreenDistributorCatalogState createState() {
-    return ScreenDistributorCatalogState();
+  ConsumerState<ScreenDistributorCatalog> createState() {
+    return _ScreenDistributorCatalogState();
   }
 }
 
-class ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCatalog> {
+class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCatalog> {
 
   @override
   Widget build(BuildContext context) {
