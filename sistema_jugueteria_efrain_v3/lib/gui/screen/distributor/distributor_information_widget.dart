@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 
@@ -31,7 +32,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
       ),
       Distributor.getKeyCUIT(): FormControl<String>(
         value: ref.read(distributorProvider)?.getCUIT(),
-        validators: [Validators.required]
+        validators: [Validators.required, Validators.maxLength(13)]
       ),
       Distributor.getKeyName(): FormControl<String>(
         value: ref.read(distributorProvider)?.getName(),
@@ -62,8 +63,6 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
 
   @override
   Widget build(BuildContext context) {
-    
-    
     return Container(
       width: 400,
       decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black)),
@@ -72,17 +71,31 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            Stack(
               children: [
-                Expanded(child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 5),
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.black,
-                  height: 40,
-                  child: const Text("Información Distribuidora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
-                ))
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 5),
+                      padding: const EdgeInsets.all(10),
+                      color: Colors.black,
+                      height: 40,
+                      child: const Text("Información Distribuidora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                    ))
+                 ],
+                ),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: IconButton(
+                    tooltip: "Cerrar información de la distribuidora.",
+                    icon: const Icon(Icons.close_rounded, color: Colors.redAccent,), 
+                    onPressed: (){ 
+                      ref.read(distributorProvider.notifier).freeDistributor(ref);
+                    },)
+                )
               ],
             ),
             Expanded(
@@ -92,6 +105,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [   
                     ReactiveTextField(
+                      maxLength: 13,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("CUIT"),
                       formControlName: Distributor.getKeyCUIT(),
                       textInputAction: TextInputAction.next,
@@ -100,10 +115,13 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         _form.focus(Distributor.getKeyName());
                       },
                       validationMessages: {
+                        ValidationMessage.maxLength: (error) => "Máxima longitud de CUIT de 13 caracteres.",
                         ValidationMessage.required: (error) => "(Requerido) Ingrese el CUIT de la distribuidora."
                       },
                     ),
                     ReactiveTextField(
+                      maxLength: 50,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("Nombre"),
                       formControlName: Distributor.getKeyName(),
                       textInputAction: TextInputAction.next,
@@ -116,6 +134,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                       },
                     ),
                     ReactiveTextField(
+                      maxLength: 75,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("Dirección"),
                       formControlName: Distributor.getKeyAddress(),
                       textInputAction: TextInputAction.next,
@@ -125,6 +145,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                       },
                     ),
                     ReactiveTextField(
+                      maxLength: 15,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("Teléfono (celular o fijo)"),
                       formControlName: Distributor.getKeyCel(),
                       textInputAction: TextInputAction.next,
@@ -134,6 +156,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                       },
                     ),
                     ReactiveTextField(
+                      maxLength: 150,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("Correo electrónico"),
                       formControlName: Distributor.getKeyEmail(),
                       textInputAction: TextInputAction.next,
@@ -147,6 +171,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                     ),
                     ReactiveDropdownField<double>(
                       formControlName: Distributor.getKeyIVA(),
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("IVA aplicado a los productos."),
                       items: const [
                         DropdownMenuItem<double>(value: 1.00,child: Text("1.00 (sin IVA)"),),
@@ -160,7 +185,10 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ValidationMessage.required: (error) => "(Requerido) Seleccione el impuesto que aplica la distribuidora."
                       },
                     ),
+                    const SizedBox(height: 15,),
                     ReactiveTextField(
+                      maxLength: 150,
+                      style: StyleForm.getStyleTextField(),
                       decoration: StyleForm.getDecorationTextField("Sitio web"),
                       formControlName: Distributor.getKeyWebsite(),
                       textInputAction: TextInputAction.none,
@@ -168,48 +196,58 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         setState(() {});
                       },
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: _form.valid ? Colors.blue : Colors.grey),
-                      onPressed: (){
-                        if(_form.valid){
-                          bool isError = false;
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: _form.valid ? Colors.blue : Colors.grey),
+                          onPressed: (){
+                            if(_form.valid){
+                              
+                              bool isError = false;
+                              
+                              ref.read(distributorProvider)?.fromJSON(_form.value);
 
-                          print(_form.value.toString());
-                          ref.read(distributorProvider)?.fromJSON(_form.value);
+                              //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+                              AsyncValue<Response> response = (ref.read(distributorProvider)!.getID()==0) 
+                                ? ref.watch(newDistributorWithAPIProvider)
+                                : ref.watch(updateDistributorWithAPIProvider);
+                              
+                              //Realiza la peticion de modificacion y analiza la respuesta obtenida.
+                              response.when(
+                                data: (data){
+                                  isError = false;
+                                }, 
+                                error: (err, stack){
+                                  isError = true;
+                                }, 
+                                loading: (){null;}
+                              );
 
-                           AsyncValue<Response> response = ref.watch(
-                                providerUpdateDistributor,
-                            );
-
-                            var resp = response.when(
-                              data: (data){
-                                isError = false;
-                              }, 
-                              error: (err, stack){
-                                isError = true;
-                                Text('Error: $err');
-                              }, 
-                              loading: (){null;}
-                            );
-
+                              //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
                               if (isError==false){
                                 ElegantNotification.success(
                                   title:  const Text("Información"),
                                   description:  const Text("La información ha sido actualizada con éxito.")
                                 ).show(context);
+
+                                ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                                ref.read(distributorProvider.notifier).freeDistributor(ref);
                               }
                               else{
+                                //Caso contrario, mostrar notificación de error.
                                 ElegantNotification.error(
                                   title:  const Text("Error"),
                                   description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
                                 ).show(context);
                               }
-                          }
-                        
-                      } ,
-                      child: const Text('Guardar cambios'),
+                            }
+                          } ,
+                          child: const Text('Guardar cambios'),
+                        )),
+                      ],
                     )
-                    
                   ]
                 ),
               )
@@ -220,28 +258,5 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
         ],
       )
     ));
-  }
-}
-
-class SecondRoute extends ConsumerWidget {
-  const SecondRoute({super.key});
-  
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-
-    print(ref.watch(distributorProvider)?.getJSON().toString());
-
-    AsyncValue<Response> response = ref.watch(
-        providerUpdateDistributor,
-    );
-
-    return response.when(
-      data: (data){
-        print('Response status: ${data.statusCode}');
-        print('Response body: ${data.body}');
-        return Text(data.body);
-      }, 
-      error: (err, stack) => Text('Error: $err'), 
-      loading: (){return Text("Hola");});
   }
 }

@@ -24,7 +24,7 @@ app.delete('/products/:id', db_product.deleteProduct)
 app.get('/distributors', db_distributor.getDistributors)
 app.get('/distributors/:id', db_distributor.getDistributorById)
 app.post('/distributors', db_distributor.createDistributor)
-app.put('/distributors/', db_distributor.updateDistributor)
+app.put('/distributors/:id', db_distributor.updateDistributor)
 app.delete('/distributors/:id', db_distributor.deleteDistributor)
 
 app.listen(port, () => {

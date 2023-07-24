@@ -28,10 +28,12 @@ const getDistributorById = (request, response) => {
 }
 
 const createDistributor = (request, response) => {
-  const { cuit, name, address, email, cel, website, iva } = request.body
+  const {d_id, d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva } = request.body
 
-  pool.query('INSERT INTO distributors (d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva) '
-            + 'VALUES ($1, $2, $3, $4, $5, $6, $7)', [cuit, name, address, email, cel, website, iva], (error, results) => {
+  console.log(request.body)
+
+  pool.query('INSERT INTO public.distributors (d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva) '
+            + '   VALUES ($1, $2, $3, $4, $5, $6, $7)', [d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva], (error, results) => {
     if (error) {
       throw error
     }
@@ -40,31 +42,31 @@ const createDistributor = (request, response) => {
 }
 
 const updateDistributor = (request, response) => {
-  //const d_id = parseInt(request.params.id)
+  const id = parseInt(request.params.id)
   const {d_id, d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva } = request.body
 
   pool.query(
     'UPDATE public.distributors ' + 
 	  '   SET d_cuit=$1, d_name=$2, d_address=$3, d_email=$4, d_cel=$5, d_website=$6, d_iva=$7 ' +
 	  '   WHERE d_id=$8',
-    [d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva, d_id],
+    [d_cuit, d_name, d_address, d_email, d_cel, d_website, d_iva, id],
     (error, results) => {
       if (error) {
         throw error
       }
-      response.status(200).send(`Distributor modified with ID: ${d_id}`)
+      response.status(200).send(`Distributor modified with ID: ${id}`)
     }
   )
 }
 
 const deleteDistributor = (request, response) => {
-  const id = parseInt(request.params.id)
+  const d_id = parseInt(request.params.id)
 
-  pool.query('DELETE FROM distributors WHERE d_id = $1', [id], (error, results) => {
+  pool.query('DELETE FROM public.distributors WHERE d_id=$1', [d_id], (error, results) => {
     if (error) {
       throw error
     }
-    response.status(200).send(`Distributor deleted with ID: ${id}`)
+    response.status(200).send(`Distributor deleted with ID: ${d_id}`)
   })
 }
 

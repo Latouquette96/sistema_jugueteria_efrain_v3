@@ -23,28 +23,30 @@ class TabbedViewWidget extends ConsumerWidget {
           ),
           body: Container(
             margin: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  color: Colors.black87,
-                  height: 30,
-                  child: TabBar(
-                    indicatorColor: Colors.blue,
-                    labelColor: Colors.yellow,
-                    dividerColor: Colors.white,
-                    unselectedLabelColor: Colors.white,
-                    tabs: tabs.map((e) => Tab(text: e.label,)).toList()
+            child: (tabs.isEmpty)
+              ? Container(color: Colors.white,)
+              : Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    color: Colors.black87,
+                    height: 30,
+                    child: TabBar(
+                      indicatorColor: Colors.blue,
+                      labelColor: Colors.yellow,
+                      dividerColor: Colors.white,
+                      unselectedLabelColor: Colors.white,
+                      tabs: tabs.map((e) => Tab(text: e.label,)).toList()
+                    ),
                   ),
-                ),
-                Expanded(child: TabBarView(
-                  children: tabs.map((e) => Container(
-                    padding: const EdgeInsets.all(5),
-                    color: Colors.grey.shade600,
-                    child: e.widget,
-                  )).toList(),
-                ))
-              ],
+                  Expanded(child: TabBarView(
+                    children: tabs.map((e) => Container(
+                      padding: const EdgeInsets.all(5),
+                      color: Colors.grey.shade600,
+                      child: e.widget,
+                    )).toList(),
+                  ))
+                ],
             ),
           )),
         ),
