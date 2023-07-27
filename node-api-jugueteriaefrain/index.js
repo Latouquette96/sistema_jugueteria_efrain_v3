@@ -28,7 +28,6 @@ app.post('/distributors', db_distributor.createDistributor)
 app.put('/distributors/:id', db_distributor.updateDistributor)
 app.delete('/distributors/:id', db_distributor.deleteDistributor)
 app.get('/distributors/billings', db_billing.getAllBillings)
-app.get('/distributors/billings/:id', db_billing.getBillingByID)
 app.get('/distributors/billings/distributor/:id', db_billing.getBillingsByDistributor)
 app.post('/distributors/billings', db_billing.createBilling)
 

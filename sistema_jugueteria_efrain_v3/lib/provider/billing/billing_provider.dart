@@ -18,3 +18,5 @@ class BillingProvider extends StateNotifier<DistributorBilling?> {
 
 ///BillingProvider es un proveedor que sirve para almacenar el estado de una factura de distribuidora que será actualizado o creado.
 final billingProvider = StateNotifierProvider<BillingProvider, DistributorBilling?>((ref) => BillingProvider());
+
+final billingSearchProvider = StateNotifierProvider<BillingProvider, DistributorBilling?>((ref) => BillingProvider());

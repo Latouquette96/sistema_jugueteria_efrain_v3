@@ -1,10 +1,10 @@
-///Clase LinkImage: Modela un link de imagen válido para poder ser compartido.
-class LinkImage {
+///Clase ResourceLink: Modela un link de imagen válido para poder ser compartido.
+class ResourceLink {
   //Atributos de instancia
   late String _link;
 
-  ///Constructor de LinkImage.
-  LinkImage(String link) {
+  ///Constructor de ResourceLink.
+  ResourceLink(String link) {
     //Si es un link de Google Drive.
     if (link.contains("https://drive.google.com/")) {
       _link = _convertLinkToGoogleDrive(link);
@@ -17,7 +17,7 @@ class LinkImage {
     }
   }
 
-  ///LinkImage: Convertir a link valido de Google Drive.
+  ///ResourceLink: Convertir a link valido de Google Drive.
   String _convertLinkToGoogleDrive(String link) {
     String url;
 
@@ -34,7 +34,7 @@ class LinkImage {
     return url;
   }
 
-  ///LinkImage: Convertir a link valido de Dropbox.
+  ///ResourceLink: Convertir a link valido de Dropbox.
   String _convertLinkToDropbox(String link) {
     String url = link;
     if (url.contains("?dl=0")) {
@@ -44,12 +44,12 @@ class LinkImage {
     return url;
   }
 
-  ///LinkImage: Devuelve el link por defecto.
+  ///ResourceLink: Devuelve el link por defecto.
   String _getLinkDefect() {
     return "https://drive.google.com/uc?export=view&id=1Mh8yFhGtvhq7AkKzs09jad8d5pjwADKi";
   }
 
-  ///LinkImage: Devuelve el link de imagen.
+  ///ResourceLink: Devuelve el link de imagen.
   String getLink() {
     return _link;
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_billing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 
@@ -9,6 +10,7 @@ class MainBarWidget extends ConsumerWidget {
   const MainBarWidget({super.key});
 
   static const TabEnum _keyCatalogDistributor = TabEnum.distributorCatalogWidget;
+  static const TabEnum _keyDistributorBilling = TabEnum.distributorBillingWidget;
   //final String _keyCatalogProduct = "catalog_product";
 
   @override
@@ -41,6 +43,21 @@ class MainBarWidget extends ConsumerWidget {
                   }
                   else{
                     ref.read(tabProvider.notifier).removeTab(_keyCatalogDistributor);
+                  }
+                }
+              },
+            ),
+            PlutoMenuItem.checkbox(
+              title: "Facturas de distribuidoras",
+              initialCheckValue: ref.read(tabProvider.notifier).isExistTab(_keyDistributorBilling),
+              enable: ref.read(tabProvider.notifier).isExistTab(_keyDistributorBilling),
+              onChanged: (bool? isSelected) {
+                if (isSelected!=null){
+                  if (isSelected){
+                    ref.read(tabProvider.notifier).insertTab(_keyDistributorBilling, "Factura distribuidoras", const ScreenDistributorBilling());
+                  }
+                  else{
+                    ref.read(tabProvider.notifier).removeTab(_keyDistributorBilling);
                   }
                 }
               },

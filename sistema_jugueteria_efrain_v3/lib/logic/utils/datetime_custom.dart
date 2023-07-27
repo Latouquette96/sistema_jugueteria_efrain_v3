@@ -1,5 +1,11 @@
 ///Clase DatetimeCustom: Modela un conjunto de operaciones que permiten obtener distintas interpretaciones de un DateTime.
 class DatetimeCustom {
+
+  ///DatetimeCustom: Devuelve el patron a emplear para validar fechas con formato 'YYYY/MM/DD hh:mm:ss'.
+  static Pattern getPattern(){
+    return RegExp(r'(\d{4}//?\d\d//?\d\d(\s|T)\d\d:?\d\d:?\d\d)');
+  }
+
   ///DatetimeCustom: Devuelve un entero que representa al DateTime dt dado en formato yyyymmddhhmmss.
   static int getDatetimeInteger(DateTime dt) {
     int datetime = 0;
@@ -42,7 +48,7 @@ class DatetimeCustom {
     String dateString = "$year"
         "/${(mes < 10 ? "0$mes" : mes)}"
         "/${(day < 10 ? "0$day" : day)}"
-        " - "
+        " "
         "${(hours < 10 ? "0$hours" : hours)}"
         ":${(minutes < 10 ? "0$minutes" : minutes)}"
         ":${(seconds < 10 ? "0$seconds" : seconds)}";
@@ -53,5 +59,15 @@ class DatetimeCustom {
   ///DatetimeCustom: Devuelve una cadena que representa a la fecha y hora actual en formato yyyy/mm/dd hh:mm/ss.
   static String getDatetimeStringNow() {
     return getDatetimeString(getDatetimeIntegerNow());
+  }
+
+  ///DatetimeCustom: Realiza el parsing de una fecha en formato string (según el patrón) y la retorna en formato entero.
+  static int parseStringDatetime(String datetime){
+    List<String> value = datetime.split(" ");
+    List<int> date = value[0].split("/").map((e) => int.parse(e)).toList();
+    List<int> time = value[1].split(":").map((e) => int.parse(e)).toList();
+
+    DateTime dt = DateTime(date[0], date[1], date[2], time[0], time[1], time[2]);
+    return getDatetimeInteger(dt);
   }
 }

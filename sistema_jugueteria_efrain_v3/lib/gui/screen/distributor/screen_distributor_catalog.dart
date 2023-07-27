@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/distributor_catalog_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/distributor_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_catalog_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
@@ -27,9 +27,10 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         title: Row(
           children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Distribuidoras"))],
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 44, 43, 43),
         toolbarHeight: 40,
         titleTextStyle: const TextStyle(fontSize: 16),
+        actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
           IconButton(
             onPressed: (){
@@ -49,7 +50,16 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
       ),
       body: Row(
         children: [
-          const Expanded(child: DistributorCatalogWidget()),
+          Expanded(child: Container(
+            margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+            decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
+              start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+              top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+              end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+              bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+            )),
+            child: const DistributorCatalogWidget(),
+          )),
           Visibility(
               visible: ref.watch(distributorProvider) != null,
               child: const SizedBox(

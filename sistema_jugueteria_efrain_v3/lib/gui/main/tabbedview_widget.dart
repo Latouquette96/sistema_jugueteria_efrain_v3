@@ -22,27 +22,36 @@ class TabbedViewWidget extends ConsumerWidget {
             title: MainBarWidget(key: GlobalKey()),
           ),
           body: Container(
-            margin: const EdgeInsets.all(8),
+            margin: const EdgeInsets.all(0),
             child: (tabs.isEmpty)
               ? Container(color: Colors.white,)
               : Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     color: Colors.black87,
                     height: 30,
                     child: TabBar(
+                      indicator: const BoxDecoration(color: Color.fromARGB(255, 83, 83, 84),),
+                      
                       indicatorColor: Colors.blue,
+                      indicatorWeight: 5,
                       labelColor: Colors.yellow,
                       dividerColor: Colors.white,
                       unselectedLabelColor: Colors.white,
-                      tabs: tabs.map((e) => Tab(text: e.label,)).toList()
+                      tabs: tabs.map((e) => Tab(text: e.label,)).toList(),
+                      tabAlignment: TabAlignment.center
                     ),
                   ),
                   Expanded(child: TabBarView(
                     children: tabs.map((e) => Container(
-                      padding: const EdgeInsets.all(5),
-                      color: Colors.grey.shade600,
+                      decoration: const BoxDecoration(color: Color.fromARGB(209, 83, 83, 84), border: BorderDirectional(
+                        start: BorderSide(color: Color.fromARGB(255, 60, 60, 60), width: 3),
+                        top: BorderSide(color: Color.fromARGB(209, 83, 83, 84), width: 3),
+                        end: BorderSide(color: Color.fromARGB(255, 34, 34, 34), width: 3),
+                        bottom: BorderSide(color: Color.fromARGB(255, 47, 47, 47), width: 3),
+                      )),
+                      padding: const EdgeInsets.all(10),
                       child: e.widget,
                     )).toList(),
                   ))

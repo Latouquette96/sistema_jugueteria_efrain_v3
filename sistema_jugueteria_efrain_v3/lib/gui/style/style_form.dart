@@ -20,4 +20,12 @@ class StyleForm {
   static TextStyle getStyleTextField(){
     return const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 14);
   }
+
+  ///StyleForm: Devuelve el estilo para el boton.
+  static ButtonStyle getStyleElevatedButtom(){
+    return ElevatedButton.styleFrom(
+      backgroundColor: Colors.blueGrey,
+      disabledBackgroundColor: Colors.grey
+    );
+  }
 }

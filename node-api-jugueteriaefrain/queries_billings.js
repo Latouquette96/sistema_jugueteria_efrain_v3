@@ -9,7 +9,7 @@ const pool = new Pool({
 
 ///Devuelve toda la informacion almacenadas sobre las facturas, excepto el archivo propio de la factura.
 const getAllBillings = (request, response) => {
-  pool.query('SELECT db_id, db_distributor, db_datetime, db_total FROM billings ORDER BY db_datetime DESC', (error, results) => {
+  pool.query('SELECT db_id, db_distributor, db_datetime, db_total, db_url_file FROM billings ORDER BY db_datetime DESC', (error, results) => {
     if (error) {
       throw error
     }
@@ -21,7 +21,7 @@ const getAllBillings = (request, response) => {
 const getBillingsByDistributor = (request, response) => {
   const id = parseInt(request.params.id)
 
-  pool.query('SELECT db_id, db_distributor, db_datetime, db_total FROM billings WHERE db_distributor = $1 ORDER BY db_datetime DESC', [id], (error, results) => {
+  pool.query('SELECT db_id, db_distributor, db_datetime, db_total, db_url_file FROM billings WHERE db_distributor = $1 ORDER BY db_datetime DESC', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -29,26 +29,15 @@ const getBillingsByDistributor = (request, response) => {
   })
 }
 
-//Devuelve el archivo de la factura requerida.
-const getBillingByID = (request, response) => {
-    const id = parseInt(request.params.id)
-  
-    pool.query('SELECT db_billing FROM billings WHERE db_id = $1', [id], (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-    })
-  }
-
 ///Crea una factura para una distribuidora.
 const createBilling = (request, response) => {
-  const {db_id, db_distributor, db_billing, db_datetime, db_total} = request.body
+  const db_url_file = request.body.db_url_file;
+  const db_datetime = request.body.db_datetime;
+  const db_total  = request.body.db_total;
+  const db_distributor = request.body.db_distributor;
 
-  console.log(request.body)
-
-  pool.query('INSERT INTO public.billings (db_distributor, db_billing, db_datetime, db_total)) '
-            + '   VALUES ($1, $2, $3, $4)', [db_distributor, db_billing, db_datetime, db_total], (error, results) => {
+  pool.query('INSERT INTO public.billings (db_distributor, db_url_file, db_datetime, db_total) '
+            + '   VALUES ($1, $2, $3, $4)', [db_distributor, db_url_file, db_datetime, db_total], (error, results) => {
     if (error) {
       throw error
     }
@@ -60,6 +49,5 @@ const createBilling = (request, response) => {
 module.exports = {
     getAllBillings,
     createBilling,
-    getBillingByID,
     getBillingsByDistributor,
 }

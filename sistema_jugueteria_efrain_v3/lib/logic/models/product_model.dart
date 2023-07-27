@@ -1,7 +1,7 @@
 import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/link_image.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 
 ///Clase Product: Modela a un producto con todos sus atributos.
 class Product with MixinJSONalizable<Product> {
@@ -222,13 +222,13 @@ class Product with MixinJSONalizable<Product> {
   //------------------IMAGENES---------------------------------------------
 
   ///Product: Devuelve una lista de links de imagenes.
-  List<LinkImage> getLinkImages() {
-    return _images.map((e) => LinkImage(e)).toList();
+  List<ResourceLink> getLinkImages() {
+    return _images.map((e) => ResourceLink(e)).toList();
   }
 
   ///Product: Inserta una nueva imagen al final de la lista.
   void insertLinkImage(String link) {
-    _images.add(LinkImage(link).getLink());
+    _images.add(ResourceLink(link).getLink());
   }
 
   ///Remueve la imagen de la posicion dada.

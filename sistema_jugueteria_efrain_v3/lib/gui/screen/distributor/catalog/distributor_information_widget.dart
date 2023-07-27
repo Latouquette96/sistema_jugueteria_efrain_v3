@@ -65,7 +65,13 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
   Widget build(BuildContext context) {
     return Container(
       width: 400,
-      decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black)),
+      margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
+      decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
+        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+      )),
       child: ReactiveForm(
         formGroup: _form,
         child: Column(
@@ -80,7 +86,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                     Expanded(child: Container(
                       margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 5),
                       padding: const EdgeInsets.all(10),
-                      color: Colors.black,
+                      color: const Color.fromARGB(255, 44, 43, 43),
                       height: 40,
                       child: const Text("Información Distribuidora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
                     ))
