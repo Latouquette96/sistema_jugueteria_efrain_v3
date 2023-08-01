@@ -4,9 +4,13 @@ import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 //import 'package:mailto/mailto.dart';
 //import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
@@ -22,7 +26,7 @@ class ProductCatalogWidget extends ConsumerWidget {
     DaviModel<Product>? model = DaviModel<Product>(rows: list, columns: [
       //CUIT
       DaviColumn(
-          name: 'Barcode',
+          name: 'Cód. de barras',
           stringValue: (row) => "${row.getBarcode()} (Cód. int. ${row.getInternalCode()})",
           width: 150,
           resizable: false,
@@ -49,9 +53,18 @@ class ProductCatalogWidget extends ConsumerWidget {
       DaviColumn(
           name: 'Categoria > Subcategoria',
           stringValue: (Product p) {
-            return "";
-            //return p.getSubcategory();
+            Pair<Category?, SubCategory?> map = FactoryCategory.getInstance().search(p.getSubcategory());
+            String texto = "";
+            if (map.getValue1()==null){
+              texto = "Sin definir";
+            }
+            else{
+              texto = "${map.getValue1()!.getCategoryName()} > ${map.getValue2()!.getSubCategoryName()}";
+            }
+
+            return texto;
           },
+          grow: 50,
           width: 150,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center),
@@ -70,6 +83,7 @@ class ProductCatalogWidget extends ConsumerWidget {
           doubleValue: (Product p) {
             return p.getPricePublic();
           },
+          grow: 20,
           fractionDigits: 2,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center

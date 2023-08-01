@@ -3,13 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
-//import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 
-///Clase ScreenProductCatalog: Modela un catálogo de distribuidoras.
+///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {
   const ScreenProductCatalog({super.key});
 
@@ -26,7 +25,7 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Distribuidoras"))],
+          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos"))],
         ),
         backgroundColor: const Color.fromARGB(255, 44, 43, 43),
         toolbarHeight: 40,
@@ -38,14 +37,13 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
               ref.read(productProvider.notifier).loadProduct(Product.clean());
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
-            tooltip: "Insertar una nueva distribuidora.",
+            tooltip: "Insertar un nuevo producto.",
           ),
           IconButton(
             onPressed: (){
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-              setState(() {
-                
-              });
+              // ignore: unused_result
+              ref.refresh(catalogProductProvider);
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",

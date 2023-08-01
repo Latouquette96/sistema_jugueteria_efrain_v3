@@ -123,7 +123,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
           height: 200, 
           errorBuilder: (context, object, stacktrace){
             return const Text("Error: No se pudo cargar el link de imagen");
-          }
+          },
         );
       }).toList();
     }
@@ -132,371 +132,394 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
       width: 400,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
       decoration: StyleForm.getDecorationPanel(),
-      child: SingleChildScrollView(
-        primary: true,
-        child: ReactiveForm(
-        formGroup: _form,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //Encabezado principal.
-            HeaderInformationWidget(
+      child: Column(
+        children: [
+          //Encabezado principal.
+          HeaderInformationWidget(
               titleHeader: "Información Producto",
               tooltipClose: "Cerrar información del producto.",
               onClose: (){
                 ref.read(productProvider.notifier).freeProduct(ref);
               },
-            ),
-            //Control: Imagen
-            Container(
-              height: 300,
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Carousel de Imágenes del producto", style: StyleForm.getStyleTextField(),),
-                  SizedBox(
-                    height: 200,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: listImage,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              primary: true,
+              child: ReactiveForm(
+                formGroup: _form,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    //Categoria y subcategoria.
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      height: 125,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ReactiveDropdownField<Category>(
+                            formControlName: Product.getKeyCategory(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Categoria"),
+                            items: FactoryCategory.getInstance().getList().map((e) => DropdownMenuItem<Category>(
+                              value: e,
+                              child: Text(e.getCategoryName()),
+                            )).toList(),
+                            onChanged: (control) {
+                              setState(() {});
+                              _form.focus(Product.getKeySubcategory());
+                            },
+                            validationMessages: {
+                              ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+                            },
+                          ),
+                          Visibility(
+                            visible: _form.control(Product.getKeyCategory()).value.getCategoryID()!=0,
+                            child: ReactiveDropdownField<SubCategory>(
+                              formControlName: Product.getKeySubcategory(),
+                              style: StyleForm.getStyleTextField(),
+                              decoration: StyleForm.getDecorationTextField("Subcategoria"),
+                              items: (_form.control(Product.getKeyCategory()).value as Category).getListSubcategory().map((e) => DropdownMenuItem<SubCategory>(
+                                value: e,
+                                child: Text(e.getSubCategoryName()),
+                              )).toList(),
+                              onChanged: (control) {
+                                setState(() {});
+                                _form.unfocus();
+                              },
+                              validationMessages: {
+                                ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+                              },
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        style: StyleForm.getStyleElevatedButtom(),
-                        onPressed: () async {
-                          ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-                          
-                          if (cdata!=null){
-                            String textData = cdata.text!;
-                            if (textData.contains(',')){
-                              for (String textLink in textData.split(',')){
-                                if (textLink.isNotEmpty){
-                                  _form.control(Product.getKeyImages()).value.add(ResourceLink(textLink));
-                                }
-                              }
-                            }
-                            else{
-                              _form.control(Product.getKeyImages()).value.add(ResourceLink(cdata.text!));
-                            }
-                            setState(() {});
-                          }
-                        }, 
-                        child: const Text("Insertar link")
-                      ),
-                    ],
-                  )
-                ],
-              )
-            ),
-            //Codigo de barras.
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField(
-                    maxLength: Product.getMaxCharsBarcode(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Código de barras"),
-                    formControlName: Product.getKeyBarcode(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeyInternalCode());
-                    },
-                    validationMessages: {
-                      ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
-                    },
-                  ),
-            ),
-            //Código iterno.
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField(
-                    maxLength: 50,
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Código interno"),
-                    formControlName: Product.getKeyInternalCode(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeyTitle());
-                    },
-                  ),
-            ),
-            //Titulo
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField(
-                    maxLength: Product.getMaxCharsTitle(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Título del producto."),
-                    formControlName: Product.getKeyTitle(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeyBrand());
-                    },
-                    validationMessages: {
-                      ValidationMessage.email: (error) => '(Requerido) Ingrese el título del producto.',
-                    },
-                  ),
-            ),
-            //Marca/importador
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField(
-                    maxLength: Product.getMaxCharsBrand(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Marca/importador"),
-                    formControlName: Product.getKeyBrand(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeyDescription());
-                    },
-                    validationMessages: {
-                      ValidationMessage.email: (error) => '(Requerido) Ingrese una marca o importadora para el producto.',
-                    },
-                  ),
-            ),
-            //Descripción
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField(
-                    maxLength: Product.getMaxCharsDescription(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Descripción"),
-                    formControlName: Product.getKeyDescription(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeySizes());
-                    },
-                    validationMessages: {
-                      ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
-                    },
-                  ),
-            ),
-            //Medidas del producto
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              height: 300,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: Column(
-                  children: [
-                    Text("Medidas del producto", style: StyleForm.getStyleTextField(),),
-                    Expanded(child: 
-                      ListView(
-                        children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
-                          return Container(
-                            decoration: StyleForm.getDecorationListTileItem(),
-                            child: ListTile(
-                              titleTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
-                              title: Text(e),
-                              trailing: IconButton(
-                                tooltip: "Remover",
-                                color: Colors.black,
-                                onPressed: (){
-                                  (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
-                                  setState(() { });
-                                },
-                                icon: Icon(MdiIcons.fromString("delete")),
+                    //Control: Imagen
+                    Container(
+                      height: 300,
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Carousel de Imágenes del producto", style: StyleForm.getStyleTextField(),),
+                          SizedBox(
+                            height: 200,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: listImage,
                               ),
-                            )
-                          );
-                        }).toList(),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: StyleForm.getStyleElevatedButtom(),
+                                onPressed: () async {
+                                  ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
+                                  
+                                  if (cdata!=null){
+                                    String textData = cdata.text!;
+                                    if (textData.contains(',')){
+                                      for (String textLink in textData.split(',')){
+                                        if (textLink.isNotEmpty){
+                                          _form.control(Product.getKeyImages()).value.add(ResourceLink(textLink));
+                                        }
+                                      }
+                                    }
+                                    else{
+                                      _form.control(Product.getKeyImages()).value.add(ResourceLink(cdata.text!));
+                                    }
+                                    setState(() {});
+                                  }
+                                }, 
+                                child: const Text("Insertar link")
+                              ),
+                            ],
+                          )
+                        ],
                       )
                     ),
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Insertar medida"),
-                      formControlName: "${Product.getKeySizes()}Aux",
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        
-                        List<String> list = _form.control(Product.getKeySizes()).value;
-                        list.add(_form.control("${Product.getKeySizes()}Aux").value);
-                        
-                        _form.control("${Product.getKeySizes()}Aux").value = _textSizes;
-                        _form.focus("${Product.getKeySizes()}Aux");
-
-                        setState(() { });
-                      },
-                      validationMessages: {
-                        ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
-                      },
+                    //Codigo de barras.
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField(
+                            maxLength: Product.getMaxCharsBarcode(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Código de barras"),
+                            formControlName: Product.getKeyBarcode(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyInternalCode());
+                            },
+                            validationMessages: {
+                              ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
+                            },
+                          ),
                     ),
+                    //Código interno.
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField(
+                            maxLength: 50,
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Código interno"),
+                            formControlName: Product.getKeyInternalCode(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyTitle());
+                            },
+                          ),
+                    ),
+                    //Titulo
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField(
+                            maxLength: Product.getMaxCharsTitle(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Título del producto."),
+                            formControlName: Product.getKeyTitle(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyBrand());
+                            },
+                            validationMessages: {
+                              ValidationMessage.email: (error) => '(Requerido) Ingrese el título del producto.',
+                            },
+                          ),
+                    ),
+                    //Marca/importador
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField(
+                            maxLength: Product.getMaxCharsBrand(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Marca/importador"),
+                            formControlName: Product.getKeyBrand(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyDescription());
+                            },
+                            validationMessages: {
+                              ValidationMessage.email: (error) => '(Requerido) Ingrese una marca o importadora para el producto.',
+                            },
+                          ),
+                    ),
+                    //Descripción
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      height: 200,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: Expanded(child: ReactiveTextField(
+                            maxLength: Product.getMaxCharsDescription(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Descripción"),
+                            formControlName: Product.getKeyDescription(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyStock());
+                            },
+                            validationMessages: {
+                              ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
+                            },
+                          )),
+                    ),
+                    //Stock
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField<int>(
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Stock"),
+                            formControlName: Product.getKeyStock(),
+                            textInputAction: TextInputAction.none,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyPricePublic());
+                            },
+                            validationMessages: {
+                              ValidationMessage.required: (error) => "(Requerido) Inserte el stock actual del producto (-1 si 'fuera de stock').",
+                              ValidationMessage.number: (error) => "(Error) Inserte un número mayor o igual a 0.",
+                            },
+                          ),
+                    ),
+                    //Precio Público
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveTextField<double>(
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Precio público"),
+                            formControlName: Product.getKeyPricePublic(),
+                            textInputAction: TextInputAction.none,
+                            onSubmitted: (_){
+                              setState(() {});
+                              _form.focus(Product.getKeyMinimumAge());
+                            },
+                            validationMessages: {
+                              ValidationMessage.required: (error) => "(Requerido) El precio al público del producto.",
+                              ValidationMessage.number: (error) => "(Error) Inserte un número mayor o igual a 0.",
+                            },
+                          ),
+                    ), 
+                    //Edad minima recomendada
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: ReactiveDropdownField<MinimumAge>(
+                            formControlName: Product.getKeyMinimumAge(),
+                            style: StyleForm.getStyleTextField(),
+                            decoration: StyleForm.getDecorationTextField("Edad mínima recomendada"),
+                            items: FactoryMinimumAge.getInstance().getList().map((e) => DropdownMenuItem<MinimumAge>(
+                              value: e,
+                              child: Text(e.getMinimumAgeValue()),
+                            )).toList(),
+                            onChanged: (control) {
+                              setState(() {});
+                              _form.focus(Product.getKeySizes());
+                            },
+                            validationMessages: {
+                              ValidationMessage.required: (error) => "(Requerido) Seleccione una edad mínima."
+                            },
+                          ),
+                    ),
+                    //Medidas del producto
+                    Container(
+                      margin: _marginForms,
+                      padding: _paddingForms,
+                      height: 250,
+                      decoration: StyleForm.getDecorationFormControl(),
+                      child: Column(
+                          children: [
+                            Text("Medidas del producto", style: StyleForm.getStyleTextField(),),
+                            Expanded(child: 
+                              ListView(
+                                children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
+                                  return Container(
+                                    decoration: StyleForm.getDecorationListTileItem(),
+                                    child: ListTile(
+                                      titleTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
+                                      title: Text(e),
+                                      trailing: IconButton(
+                                        tooltip: "Remover",
+                                        color: Colors.black,
+                                        onPressed: (){
+                                          (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
+                                          setState(() { });
+                                        },
+                                        icon: Icon(MdiIcons.fromString("delete")),
+                                      ),
+                                    )
+                                  );
+                                }).toList(),
+                              )
+                            ),
+                            ReactiveTextField(
+                              style: StyleForm.getStyleTextField(),
+                              decoration: StyleForm.getDecorationTextField("Insertar medida"),
+                              formControlName: "${Product.getKeySizes()}Aux",
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (_){
+                                
+                                List<String> list = _form.control(Product.getKeySizes()).value;
+                                list.add(_form.control("${Product.getKeySizes()}Aux").value);
+                                
+                                _form.control("${Product.getKeySizes()}Aux").value = _textSizes;
+                                _form.focus("${Product.getKeySizes()}Aux");
+
+                                setState(() { });
+                              },
+                              validationMessages: {
+                                ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
+                              },
+                            ),
+                          ],
+                        ),
+                    ),
+                    
+                    const SizedBox(
+                      height: 25,
+                    )
                   ],
-                ),
-            ),
-            //Categoria y subcategoria.
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              height: 125,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ReactiveDropdownField<Category>(
-                    formControlName: Product.getKeyCategory(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Categoria"),
-                    items: FactoryCategory.getInstance().getList().map((e) => DropdownMenuItem<Category>(
-                      value: e,
-                      child: Text(e.getCategoryName()),
-                    )).toList(),
-                    onChanged: (control) {
-                      setState(() {});
-                      _form.focus(Product.getKeySubcategory());
-                    },
-                    validationMessages: {
-                      ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
-                    },
-                  ),
-                  Visibility(
-                    visible: _form.control(Product.getKeyCategory()).value.getCategoryID()!=0,
-                    child: ReactiveDropdownField<SubCategory>(
-                      formControlName: Product.getKeySubcategory(),
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Subcategoria"),
-                      items: (_form.control(Product.getKeyCategory()).value as Category).getListSubcategory().map((e) => DropdownMenuItem<SubCategory>(
-                        value: e,
-                        child: Text(e.getSubCategoryName()),
-                      )).toList(),
-                      onChanged: (control) {
-                        setState(() {});
-                        _form.focus(Product.getKeyStock());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            //Stock
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveTextField<int>(
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Stock"),
-                    formControlName: Product.getKeyStock(),
-                    textInputAction: TextInputAction.none,
-                    onSubmitted: (_){
-                      setState(() {});
-                      _form.focus(Product.getKeyPricePublic());
-                    },
-                    validationMessages: {
-                      ValidationMessage.required: (error) => "(Requerido) Inserte el stock actual del producto (-1 si 'fuera de stock').",
-                      ValidationMessage.number: (error) => "(Error) Inserte un número mayor o igual a 0.",
-                    },
-                  ),
-            ),
-            //Edad minima recomendada
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: ReactiveDropdownField<MinimumAge>(
-                    formControlName: Product.getKeyMinimumAge(),
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Edad mínima recomendada"),
-                    items: FactoryMinimumAge.getInstance().getList().map((e) => DropdownMenuItem<MinimumAge>(
-                      value: e,
-                      child: Text(e.getMinimumAgeValue()),
-                    )).toList(),
-                    onChanged: (control) {
-                      setState(() {});
-                    },
-                    validationMessages: {
-                      ValidationMessage.required: (error) => "(Requerido) Seleccione una edad mínima."
-                    },
-                  ),
-            ),
-            //Boton Enviar
-            Container(
-              margin: _marginForms,
-              padding: _paddingForms,
-              decoration: StyleForm.getDecorationFormControl(),
-              child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(child: ElevatedButton(
-                        style: StyleForm.getStyleElevatedButtom(),
-                        onPressed: (){
-                          bool isError = false;
-                            
-                            ref.read(productProvider)?.fromJSON(_form.value);
-
-                            //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-                            AsyncValue<Response> response = (ref.read(productProvider)!.getID()==0) 
-                              ? ref.watch(newProductWithAPIProvider)
-                              : ref.watch(updateProductWithAPIProvider);
-                            
-                            //Realiza la peticion de modificacion y analiza la respuesta obtenida.
-                            response.when(
-                              data: (data){
-                                isError = false;
-                              }, 
-                              error: (err, stack){
-                                isError = true;
-                              }, 
-                              loading: (){null;}
-                            );
-
-                            //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                            if (isError==false){
-                              ElegantNotification.success(
-                                title:  const Text("Información"),
-                                description:  const Text("La información ha sido actualizada con éxito.")
-                              ).show(context);
-
-                              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-                              ref.read(productProvider.notifier).freeProduct(ref);
-                            }
-                            else{
-                              //Caso contrario, mostrar notificación de error.
-                              ElegantNotification.error(
-                                title:  const Text("Error"),
-                                description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                              ).show(context);
-                            }
-                        } ,
-                        child: const Text('Guardar cambios'),
-                      )),
-                    ],
-                  )
-            ),
-
-            
-            const SizedBox(
-              height: 25,
             )
+          ))),
+          //Boton Enviar
+          Container(
+            margin: _marginForms,
+            padding: _paddingForms,
+            decoration: StyleForm.getDecorationFormControl(),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: ElevatedButton(
+                  style: StyleForm.getStyleElevatedButtom(),
+                  onPressed: (){
+                    bool isError = false;
+                    ref.read(productProvider)?.fromJSON(_form.value);
+                    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+                    AsyncValue<Response> response = (ref.read(productProvider)!.getID()==0) 
+                      ? ref.watch(newProductWithAPIProvider)
+                      : ref.watch(updateProductWithAPIProvider);
+                                    
+                    //Realiza la peticion de modificacion y analiza la respuesta obtenida.
+                    response.when(
+                      data: (data){
+                        isError = false;
+                      }, 
+                      error: (err, stack){
+                        isError = true;
+                      }, 
+                      loading: (){null;}
+                    );
+
+                    //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
+                    if (isError==false){
+                      ElegantNotification.success(
+                        title:  const Text("Información"),
+                        description:  const Text("La información ha sido actualizada con éxito.")
+                      ).show(context);
+
+                      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                      ref.read(productProvider.notifier).freeProduct(ref);
+                    }
+                    else{
+                      //Caso contrario, mostrar notificación de error.
+                      ElegantNotification.error(
+                        title:  const Text("Error"),
+                        description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                      ).show(context);
+                    }
+                  } ,
+                  child: const Text('Guardar cambios'),
+                )),
+              ],
+            )
+          ),
         ],
-      )
-    ),
-      )
+      ),
     );
   }
 }

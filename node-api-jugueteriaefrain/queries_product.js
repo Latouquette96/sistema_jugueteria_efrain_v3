@@ -65,7 +65,9 @@ const updateProduct = (request, response) => {
 const deleteProduct = (request, response) => {
   const p_id = parseInt(request.params.id)
 
-  pool.query('DELETE FROM products WHERE p_id = $1', [p_id], (error, results) => {
+  pool.query('DELETE FROM public.products ' +
+	          '   WHERE p_id=$1', 
+            [p_id], (error, results) => {
     if (error) {
       throw error
     }
