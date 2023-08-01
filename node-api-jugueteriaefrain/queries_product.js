@@ -17,9 +17,9 @@ const getProducts = (request, response) => {
 }
 
 const getProductById = (request, response) => {
-  const id = parseInt(request.params.id)
+  const p_id = parseInt(request.params.id)
 
-  pool.query('SELECT * FROM products WHERE P_id = $1', [id], (error, results) => {
+  pool.query('SELECT * FROM products WHERE p_id = $1', [p_id], (error, results) => {
     if (error) {
       throw error
     }
@@ -28,12 +28,11 @@ const getProductById = (request, response) => {
 }
 
 const createProduct = (request, response) => {
-  const {barcode, internal_code, title, description, brand, price, stock, subcat, images, sizes, date_updated, date_created} = request.body
+  const {p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created, p_minimum_age} = request.body
 
-  pool.query('INSERT INTO public.products(' +
-    'p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created) '+
-    'VALUES (%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12)', 
-      [barcode, internal_code, title, description, brand, price, stock, subcat, images, sizes, date_updated, date_created], 
+  pool.query('INSERT INTO public.products(p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created, p_minimum_age) '+
+    '   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', 
+      [p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created, p_minimum_age], 
       (error, results) => {
         if (error) {
           throw error
@@ -44,33 +43,33 @@ const createProduct = (request, response) => {
 }
 
 const updateProduct = (request, response) => {
-  const id = parseInt(request.params.id)
-  const { barcode, internal_code, title, description, brand, price, stock, subcat, images, sizes, date_updated, date_created} = request.body
+  const p_id = parseInt(request.params.id)
+  const { p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created, p_minimum_age} = request.body
 
   pool.query(
     'UPDATE public.products ' +
-    'SET p_barcode=%1, p_internal_code=%2, p_title=%3, p_description=%4, '+
-        'p_brand=%5, p_price_public=%6, p_stock=%7, p_subcategory=%8, p_images=%9, p_sizes=%10, ' +
-        'p_date_updated=%11, p_date_created=%12 ' +
-    'WHERE p_id=%13',
-    [barcode, internal_code, title, description, brand, price, stock, subcat, images, sizes, date_updated, date_created, id],
+    'SET p_barcode=$1, p_internal_code=$2, p_title=$3, p_description=$4, '+
+        'p_brand=$5, p_price_public=$6, p_stock=$7, p_subcategory=$8, p_images=$9, p_sizes=$10, ' +
+        'p_date_updated=$11, p_date_created=$12, p_minimum_age=$13 ' +
+    'WHERE p_id=$14',
+    [p_barcode, p_internal_code, p_title, p_description, p_brand, p_price_public, p_stock, p_subcategory, p_images, p_sizes, p_date_updated, p_date_created, p_minimum_age, p_id],
     (error, results) => {
       if (error) {
         throw error
       }
-      response.status(200).send(`Product modified with ID: ${id}`)
+      response.status(200).send(`Product modified with ID: ${p_id}`)
     }
   )
 }
 
 const deleteProduct = (request, response) => {
-  const id = parseInt(request.params.id)
+  const p_id = parseInt(request.params.id)
 
-  pool.query('DELETE FROM products WHERE p_id = $1', [id], (error, results) => {
+  pool.query('DELETE FROM products WHERE p_id = $1', [p_id], (error, results) => {
     if (error) {
       throw error
     }
-    response.status(200).send(`Product deleted with ID: ${id}`)
+    response.status(200).send(`Product deleted with ID: ${p_id}`)
   })
 }
 
