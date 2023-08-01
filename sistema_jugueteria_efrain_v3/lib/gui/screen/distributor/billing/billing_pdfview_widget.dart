@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -33,32 +34,13 @@ class _BillingPDFViewWidgetState extends ConsumerState<BillingPDFViewWidget> {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Stack(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 0),
-                      padding: const EdgeInsets.all(10),
-                      color: const Color.fromARGB(255, 44, 43, 43),
-                      height: 40,
-                      child: Text("Factura: ${db.getDatetime()}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
-                    ))
-                 ],
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  child: IconButton(
-                    tooltip: "Cerrar visor de factura.",
-                    icon: const Icon(Icons.close_rounded, color: Colors.redAccent,), 
-                    onPressed: (){ 
-                      ref.read(billingSearchProvider.notifier).freeBilling();
-                    },)
-                )
-              ],
+            //Encabezado principal.
+            HeaderInformationWidget(
+              titleHeader: "Factura: ${db.getDatetime()}",
+              tooltipClose: "Cerrar vista de factura.",
+              onClose: (){
+                ref.read(billingSearchProvider.notifier).freeBilling();
+              },
             ),
             Expanded(
               child: SfPdfViewer.network(

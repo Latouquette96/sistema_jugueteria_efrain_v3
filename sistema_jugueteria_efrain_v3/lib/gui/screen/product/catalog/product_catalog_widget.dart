@@ -1,0 +1,257 @@
+import 'package:davi/davi.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:fade_shimmer/fade_shimmer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
+//import 'package:mailto/mailto.dart';
+//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+//import 'package:url_launcher/url_launcher.dart';
+
+@immutable
+///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
+class ProductCatalogWidget extends ConsumerWidget {
+
+  const ProductCatalogWidget({super.key});
+  
+  ///ProductCatalogWidget: Devuelve un listado de los productos.
+  Widget _getListProduct(BuildContext context, WidgetRef ref, List<Product> list) {
+    DaviModel<Product>? model = DaviModel<Product>(rows: list, columns: [
+      //CUIT
+      DaviColumn(
+          name: 'Barcode',
+          stringValue: (row) => "${row.getBarcode()} (Cód. int. ${row.getInternalCode()})",
+          width: 150,
+          resizable: false,
+          headerAlignment: Alignment.center,
+          cellAlignment: Alignment.center),
+      //NOMBRE
+      DaviColumn(
+        name: 'Título',
+        stringValue: (Product p) {
+          return p.getTitle();
+        },
+        grow: 40,
+        headerAlignment: Alignment.center,
+      ),
+      //MARCA
+      DaviColumn(
+          name: 'Marca/Importador',
+          stringValue: (Product p) {
+            return p.getBrand();
+          },
+          grow: 30,
+          headerAlignment: Alignment.center),
+      //Categoria y subcategoria
+      DaviColumn(
+          name: 'Categoria > Subcategoria',
+          stringValue: (Product p) {
+            return "";
+            //return p.getSubcategory();
+          },
+          width: 150,
+          headerAlignment: Alignment.center,
+          cellAlignment: Alignment.center),
+      //STOCK
+      DaviColumn(
+          name: 'Stock',
+          intValue: (Product p) {
+            return p.getStock();
+          },
+          grow: 30,
+          headerAlignment: Alignment.center,
+          cellAlignment: Alignment.center),
+      //Precio Público
+      DaviColumn(
+          name: 'Precio Público',
+          doubleValue: (Product p) {
+            return p.getPricePublic();
+          },
+          fractionDigits: 2,
+          headerAlignment: Alignment.center,
+          cellAlignment: Alignment.center
+      ),
+      //Opciones
+      DaviColumn(
+          pinStatus: PinStatus.none,
+          width: 40,
+          resizable: false,
+          cellBuilder: (BuildContext context, DaviRow<Product> data) {
+            return InkWell(
+              child: const Icon(Icons.edit, color: Colors.green, size: 24),
+              onTap: () {
+                ///Carga una ditribuidora al proveedor para que pueda ser editado.
+                ref.read(productProvider.notifier).loadProduct(data.data);
+              },
+            );
+          }),
+      DaviColumn(
+          pinStatus: PinStatus.none,
+          width: 40,
+          resizable: false,
+          cellBuilder: (BuildContext context, DaviRow<Product> data) {
+            return InkWell(
+              child: const Icon(
+                Icons.remove_circle,
+                color: Colors.red,
+                size: 24,
+              ),
+              onTap: () {
+                bool isError = false;
+                ref.read(productRemoveProvider.notifier).loadProduct(data.data);
+
+                //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+                AsyncValue<Response> response = ref.watch(
+                  removeProductWithAPIProvider,
+                );
+                              
+                //Realiza la peticion de eliminacion y analiza la respuesta obtenida.
+                response.when(
+                  data: (data){
+                    isError = false;
+                  }, 
+                  error: (err, stack){
+                    isError = true;
+                  }, 
+                  loading: (){null;}
+                );
+
+                //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
+                if (isError==false){
+                  ElegantNotification.success(
+                    title:  const Text("Información"),
+                    description:  const Text("La información de la producto fue eliminada con éxito.")
+                  ).show(context);
+
+                  ref.read(productRemoveProvider.notifier).freeProduct(ref);
+                }
+                else{
+                  //Caso contrario, mostrar notificación de error.
+                  ElegantNotification.error(
+                    title:  const Text("Error"),
+                    description:  const Text("Ocurrió un error y no fue posible eliminar la información del producto.")
+                  ).show(context);
+                }
+              },
+            );
+          }),
+    /* DaviColumn(
+          pinStatus: PinStatus.none,
+          width: 40,
+          resizable: false,
+          cellBuilder: (BuildContext context, DaviRow<Product> data) {
+            return InkWell(
+              child: Icon(
+                MdiIcons.fromString("web"),
+                color: Colors.blue,
+                size: 24,
+              ),
+              onTap: () async {
+                Uri url = Uri.parse(data.data.getWebsite() ?? "");
+                if (!await launchUrl(url)) {
+                  throw Exception('Could not launch $url');
+                }
+              },
+            );
+          }),
+    */
+    /* DaviColumn(
+          pinStatus: PinStatus.none,
+          width: 40,
+          resizable: false,
+          cellBuilder: (BuildContext context, DaviRow<Product> data) {
+            return InkWell(
+              child: Icon(
+                MdiIcons.fromString("email"),
+                color: const Color.fromARGB(255, 175, 107, 82),
+                size: 24,
+              ),
+              onTap: () async {
+                if (data.data.getEmail()!=null){
+                  final mailtoLink = Mailto(
+                    to: [data.data.getEmail()!],
+                    cc: [],
+                    subject: 'Consulta: <Inserte consulta>',
+                    body: '<Insertar mensaje>.',
+                  );
+                  
+                  Uri url = Uri.parse(mailtoLink.toString());
+                  if (!await launchUrl(url)) {
+                    throw Exception('Could not launch $url');
+                  }
+                }
+              },
+            );
+          }),*/
+    ]);
+    return DaviTheme(
+        data: DaviThemeData(
+          header: HeaderThemeData(
+              color: Colors.black87,
+              bottomBorderHeight: 4,
+              bottomBorderColor: Colors.blueGrey.shade500),
+          headerCell: HeaderCellThemeData(
+            height: 40,
+            alignment: Alignment.center,
+            textStyle: const TextStyle(
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold,
+              color: Colors.yellow,
+              fontSize: 12
+            ),
+            resizeAreaWidth: 10,
+            resizeAreaHoverColor: Colors.blue.withOpacity(.5),
+            sortIconColors: SortIconColors.all(Colors.orange),
+            expandableName: true,
+          ),
+        ),
+        child: Davi<Product>(
+            model, 
+            rowColor: (DaviRow<Product>? rowData) {
+              if (rowData == null) {
+                return Colors.white;
+              } 
+              else {
+                return (rowData.index % 2 == 0)
+                  ? Colors.blue.shade50
+                  : Colors.blueGrey.shade50;
+              }
+            },
+            onRowDoubleTap:(Product data) {
+              if (ref.read(productProvider)==null){
+                ref.read(productProvider.notifier).loadProduct(data);
+              }
+              else{
+                ref.read(productProvider.notifier).freeProduct(ref);
+              }
+            },
+        )
+      );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streamProvider = ref.watch(catalogProductProvider);
+    double ancho = MediaQuery.of(context).size.width;
+
+    return streamProvider.when(
+      loading: () {
+        return FadeShimmer(
+          baseColor: Colors.blue,
+          highlightColor: Colors.red,
+          width: ancho,
+          radius: 25,
+          height: 25,
+          fadeTheme: FadeTheme.light,
+        );
+      },
+      error: (err, stack) => Text('Error: $err'),
+      data: (message) {
+        return _getListProduct(context, ref, message.getValue2()!);
+      },
+    );
+  }
+}

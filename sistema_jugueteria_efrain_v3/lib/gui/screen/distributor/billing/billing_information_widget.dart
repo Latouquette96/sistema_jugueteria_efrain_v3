@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
@@ -76,39 +77,19 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Stack(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 5),
-                      padding: const EdgeInsets.all(10),
-                      color: const Color.fromARGB(255, 44, 43, 43),
-                      height: 40,
-                      child: const Text("Información Factura-Distribuidora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
-                    ))
-                 ],
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  child: IconButton(
-                    tooltip: "Cancelar creación factura-distribuidora.",
-                    icon: const Icon(Icons.close_rounded, color: Colors.redAccent,), 
-                    onPressed: (){ 
-                      ref.read(billingProvider.notifier).freeBilling();
-                    },)
-                )
-              ],
+             //Encabezado principal.
+            HeaderInformationWidget(
+              titleHeader: "Información Factura-Distribuidora",
+              tooltipClose: "Cancelar creación factura-distribuidora.",
+              onClose: (){
+                ref.read(billingProvider.notifier).freeBilling();
+              },
             ),
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(8.0),
-                height: 400,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ReactiveTextField(
                       style: StyleForm.getStyleTextField(),
@@ -185,7 +166,6 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   isError = false;
                                 }, 
                                 error: (err, stack){
-                                  print(err.toString());
                                   isError = true;
                                 }, 
                                 loading: (){null;}
@@ -212,6 +192,9 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                           child: const Text('Guardar cambios'),
                         )),
                       ],
+                    ),
+                    const SizedBox(
+                      height: 100,
                     )
                   ]
                 ),

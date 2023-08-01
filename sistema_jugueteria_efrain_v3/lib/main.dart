@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/main/tabbedview_widget.dart';
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FactoryCategory.getInstance().builder();
+  await FactoryMinimumAge.getInstance().builder();
 
-void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_billing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 
 @immutable
@@ -11,6 +12,8 @@ class MainBarWidget extends ConsumerWidget {
 
   static const TabEnum _keyCatalogDistributor = TabEnum.distributorCatalogWidget;
   static const TabEnum _keyDistributorBilling = TabEnum.distributorBillingWidget;
+  static const TabEnum _keyCatalogProduct = TabEnum.productCatalogWidget;
+
   //final String _keyCatalogProduct = "catalog_product";
 
   @override
@@ -28,7 +31,25 @@ class MainBarWidget extends ConsumerWidget {
       backgroundColor: Colors.black,
       menus: [
         PlutoMenuItem(title: "Archivo"),
-        PlutoMenuItem(title: "Producto"),
+        PlutoMenuItem(title: "Producto",
+          children: [
+            PlutoMenuItem.checkbox(
+              title: "Catálogo de productos",
+              initialCheckValue: ref.read(tabProvider.notifier).isExistTab(_keyCatalogProduct),
+              enable: ref.read(tabProvider.notifier).isExistTab(_keyCatalogProduct),
+              onChanged: (bool? isSelected) {
+                if (isSelected!=null){
+                  if (isSelected){
+                    ref.read(tabProvider.notifier).insertTab(_keyCatalogProduct, "Catalogo productos", const ScreenProductCatalog());
+                  }
+                  else{
+                    ref.read(tabProvider.notifier).removeTab(_keyCatalogProduct);
+                  }
+                }
+              },
+            ),
+          ]
+        ),
         PlutoMenuItem(
           title: "Distribuidora",
           children: [

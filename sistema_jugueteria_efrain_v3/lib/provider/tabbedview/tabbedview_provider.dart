@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum TabEnum {
   distributorCatalogWidget,
-  distributorBillingWidget
+  distributorBillingWidget, 
+  productCatalogWidget
 }
 
 @immutable

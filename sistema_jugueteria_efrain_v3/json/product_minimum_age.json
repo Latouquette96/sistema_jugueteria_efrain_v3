@@ -1,0 +1,62 @@
+[
+    {
+    "ma_id": 0,
+    "ma_description":  "Sin definir"
+    },
+    {
+     "ma_id": 1,
+     "ma_description":  "12 MESES"
+    },
+    {
+     "ma_id": 2,
+     "ma_description":  "24 MESES"
+    },
+    {
+     "ma_id": 3,
+     "ma_description":  "36 MESES"
+    },
+    {
+     "ma_id": 4,
+     "ma_description":  "0-3 AÑOS"
+    },
+    {
+     "ma_id": 5,
+     "ma_description":  "+3 AÑOS"
+    },
+    {
+     "ma_id": 6,
+     "ma_description":  "+4 AÑOS"
+    },
+    {
+     "ma_id": 7,
+     "ma_description":  "+5 AÑOS"
+    },
+    {
+     "ma_id": 8,
+     "ma_description":  "+6 AÑOS"
+    },
+    {
+     "ma_id": 9,
+     "ma_description":  "+7 AÑOS"
+    },
+    {
+     "ma_id": 10,
+     "ma_description":  "+8 AÑOS"
+    },
+    {
+     "ma_id": 11,
+     "ma_description":  "+9 AÑOS"
+    },
+    {
+     "ma_id": 12,
+     "ma_description":  "+10 AÑOS"
+    },
+    {
+     "ma_id": 13,
+     "ma_description":  "+11 AÑOS"
+    },
+    {
+     "ma_id": 14,
+     "ma_description":  "+12 AÑOS"
+    }
+ ]

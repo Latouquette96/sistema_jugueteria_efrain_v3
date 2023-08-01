@@ -1,4 +1,7 @@
 import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
@@ -19,13 +22,14 @@ class Product with MixinJSONalizable<Product> {
   late List<String> _listSize; //RN-P10.
   late int _dateUpdate; //RN-P22.
   late int _dateCreate; //RN-P22.
+  late int _minimumAge; 
 
   //Atributos de clase
   static const int _maxCharsBarcode = 48; //RN-P15
   static const int _maxCharsTitle = 65; //RN-P16
   static const int _maxCharsDescription = 9999; //RN-P17
   static const int _maxCharsBrand = 100; //RN-P18.
-
+  
   static const String _keyID           = "p_id";
   static const String _keyBarcode      = "p_barcode";
   static const String _keyInternalCode = "p_internal_code";
@@ -34,11 +38,13 @@ class Product with MixinJSONalizable<Product> {
   static const String _keyBrand        = "p_brand";
   static const String _keyPricePublic  = "p_price_public";
   static const String _keyStock        = "p_stock";
+  static const String _keyCategory  = "p_category";
   static const String _keySubcategory  = "p_subcategory";
   static const String _keyImages       = "p_images";
   static const String _keySizes        = "p_sizes";
   static const String _keyDateUpdated  = "p_date_updated";
   static const String _keyDateCreated  = "p_date_created";
+  static const String _keyMinimumAge   = "p_minimum_age";
 
 
   ///Product: Constructor genérico de producto.
@@ -56,6 +62,7 @@ class Product with MixinJSONalizable<Product> {
     String? sizes,
     int dateCreate = 0,
     int dateUpdate = 0,
+    int minimumAge = 0,
   }) {
     _id = id;
     _barcode = barcode;
@@ -70,11 +77,12 @@ class Product with MixinJSONalizable<Product> {
     _listSize = (sizes == null) ? [] : sizes.split(",");
     _dateCreate = (dateCreate == 0) ? DatetimeCustom.getDatetimeIntegerNow() : dateCreate;
     _dateUpdate = dateUpdate;
+    _minimumAge = minimumAge;
   }
 
   ///Product: Constructor de Product con datos JSON.
   Product.fromJSON(Map<String, dynamic> map) {
-    fromJSON(map);
+    fromJSONServer(map);
   }
 
   ///Product: Constructor de Product limpio (sin datos definidos).
@@ -92,6 +100,7 @@ class Product with MixinJSONalizable<Product> {
     _listSize = [];
     _dateCreate = 0;
     _dateUpdate = 0;
+    _minimumAge = 0;
   }
 
   //------------------CONSULTAS ESTÁTICAS---------------------------------------------
@@ -114,6 +123,68 @@ class Product with MixinJSONalizable<Product> {
   ///Product: Devuelve la cantidad máxima de chars permitidos para una marca/importadora.
   static int getMaxCharsBrand() {
     return _maxCharsBrand;
+  }
+
+  //------------------CLAVES------------------------------------------
+
+  static String getKeyID(){
+    return _keyID;
+  }
+
+  static String getKeyBarcode(){
+    return _keyBarcode;
+  }
+
+  static String getKeyInternalCode(){
+    return _keyInternalCode;
+  }
+
+  static String getKeyTitle(){
+    return _keyTitle;
+  }
+
+  static String getKeyDescription(){
+    return _keyDescription;
+  }
+
+  static String getKeyBrand(){
+    return _keyBrand;
+  }
+
+  static String getKeyPricePublic(){
+    return _keyPricePublic;
+  }
+
+  static String getKeyStock(){
+    return _keyStock;
+  }
+
+  static String getKeyCategory(){
+    return _keyCategory;
+  }
+
+  static String getKeySubcategory(){
+    return _keySubcategory;
+  }
+
+  static String getKeyImages(){
+    return _keyImages;  
+  }
+
+  static String getKeySizes(){
+    return _keySizes;
+  }
+
+  static String getKeyDateUpdated(){
+    return _keyDateUpdated;
+  }
+
+  static String getKeyDateCreated(){
+    return _keyDateCreated;
+  }
+
+  static String getKeyMinimumAge(){
+    return _keyMinimumAge;
   }
 
   //------------------ID---------------------------------------------
@@ -267,6 +338,18 @@ class Product with MixinJSONalizable<Product> {
     return _listSize;
   }
 
+  //------------------EDAD MINIMA-------------------
+
+  ///Product: Devuelve la edad minima del producto.
+  int getMinimumAge(){
+    return _minimumAge;
+  }
+
+  ///Product: Establece la edad minima del producto.
+  void setMinimumAge(MinimumAge ma){
+    _minimumAge = ma.getMinimumAgeID();
+  }
+
   //------------------FECHAS DE ACTUALIZACION Y CREACION-------------------
 
   ///Product: Devuelve la ultima fecha de actualización de los datos del producto.
@@ -297,7 +380,8 @@ class Product with MixinJSONalizable<Product> {
       _keyImages: _images.join(','),
       _keySizes: _listSize.join(','),
       _keyDateCreated: _dateCreate,
-      _keyDateUpdated: _dateUpdate
+      _keyDateUpdated: _dateUpdate,
+      _keyMinimumAge: _minimumAge
     };
   }
 
@@ -311,10 +395,37 @@ class Product with MixinJSONalizable<Product> {
     _brand = map[_keyBrand];
     _pricePublic = map[_keyPricePublic];
     _stock = map[_keyStock];
+    _subcategory = (map[_keyCategory] as Category).getCategoryID()*100 + (map[_keySubcategory] as SubCategory).getSubCategoryID();
+    _images = (map[_keyImages] == null) ? [] : (map[_keyImages] as List<ResourceLink>).map((e) => e.getLink()).toList();
+    _listSize = (map[_keySizes] == null) ? [] : (map[_keySizes] as List<String>);
+    try{
+      print(map[_keyDateCreated]);
+      print(map[_keyDateUpdated]);
+      _dateCreate = DatetimeCustom.parseStringDatetime(map[_keyDateCreated]);
+      _dateUpdate = DatetimeCustom.parseStringDatetime(map[_keyDateUpdated]);
+    }
+    catch(e){
+      _dateCreate = DatetimeCustom.getDatetimeIntegerNow();
+      _dateUpdate = 0;
+    }
+    _minimumAge = (map[_keyMinimumAge] as MinimumAge).getMinimumAgeID();
+  }
+  
+  ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
+  void fromJSONServer(Map<String, dynamic> map) {
+    _id = map[_keyID];
+    _barcode = map[_keyBarcode];
+    _internalCode = map[_keyInternalCode];
+    _title = map[_keyTitle];
+    _description = map[_keyDescription];
+    _brand = map[_keyBrand];
+    _pricePublic = double.parse(map[_keyPricePublic]);
+    _stock = map[_keyStock];
     _subcategory = map[_keySubcategory];
-    _images = (map[_keyImages] == null) ? [] : map[_keyImages].split(",");
-    _listSize = (map[_keySizes] == null) ? [] : map[_keySizes].split(",");
+    _images = map[_keyImages].split(',');
+    _listSize = map[_keySizes].split(',');
     _dateCreate = int.parse(map[_keyDateCreated]);
     _dateUpdate = int.parse(map[_keyDateUpdated]);
+    _minimumAge = map[_keyMinimumAge];
   }
 }

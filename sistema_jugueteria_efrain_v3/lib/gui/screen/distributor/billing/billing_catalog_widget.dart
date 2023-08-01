@@ -2,6 +2,7 @@ import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
@@ -18,8 +19,8 @@ class BillingCatalogWidget extends ConsumerWidget {
         Expanded(child: 
           Container(
             decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 183, 183, 183),
-            border: Border.all(color: Colors.grey), ),
+            color: const Color.fromARGB(70, 114, 114, 114),
+            border: Border.all(color: const Color.fromARGB(255, 158, 158, 158)), ),
             padding: const EdgeInsets.all(15),
             margin: const EdgeInsets.all(5),
             child: Column(
@@ -28,26 +29,35 @@ class BillingCatalogWidget extends ConsumerWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: list.map((e){
-                        return ListTile(
-                        title: Row(
-                          children: [
-                            const Text("Fecha:"),
-                            Expanded(child: Text(e.getDatetime()))
-                          ]
-                        ),
-                        subtitle: Text("Total: \$${e.getTotal().toStringAsFixed(2)}"),
-                        trailing: IconButton(
-                          icon: Icon(MdiIcons.fromString("file-pdf-box")),
-                          onPressed: (){
-                            if (ref.read(billingSearchProvider)==null){
-                              ref.read(billingSearchProvider.notifier).loadBilling(e);
-                            }
-                            else{
-                              ref.read(billingSearchProvider.notifier).freeBilling();
-                            }
-                          },
-                        ),
-                      );
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [Colors.grey.shade200, Colors.grey.shade300, Colors.grey.shade400]),
+                            border: Border.all(color: Colors.grey)
+                          ),
+                          margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 0.5),
+                          child: ListTile(
+                            iconColor: Colors.black,
+                            title: Row(
+                              children: [
+                                Text("Fecha: ", style: StyleForm.getStyleTextField(),),
+                                Expanded(child: Text(e.getDatetime(), style: StyleForm.getStyleTextField()))
+                              ]
+                            ),
+                            subtitle: Text("Total: \$${e.getTotal().toStringAsFixed(2)}", style: StyleForm.getStyleTextField(),),
+                            trailing: IconButton(
+                              icon: Icon(MdiIcons.fromString("file-pdf-box")),
+                              tooltip: "Visualizar factura",
+                              onPressed: (){
+                                if (ref.read(billingSearchProvider)==null){
+                                  ref.read(billingSearchProvider.notifier).loadBilling(e);
+                                }
+                                else{
+                                  ref.read(billingSearchProvider.notifier).freeBilling();
+                                }
+                              },
+                            ),
+                      ),
+                        );
                       }).toList(),
                     ),
                   )

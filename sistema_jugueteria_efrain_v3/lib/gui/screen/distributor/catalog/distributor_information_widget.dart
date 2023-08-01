@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
@@ -77,32 +78,13 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Stack(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0.5, 0, 5),
-                      padding: const EdgeInsets.all(10),
-                      color: const Color.fromARGB(255, 44, 43, 43),
-                      height: 40,
-                      child: const Text("Información Distribuidora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
-                    ))
-                 ],
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  child: IconButton(
-                    tooltip: "Cerrar información de la distribuidora.",
-                    icon: const Icon(Icons.close_rounded, color: Colors.redAccent,), 
-                    onPressed: (){ 
-                      ref.read(distributorProvider.notifier).freeDistributor(ref);
-                    },)
-                )
-              ],
+            //Encabezado principal.
+            HeaderInformationWidget(
+              titleHeader: "Información Distribuidora",
+              tooltipClose: "Cerrar información de la distribuidora.",
+              onClose: (){
+                ref.read(distributorProvider.notifier).freeDistributor(ref);
+              },
             ),
             Expanded(
               child: Container(
