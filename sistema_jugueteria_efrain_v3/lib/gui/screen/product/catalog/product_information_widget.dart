@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_product_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
@@ -16,6 +18,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 
@@ -113,17 +116,22 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   Widget build(BuildContext context) {
     //Recupera todos los enlaces
     List<ResourceLink> listLink = _form.control(Product.getKeyImages()).value;
-    List<Image> listImage = [];
+    List<Widget> listImage = [];
+    Product p = ref.watch(productProvider)!;
+    bool isNewProduct = p.getID()==0;
 
     if (listLink.isNotEmpty){
-      listImage = listLink.map((e){
-        return Image.network(
-          e.getLink(),
-          width: 200,
-          height: 200, 
-          errorBuilder: (context, object, stacktrace){
-            return const Text("Error: No se pudo cargar el link de imagen");
-          },
+      listImage = listLink.asMap().entries.map((e){
+        return ImageProductWidget(
+          product: isNewProduct ? null : p, 
+          index: e.key, 
+          isTemporal: isNewProduct,
+          linkTemporal: isNewProduct ? e.value : null,
+          onRemoved: (){
+            (_form.control(Product.getKeyImages()).value as List<ResourceLink>).removeAt(e.key);
+            setState(() {});
+          }, 
+          onSelected: (){}
         );
       }).toList();
     }
@@ -199,7 +207,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Control: Imagen
                     Container(
-                      height: 300,
+                      height: listImage.isEmpty ? 100 : 300,
                       margin: _marginForms,
                       padding: _paddingForms,
                       decoration: StyleForm.getDecorationFormControl(),
@@ -207,16 +215,21 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Carousel de Imágenes del producto", style: StyleForm.getStyleTextField(),),
-                          SizedBox(
-                            height: 200,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: listImage,
+                          Visibility(
+                            visible: listImage.isNotEmpty,
+                            child: SizedBox(
+                              height: 200,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: listImage,
+                                ),
                               ),
                             ),
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ElevatedButton(
                                 style: StyleForm.getStyleElevatedButtom(),
@@ -307,20 +320,39 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       margin: _marginForms,
                       padding: _paddingForms,
                       decoration: StyleForm.getDecorationFormControl(),
-                      child: ReactiveTextField(
-                            maxLength: Product.getMaxCharsBrand(),
-                            style: StyleForm.getStyleTextField(),
-                            decoration: StyleForm.getDecorationTextField("Marca/importador"),
-                            formControlName: Product.getKeyBrand(),
-                            textInputAction: TextInputAction.next,
-                            onSubmitted: (_){
-                              setState(() {});
-                              _form.focus(Product.getKeyDescription());
-                            },
-                            validationMessages: {
-                              ValidationMessage.email: (error) => '(Requerido) Ingrese una marca o importadora para el producto.',
-                            },
-                          ),
+                      child: FutureBuilder<List<String>>(
+                        future: ref.watch(filterOfLoadedBrandsWithAPIProvider.future),
+                        builder: (context, snap){
+                          if (snap.hasData){
+                            return ReactiveTypeAhead<String, String>(
+                              formControlName: Product.getKeyBrand(),
+                              stringify: (_) => _,
+                              textFieldConfiguration: TextFieldConfiguration(
+                                autofocus: false,
+                                style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
+                                decoration: StyleForm.getDecorationTextField("Marca/importador"),
+                              ),
+                              suggestionsCallback: (pattern) async {
+                                return snap.data!.where((element) => element.contains(pattern));
+                              },
+                              itemBuilder: (context, suggestion) {
+                                return ListTile(
+                                  leading: Icon(MdiIcons.fromString("arrow-right-bold")),
+                                  title: Text(suggestion),
+                                );
+                              }
+                            );
+                          }
+                          else{
+                            if (snap.hasError){
+                              return const CircularProgressIndicator(color: Colors.redAccent,);
+                            }
+                            else{
+                              return const CircularProgressIndicator(color: Colors.blue,);
+                            }
+                          }
+                        },
+                      )
                     ),
                     //Descripción
                     Container(
@@ -328,20 +360,20 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       padding: _paddingForms,
                       height: 200,
                       decoration: StyleForm.getDecorationFormControl(),
-                      child: Expanded(child: ReactiveTextField(
+                      child: ReactiveTextField(
+                            maxLines: 8,
                             maxLength: Product.getMaxCharsDescription(),
-                            style: StyleForm.getStyleTextField(),
-                            decoration: StyleForm.getDecorationTextField("Descripción"),
+                            style: StyleForm.getStyleTextArea(),
+                            decoration: StyleForm.getDecorationTextArea("Descripción"),
                             formControlName: Product.getKeyDescription(),
-                            textInputAction: TextInputAction.next,
-                            onSubmitted: (_){
+                            textInputAction: TextInputAction.newline,
+                            onChanged: (_){
                               setState(() {});
-                              _form.focus(Product.getKeyStock());
                             },
                             validationMessages: {
                               ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
                             },
-                          )),
+                          ),
                     ),
                     //Stock
                     Container(
@@ -409,7 +441,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     Container(
                       margin: _marginForms,
                       padding: _paddingForms,
-                      height: 250,
+                      height: (_form.control(Product.getKeySizes()).value as List<String>).length==3 
+                        ? 250 
+                        : 100.0 + 50.0*(_form.control(Product.getKeySizes()).value as List<String>).length,
                       decoration: StyleForm.getDecorationFormControl(),
                       child: Column(
                           children: [

@@ -29,6 +29,7 @@ class Product with MixinJSONalizable<Product> {
   static const int _maxCharsTitle = 65; //RN-P16
   static const int _maxCharsDescription = 9999; //RN-P17
   static const int _maxCharsBrand = 100; //RN-P18.
+  static const String _brandDefect = "IMPORT.";
   
   static const String _keyID           = "p_id";
   static const String _keyBarcode      = "p_barcode";
@@ -125,6 +126,11 @@ class Product with MixinJSONalizable<Product> {
     return _maxCharsBrand;
   }
 
+  ///Product: Devuelve la marca por defecto de todo producto.
+  static String getBrandDefect(){
+    return _brandDefect;
+  }
+
   //------------------CLAVES------------------------------------------
 
   static String getKeyID(){
@@ -186,6 +192,14 @@ class Product with MixinJSONalizable<Product> {
   static String getKeyMinimumAge(){
     return _keyMinimumAge;
   }
+
+  //-------------------ARCHIVO--------------------------------------
+
+  ///Product: Devuelve el nombre del archivo de imagen de la posicion index.
+  String getFileName(int index){
+    return "$_brand-$_title-$index.jpg";
+  }
+
 
   //------------------ID---------------------------------------------
 
