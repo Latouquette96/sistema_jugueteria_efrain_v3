@@ -4,6 +4,7 @@ const app = express()
 const db_product = require('./queries_product')
 const db_distributor = require('./queries_distributor')
 const db_billing = require('./queries_billings')
+const db_filter = require('./queries_filter')
 const port = 3000
 
 app.use(bodyParser.json())
@@ -17,6 +18,7 @@ app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
+app.get('/filter', db_filter.getLoadedBrands)
 app.get('/products', db_product.getProducts)
 app.get('/products/:id', db_product.getProductById)
 app.post('/products', db_product.createProduct)
