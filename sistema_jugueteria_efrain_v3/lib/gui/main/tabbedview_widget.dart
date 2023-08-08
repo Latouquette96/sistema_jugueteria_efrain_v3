@@ -30,7 +30,7 @@ class TabbedViewWidget extends ConsumerWidget {
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     color: Colors.black87,
-                    height: 30,
+                    height: 40,
                     child: TabBar(
                       indicator: const BoxDecoration(color: Color.fromARGB(255, 83, 83, 84),),
                       
@@ -39,7 +39,17 @@ class TabbedViewWidget extends ConsumerWidget {
                       labelColor: Colors.yellow,
                       dividerColor: Colors.white,
                       unselectedLabelColor: Colors.white,
-                      tabs: tabs.map((e) => Tab(text: e.label,)).toList(),
+                      tabs: tabs.map((e) => Tab(icon: SizedBox(
+                        width: 150,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(e.iconData),
+                            Text(e.label), 
+                          ],
+                        ),
+                      ), iconMargin: const EdgeInsets.all(5),)).toList(),
                       tabAlignment: TabAlignment.center
                     ),
                   ),

@@ -17,13 +17,16 @@ dependencies:
   dropdown_search: ^5.0.6
   elegant_notification: ^1.10.1
   fade_shimmer: ^2.2.0
+  file_selector: ^1.0.0
   flutter_riverpod: ^2.3.6
   http: ^1.1.0
   mailto: ^2.0.0
   material_design_icons_flutter: ^7.0.7296
+  path_provider: ^2.0.15
   pluto_menu_bar: ^3.0.1
   reactive_flutter_typeahead: ^2.0.0
   reactive_forms: ^16.0.2
+  shared_preferences: ^2.2.0
   syncfusion_flutter_pdfviewer: ^22.1.39
   tabbed_view: ^1.17.0
   url_launcher: ^6.1.12

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum TabEnum {
   distributorCatalogWidget,
   distributorBillingWidget, 
-  productCatalogWidget
+  productCatalogWidget, configurationWidget
 }
 
 @immutable
@@ -13,15 +13,17 @@ class TabModel {
   final TabEnum key;
   final String label;
   final Widget widget;
+  final IconData? iconData;
 
-  const TabModel({required this.key, required this.label, required this.widget});
+  const TabModel({required this.key, required this.label, required this.widget, this.iconData});
 
   ///Tab: Realiza un clon de Tab con algunos valores definidas o no.
-  TabModel copyWith({TabEnum? key, String? label, Widget? widget}){
+  TabModel copyWith({TabEnum? key, String? label, Widget? widget, IconData? iconData}){
     return TabModel(
       key: key ?? this.key,
       label: label ?? this.label,
-      widget: widget ?? this.widget
+      widget: widget ?? this.widget,
+      iconData: iconData ?? this.iconData
     );
   }
 }
@@ -39,9 +41,9 @@ class TabNotifier extends StateNotifier<List<TabModel>>{
   }
 
   ///TabNotifier: Inserta un nuevo tab al inicio de la lista.
-  void insertTab(TabEnum tabEnum, String label, Widget widget){
+  void insertTab({required TabEnum tabEnum, required String label, required Widget widget, IconData? icon}){
     if (state.where((element) => element.key==tabEnum).toList().isEmpty){
-      TabModel t = TabModel(key: tabEnum, label: label, widget: widget);
+      TabModel t = TabModel(key: tabEnum, label: label, widget: widget, iconData: icon);
       state = [t, ...state];
     }
   }

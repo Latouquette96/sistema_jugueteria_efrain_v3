@@ -88,6 +88,22 @@ class StyleForm {
   }
 
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
+  static BoxDecoration getDecorationControlImage(){
+    const border =  BorderSide(color: Color.fromARGB(255, 220, 218, 218), width: 1);
+
+    return BoxDecoration(
+        color: Colors.white70,
+        border: const BorderDirectional(
+          start: border,
+          top: border,
+          end: border,
+          bottom: border,
+        ),
+        borderRadius: BorderRadius.circular(5),
+      );
+  }
+
+  ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
   static BoxDecoration getDecorationListTileItem(){
     const border =  BorderSide(color: Color.fromARGB(255, 98, 98, 98), width: 1);
 
