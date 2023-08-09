@@ -71,9 +71,30 @@ class StyleForm {
       );
   }
 
+  static TextStyle getTextStyleTitle(){
+    return TextStyle(color: Colors.blue.shade900, fontSize: 16, fontWeight: FontWeight.w600);
+  }
+
+  static TextStyle getTextStyleListTileTitle(){
+    return const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600);
+  }
+
+  static TextStyle getTextStyleListTileSubtitle(){
+    return const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400);
+  }
+
+  static BoxDecoration getDecorationContainer(){
+    return const BoxDecoration(gradient: LinearGradient(colors: [Colors.black26, Colors.black12, Colors.black26]), border: BorderDirectional(
+        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+      ));
+  }
+
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
   static BoxDecoration getDecorationFormControl(){
-    const border =  BorderSide(color: Color.fromARGB(255, 220, 218, 218), width: 1);
+    const border =  BorderSide(color: Color.fromARGB(255, 219, 207, 207), width: 1);
 
     return BoxDecoration(
         gradient: LinearGradient(colors: [Colors.grey.shade200, Colors.grey.shade300, Colors.grey.shade200]),

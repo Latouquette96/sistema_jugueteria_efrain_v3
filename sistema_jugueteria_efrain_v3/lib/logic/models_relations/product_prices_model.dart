@@ -1,5 +1,5 @@
 import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 
 ///Clase ProductPrice: Modela un precio para un producto de una determinada distribuidora.
@@ -7,7 +7,7 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
   //Atributos de instancia
   late int _id;
   late int _productID;
-  late Distributor _distributor; //RN-P5.
+  late int _distributor; //RN-P5.
   late double _priceBase; //RN-P4.
   late int _dateLastUpdated; //RN-P21.
 
@@ -22,18 +22,66 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
   ProductPrice({
     required int id,
     required int p,
-    required Distributor d,
+    required int d,
     required double price,
     required int date}
   ) {
     _id = id;
     _priceBase = price;
     _productID = p;
-    _distributor = d;
+    _distributor = 0;
     _dateLastUpdated = date;
   }
 
+  ProductPrice.clear(Product p){
+    _id = 0;
+    _priceBase = 0;
+    _dateLastUpdated = DatetimeCustom.getDatetimeIntegerNow();
+    _distributor = 0;
+    _productID = p.getID();
+  }
+
+  ProductPrice.fromJSON(Map<String, dynamic> map){
+    try{
+      _id = int.parse(map[_keyID].toString());
+      _priceBase = double.parse(map[_keyPriceBase].toString());
+      _productID = int.parse(map[_keyProduct].toString());
+      _dateLastUpdated = int.parse(map[_keyDateUpdate].toString());
+      _distributor = int.parse(map[_keyDistributor].toString());
+    }
+    // ignore: empty_catches
+    catch(e){
+    }
+  }
+
+  //--------------------CLAVES-------------------------
+
+  static String getKeyID(){
+    return _keyID;
+  }
+
+  static String getKeyProduct(){
+    return _keyProduct;
+  }
+
+  static String getKeyDistributor(){
+    return _keyDistributor;
+  }
+
+  static String getKeyPriceBase(){
+    return _keyPriceBase;
+  }
+
+  static String getKeyDateUpdate(){
+    return _keyDateUpdate;
+  }
+
   //--------------------PRODUCTO----------------------
+
+  ///ProductPrice: Devuelve el ID.
+  int getID(){
+    return _id;
+  }
 
   ///ProductPrice: Devuelve el ID de producto.
   int getProduct() {
@@ -43,8 +91,12 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
   //--------------------DISTRIBUIDORA----------------------
 
   ///ProductPrice: Devuelve la distribuidora.
-  Distributor getDistributor() {
+  int getDistributor() {
     return _distributor;
+  }
+
+  void setDistributor(int distributor){
+    _distributor = distributor;
   }
 
   //--------------------PRECIO BASE----------------------
@@ -52,11 +104,6 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
   ///ProductPrice: Devuelve el precio de compra (sin impuestos).
   double getPriceBase() {
     return _priceBase;
-  }
-
-  ///ProductPrice: Devuelve el precio de compra definitivo (con impuestos si es que corresponde).
-  double getPurchasePrice() {
-    return (_priceBase * _distributor.getIVA()); //Según RN-P11.
   }
 
   ///ProductPrice: Establece un nuevo precio base.
@@ -85,7 +132,7 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
   Map<String, dynamic> getJSON() {
     return {
       _keyID: _id,
-      _keyDistributor: _distributor.getID(),
+      _keyDistributor: _distributor,
       _keyProduct: _productID,
       _keyDateUpdate: _dateLastUpdated,
       _keyPriceBase: _priceBase

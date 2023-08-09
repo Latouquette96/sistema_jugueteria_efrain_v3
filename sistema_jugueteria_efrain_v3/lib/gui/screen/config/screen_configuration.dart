@@ -79,11 +79,9 @@ class _ScreenConfigurationState extends ConsumerState<ConsumerStatefulWidget>{
                                     _form.control(e).value = directory;
                                  });
                                 }
-                                print(directory);
                               }
-                              catch(e){
-                                print(e.toString());
-                              }
+                              // ignore: empty_catches
+                              catch(e){}
                             }, 
                             icon: Icon(MdiIcons.fromString("folder"))
                           )

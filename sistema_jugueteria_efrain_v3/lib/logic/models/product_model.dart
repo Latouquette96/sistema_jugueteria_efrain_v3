@@ -413,8 +413,6 @@ class Product with MixinJSONalizable<Product> {
     _images = (map[_keyImages] == null) ? [] : (map[_keyImages] as List<ResourceLink>).map((e) => e.getLink()).toList();
     _listSize = (map[_keySizes] == null) ? [] : (map[_keySizes] as List<String>);
     try{
-      print(map[_keyDateCreated]);
-      print(map[_keyDateUpdated]);
       _dateCreate = DatetimeCustom.parseStringDatetime(map[_keyDateCreated]);
       _dateUpdate = DatetimeCustom.parseStringDatetime(map[_keyDateUpdated]);
     }

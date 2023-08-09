@@ -6,6 +6,12 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
 final configurationProvider = Provider<ConfigurationLocal>((ref) => ConfigurationLocal.getInstance());
 
+final configImagePathProvider = Provider<String>((ref){
+  final config = ref.watch(configurationProvider);
+
+  return config.getValue(ConfigurationLocal.getKeyImagePath())!;
+});
+
 ///Clase ConfigurationLocal: Modela las configuraciones del sistema empleando un SharedPreferences para almacenar los datos.
 class ConfigurationLocal {
   //Atributos de instancia
@@ -71,6 +77,11 @@ class ConfigurationLocal {
     }
 
     return toReturn;
+  }
+
+  ///ConfigurationLocal: Devuelve la clave de la ruta de imagen.
+  static String getKeyImagePath(){
+    return _keyImagePath;
   }
 
   ///ConfigurationLocal: Devuelve el titulo de una determinada clave.

@@ -33,14 +33,13 @@ class TabbedViewWidget extends ConsumerWidget {
                     height: 40,
                     child: TabBar(
                       indicator: const BoxDecoration(color: Color.fromARGB(255, 83, 83, 84),),
-                      
                       indicatorColor: Colors.blue,
                       indicatorWeight: 5,
                       labelColor: Colors.yellow,
                       dividerColor: Colors.white,
                       unselectedLabelColor: Colors.white,
                       tabs: tabs.map((e) => Tab(icon: SizedBox(
-                        width: 150,
+                        width: 200,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,14 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
 
 ///Clase ImageProductWidget: Modela un widget para una imagen de producto.
-class ImageProductWidget extends StatefulWidget {
+class ImageProductWidget extends ConsumerStatefulWidget {
 
   final Product? product;
   final bool isTemporal;
@@ -21,13 +24,13 @@ class ImageProductWidget extends StatefulWidget {
   const ImageProductWidget({super.key, this.product, required this.index, required this.onRemoved, required this.onSelected, this.isTemporal = false, this.linkTemporal});
   
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _ImageProductWidgetState();
   }
 
 }
 
-class _ImageProductWidgetState extends State<ImageProductWidget> {
+class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
   
   //Atributos de instancia
   late final Uint8List _image;
@@ -47,33 +50,35 @@ class _ImageProductWidgetState extends State<ImageProductWidget> {
       return buildImageNetwork(context);
     }
     else{
+      //Obtiene la configuracion local
+      final imagePath = ref.watch(configImagePathProvider);
       //Obtiene el archivo en cuestión.
-    File fileImage = File(widget.product!.getFileName(widget.index));
+      File fileImage = File("$imagePath/${widget.product!.getFileName(widget.index)}");
 
-    return FutureBuilder<bool>(
-      //comprueba si existe el archivo.
-      future: fileImage.exists(), 
-      builder: (context, snap){
-        if (snap.hasData){
-          //Si existe el archivo, entonces crear widget en base a archivo.
-          if (snap.data!){
-            return buildImageFile(context, fileImage);
+      return FutureBuilder<bool>(
+        //comprueba si existe el archivo.
+        future: fileImage.exists(), 
+        builder: (context, snap){
+          if (snap.hasData){
+            //Si existe el archivo, entonces crear widget en base a archivo.
+            if (snap.data!){
+              return buildImageFile(context, fileImage);
+            }
+            else{
+              //sino, crear widget en base a 
+              return buildImageNetwork(context);
+            }
           }
           else{
-            //sino, crear widget en base a 
-            return buildImageNetwork(context);
+            if (snap.hasError){
+              return const CircularProgressIndicator(color: Colors.red,);
+            }
+            else{
+              return const CircularProgressIndicator(color: Colors.blue,);
+            }
           }
         }
-        else{
-          if (snap.hasError){
-            return const CircularProgressIndicator(color: Colors.red,);
-          }
-          else{
-            return const CircularProgressIndicator(color: Colors.blue,);
-          }
-        }
-      }
-    ); 
+      ); 
     }
   }
 
@@ -150,24 +155,35 @@ class _ImageProductWidgetState extends State<ImageProductWidget> {
 
 
   Widget buildImageUint8List(Uint8List uint8list){
-    return Container(
-      color: Colors.white,
-      child: Stack(
-        children: [
-          Image.memory(uint8list, width: 200, height: 200,),
-          //Remover
-          Positioned(
-            top: 0,
-            left: 0,
-            child: IconButton(
-              onPressed: (){
-                widget.onRemoved.call();
-              }, 
-              icon: Icon(MdiIcons.fromString("close-circle"))
-            )
+    return Stack(
+      children: [
+        Image.memory(uint8list, width: 200, height: 200,),
+        //Remover
+        Positioned(
+          top: 165,
+          left: 50,
+          child: Container(
+            decoration: StyleForm.getDecorationControlImage(),
+            width: 100,
+            height: 35,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  tooltip: "Eliminar imagen",
+                  onPressed: (){
+                    widget.onRemoved.call();
+                  }, 
+                  icon: Icon(
+                    MdiIcons.fromString("close-circle"), 
+                    color: Colors.redAccent,
+                  )
+                )
+              ],
+            ),
           )
-        ],
-      ),
+        )
+      ],
     );
   }
 

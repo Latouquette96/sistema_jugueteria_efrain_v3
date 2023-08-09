@@ -13,7 +13,6 @@ final filterOfLoadedBrandsWithAPIProvider = FutureProvider<List<String>>((ref) a
 
   List<dynamic> map = jsonDecode(content.body);
   List<String> list = map.map((e){
-    print(e.runtimeType);
     return e.toString();
   }).toList();
 

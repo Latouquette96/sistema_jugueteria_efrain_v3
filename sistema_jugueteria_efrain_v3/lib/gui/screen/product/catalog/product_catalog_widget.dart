@@ -4,6 +4,7 @@ import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 //import 'package:mailto/mailto.dart';
 //import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -97,11 +98,26 @@ class ProductCatalogWidget extends ConsumerWidget {
             return InkWell(
               child: const Icon(Icons.edit, color: Colors.green, size: 24),
               onTap: () {
-                ///Carga una ditribuidora al proveedor para que pueda ser editado.
+                ///Carga un producto al proveedor para que pueda ser editado.
                 ref.read(productProvider.notifier).loadProduct(data.data);
               },
             );
-          }),
+          }
+      ),
+      DaviColumn(
+          pinStatus: PinStatus.none,
+          width: 40,
+          resizable: false,
+          cellBuilder: (BuildContext context, DaviRow<Product> data) {
+            return InkWell(
+              child: Icon(MdiIcons.fromString("cash"), color: Colors.green, size: 24),
+              onTap: () {
+                ///Carga un producto para que pueda ser desplegado el catalogo de precios.
+                ref.read(productSearchPriceProvider.notifier).loadProduct(data.data);
+              },
+            );
+          }
+      ),
       DaviColumn(
           pinStatus: PinStatus.none,
           width: 40,
@@ -152,54 +168,6 @@ class ProductCatalogWidget extends ConsumerWidget {
               },
             );
           }),
-    /* DaviColumn(
-          pinStatus: PinStatus.none,
-          width: 40,
-          resizable: false,
-          cellBuilder: (BuildContext context, DaviRow<Product> data) {
-            return InkWell(
-              child: Icon(
-                MdiIcons.fromString("web"),
-                color: Colors.blue,
-                size: 24,
-              ),
-              onTap: () async {
-                Uri url = Uri.parse(data.data.getWebsite() ?? "");
-                if (!await launchUrl(url)) {
-                  throw Exception('Could not launch $url');
-                }
-              },
-            );
-          }),
-    */
-    /* DaviColumn(
-          pinStatus: PinStatus.none,
-          width: 40,
-          resizable: false,
-          cellBuilder: (BuildContext context, DaviRow<Product> data) {
-            return InkWell(
-              child: Icon(
-                MdiIcons.fromString("email"),
-                color: const Color.fromARGB(255, 175, 107, 82),
-                size: 24,
-              ),
-              onTap: () async {
-                if (data.data.getEmail()!=null){
-                  final mailtoLink = Mailto(
-                    to: [data.data.getEmail()!],
-                    cc: [],
-                    subject: 'Consulta: <Inserte consulta>',
-                    body: '<Insertar mensaje>.',
-                  );
-                  
-                  Uri url = Uri.parse(mailtoLink.toString());
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
-                }
-              },
-            );
-          }),*/
     ]);
     return DaviTheme(
         data: DaviThemeData(

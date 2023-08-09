@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
@@ -70,6 +71,17 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(child: ProductInformationWidget())
+                ],
+              ))
+          ),
+          Visibility(
+              visible: ref.watch(productSearchPriceProvider) != null,
+              child: const SizedBox(
+                width: 400,
+                child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(child: ProductPricesCatalogWidget())
                 ],
               ))
             )
