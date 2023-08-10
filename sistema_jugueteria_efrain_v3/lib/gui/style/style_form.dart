@@ -49,7 +49,9 @@ class StyleForm {
 
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
   static BoxDecoration getDecorationPanel(){
-    return const BoxDecoration(color: Colors.white, border: BorderDirectional(
+    return BoxDecoration(
+      gradient: LinearGradient(colors: [Colors.blueGrey.shade300, Colors.blueGrey.shade200, Colors.blueGrey.shade300]), 
+      border: const BorderDirectional(
         start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
         top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
         end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
@@ -84,12 +86,15 @@ class StyleForm {
   }
 
   static BoxDecoration getDecorationContainer(){
-    return const BoxDecoration(gradient: LinearGradient(colors: [Colors.black26, Colors.black12, Colors.black26]), border: BorderDirectional(
-        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-      ));
+    return BoxDecoration(
+        gradient: LinearGradient(colors: [Colors.blueGrey.shade300, Colors.blueGrey.shade200, Colors.blueGrey.shade300]), 
+        border: const BorderDirectional(
+          start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+          top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+          end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+          bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
+        )
+      );
   }
 
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
