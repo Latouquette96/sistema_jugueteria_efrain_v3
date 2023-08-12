@@ -19,7 +19,7 @@ app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
-app.get('/filter', db_filter.getLoadedBrands)
+app.get('/filter/brands', db_filter.getLoadedBrands)
 
 app.get('/products', db_product.getProducts)
 app.get('/products/:id', db_product.getProductById)

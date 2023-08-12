@@ -39,7 +39,20 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   static const EdgeInsets _marginForms = EdgeInsets.all(8.0);
   static const EdgeInsets _paddingForms = EdgeInsets.all(8.0);
 
-  static const String _textSizes = "Medida (Producto|Blister|Caja): <medida_1> cm x <medida_2> cm x <medida_3> cm";
+  static const String _keyTemplateSize = "pp_template_size";
+  static final String _keySizeAux = "${Product.getKeySizes()}Aux";
+  static final String _keyBrandAux = "${Product.getKeyBrand()}Aux";
+
+  static const List<String> _templateSize = [
+    "Medida (Blíster): # cm de alto x # cm de ancho x # cm de largo.",
+    "Medida (Blíster): # cm de alto x # cm de ancho x # cm de profundidad.",
+    "Medida (Caja): # cm de alto x # cm de ancho x # cm de largo.",
+    "Medida (Caja): # cm de alto x # cm de ancho x # cm de profundidad.",
+    "Medida (Producto): # cm de alto x # cm de ancho x # cm de largo.",
+    "Medida (Producto): # cm de alto x # cm de ancho x # cm de profundidad.",
+    "Medida (Producto): # cm de circunferencia.",
+    "Medida (Producto): # cm de diametro."
+  ];
 
   @override
   void initState() {
@@ -62,6 +75,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         value: ref.read(productProvider)?.getTitle(),
         validators: [Validators.required, Validators.maxLength(Product.getMaxCharsTitle())]
       ),
+      _keyBrandAux: FormControl<String>(
+        value: ref.read(productProvider)?.getBrand()
+      ),
       Product.getKeyBrand(): FormControl<String>(
         value: ref.read(productProvider)?.getBrand(),
         validators: [Validators.required, Validators.maxLength(Product.getMaxCharsBrand())]
@@ -74,8 +90,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         value: ref.read(productProvider)?.getSizes(),
         validators: [Validators.required]
       ),
-      "${Product.getKeySizes()}Aux": FormControl<String>(
-        value: _textSizes,
+      _keySizeAux: FormControl<String>(
+        value: "",
       ),
       Product.getKeyCategory(): FormControl<Category>(
         value: pairCategory.getValue1(),
@@ -109,6 +125,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         value: ref.read(productProvider)!.getDateUpdate(),
         validators: [Validators.required]
       ),
+      _keyTemplateSize: FormControl<String>(
+        value: ""
+      )
     });
   }
 
@@ -214,7 +233,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Carousel de Imágenes del producto", style: StyleForm.getStyleTextField(),),
+                          Text("Carousel de Imágenes del producto", style: StyleForm.getStyleTextTitle(),),
                           Visibility(
                             visible: listImage.isNotEmpty,
                             child: SizedBox(
@@ -341,6 +360,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   title: Text(suggestion),
                                 );
                               }
+                              
                             );
                           }
                           else{
@@ -441,47 +461,82 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     Container(
                       margin: _marginForms,
                       padding: _paddingForms,
-                      height: (_form.control(Product.getKeySizes()).value as List<String>).length==3 
-                        ? 250 
-                        : 100.0 + 50.0*(_form.control(Product.getKeySizes()).value as List<String>).length,
+                      height: (_form.control(Product.getKeySizes()).value as List<String>).length>3 
+                        ? 400 
+                        : 220.0 + 50.0*(_form.control(Product.getKeySizes()).value as List<String>).length,
                       decoration: StyleForm.getDecorationFormControl(),
                       child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Medidas del producto", style: StyleForm.getStyleTextField(),),
+                            Text("Medidas del producto", style: StyleForm.getStyleTextTitle(),),
                             Expanded(child: 
-                              ListView(
-                                children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
-                                  return Container(
-                                    decoration: StyleForm.getDecorationListTileItem(),
-                                    child: ListTile(
-                                      titleTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
-                                      title: Text(e),
-                                      trailing: IconButton(
-                                        tooltip: "Remover",
-                                        color: Colors.black,
-                                        onPressed: (){
-                                          (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
-                                          setState(() { });
-                                        },
-                                        icon: Icon(MdiIcons.fromString("delete")),
-                                      ),
-                                    )
-                                  );
-                                }).toList(),
-                              )
+                              Container(
+                                color: Colors.black26,
+                                padding: const EdgeInsets.all(5),
+                                child: ListView(
+                                  children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
+                                    return Container(
+                                      decoration: StyleForm.getDecorationListTileItem(),
+                                      child: ListTile(
+                                        titleTextStyle: StyleForm.getStyleDropdownField(),
+                                        title: Text(e),
+                                        trailing: IconButton(
+                                          tooltip: "Remover",
+                                          color: Colors.black,
+                                          onPressed: (){
+                                            (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
+                                            setState(() { });
+                                          },
+                                          icon: Icon(MdiIcons.fromString("delete")),
+                                        ),
+                                      )
+                                    );
+                                  }).toList(),
+                                )
+                              ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ReactiveDropdownField<String>(
+                              isExpanded: true,
+                              iconSize: 50,
+                              icon: const Icon(Icons.arrow_drop_down, size: 25,),
+                              formControlName: _keyTemplateSize,
+                              style: StyleForm.getStyleDropdownField(),
+                              decoration: StyleForm.getDecorationTextField("Selección de plantilla"),
+                              items: _templateSize.map((e) => DropdownMenuItem<String>(
+                                value: e,
+                                child: Container(
+                                  margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.zero,
+                                  width: 300,
+                                  child: Text(e),
+                                ),
+                              )).toList(),
+                              onChanged: (control) {
+                                _form.control(_keySizeAux).value = _form.control(_keyTemplateSize).value;
+                                setState(() {});
+                                _form.focus(_keySizeAux);
+                              },
+                              validationMessages: {
+                                ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+                              },
+                            ),
+                            const SizedBox(height: 10,),
                             ReactiveTextField(
-                              style: StyleForm.getStyleTextField(),
+                              maxLines: 5,
+                              minLines: 1,
+                              style: StyleForm.getStyleTextArea(),
                               decoration: StyleForm.getDecorationTextField("Insertar medida"),
-                              formControlName: "${Product.getKeySizes()}Aux",
+                              formControlName: _keySizeAux,
                               textInputAction: TextInputAction.next,
                               onSubmitted: (_){
-                                
                                 List<String> list = _form.control(Product.getKeySizes()).value;
-                                list.add(_form.control("${Product.getKeySizes()}Aux").value);
+                                list.add(_form.control(_keySizeAux).value);
                                 
-                                _form.control("${Product.getKeySizes()}Aux").value = _textSizes;
-                                _form.focus("${Product.getKeySizes()}Aux");
+                                _form.control(_keySizeAux).value = "";
+                                _form.focus(_keySizeAux);
 
                                 setState(() { });
                               },

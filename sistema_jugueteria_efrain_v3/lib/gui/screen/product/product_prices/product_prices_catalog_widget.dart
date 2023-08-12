@@ -27,7 +27,6 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
   late final FormGroup _formNewPP;
-
   late List<Pair<Distributor, ProductPrice>> _listProduct;
   late List<Distributor> _listDistributorFree;
 
@@ -94,13 +93,9 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                   return Expanded(
                     child: Column(
                       children: [
-                        Text("Precios de producto por distribuidora", style: StyleForm.getTextStyleTitle(),),
+                        //Construye el ListView
                         _buildWidgetListView(context, product),
                         //LISTTILE para crear un nuevo registro.
-                        Visibility(
-                          visible: _listDistributorFree.isNotEmpty,
-                          child: Text("Ingresar nuevo precio de producto", style: StyleForm.getTextStyleTitle()),
-                        ),
                         Visibility(
                           visible: _listDistributorFree.isNotEmpty,
                           child: _buildWidgetNewProductPrice(context) 
@@ -119,86 +114,92 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
     );
   }  
 
-  ///ProductPricesCatalogWidget: Limpia el formulario de insersion de precio de producto.
-  void _clearForm(){
-    _formNewPP.control(ProductPrice.getKeyDistributor()).value = 0;
-    _formNewPP.control(ProductPrice.getKeyPriceBase()).value = 0.00;
-    _formNewPP.control("${ProductPrice.getKeyDistributor()}Object").value = _listDistributorFree.isEmpty ? null : _listDistributorFree.first;
-  }
-
   ///ProductPricesCatalogWidget: Contruye el widget listado de precios de producto.
   Widget _buildWidgetListView(BuildContext context, Product product){
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-        margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-        color: Colors.black26,
-        child: ListView(
-          children: _listProduct.map((e){
-            return Container(
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-              decoration: StyleForm.getDecorationFormControl(),
-              child: Stack(
-                children: [
-                  ListTile(
-                    title: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(),),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-                          child: TextField(
-                            decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
-                            controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
-                            onChanged: (String value){
-                              e.getValue2()!.setPriceBase(double.parse(value));
-                            },
-                            onSubmitted:(value) {
-                              setState(() {});
-                            },
+        padding: const EdgeInsets.all(5),
+        margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        decoration: StyleForm.getDecorationFormControl(),
+        child: Column(
+          children: [
+            Text("Precios de producto por distribuidora", style: StyleForm.getTextStyleTitle()),
+            Expanded(child: 
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                color: Colors.black26,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
+                  children: _listProduct.map((e){
+                    return Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      margin: const EdgeInsets.fromLTRB(5, 2.5, 2.5, 2.5),
+                      decoration: StyleForm.getDecorationListItem(),
+                      child: Stack(
+                        children: [
+                          ListTile(
+                            title: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(),),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  child: TextField(
+                                    decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
+                                    controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
+                                    onChanged: (String value){
+                                      e.getValue2()!.setPriceBase(double.parse(value));
+                                    },
+                                    onSubmitted:(value) {
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                                Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
+                                Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle())
+                              ],
+                            ),
                           ),
-                        ),
-                        Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
-                        Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle())
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 30,
-                    child: IconButton(
-                      tooltip: "Guarda los cambios realizados.",
-                      padding: EdgeInsets.zero,
-                      icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
-                      onPressed: () async{
-                        ref.read(productPriceProvider.notifier).load(e.getValue2()!);
-                        await ref.read(updateProductPriceWithAPIProvider.future);
-                        ref.refresh(getProductPricesByIDProvider);
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      tooltip: "Elimina el precio del producto.",
-                      padding: EdgeInsets.zero,
-                      icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
-                      onPressed: () async{
-                        ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
-                        await ref.read(removeProductPriceWithAPIProvider.future);
-                        ref.refresh(getProductPricesByIDProvider);
-                        setState(() {});
-                      },
-                    ),
-                  )
-                ]
-              ),
-            );
-          }).toList(),
-        ),
+                          Positioned(
+                            top: 0,
+                            right: 30,
+                            child: IconButton(
+                              tooltip: "Guarda los cambios realizados.",
+                              padding: EdgeInsets.zero,
+                              icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
+                              onPressed: () async{
+                                ref.read(productPriceProvider.notifier).load(e.getValue2()!);
+                                await ref.read(updateProductPriceWithAPIProvider.future);
+                                // ignore: unused_result
+                                ref.refresh(getProductPricesByIDProvider);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                              tooltip: "Elimina el precio del producto.",
+                              padding: EdgeInsets.zero,
+                              icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
+                              onPressed: () async{
+                                ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
+                                await ref.read(removeProductPriceWithAPIProvider.future);
+                                // ignore: unused_result
+                                ref.refresh(getProductPricesByIDProvider);
+                                setState(() {});
+                              },
+                            ),
+                          )
+                        ]
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),)
+          ],
+        )
       )
       
     );
@@ -208,42 +209,41 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
   Widget _buildWidgetNewProductPrice(BuildContext context){
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-      margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: StyleForm.getDecorationFormControl(),
       child: ReactiveForm(
         formGroup: _formNewPP,
         child: ListTile(
           //Title: Distribuidora.
-          title: ReactiveDropdownField<Distributor>(
-            formControlName: "${ProductPrice.getKeyDistributor()}Object",
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Distribuidora"),
-            items: _listDistributorFree.map((e) => DropdownMenuItem<Distributor>(
-              value: e,
-              child: Text(e.getName()),
-            )).toList(),
-            onChanged: (control) {
-              _formNewPP.control(ProductPrice.getKeyDistributor()).value = control.value!.getID();
-              setState(() {});
-              _formNewPP.focus(ProductPrice.getKeyPriceBase());
-            },
-            validationMessages: {
-              ValidationMessage.required: (error) => "(Requerido) Seleccione la distribuidora."
-            },
-          ),
+          title: Text("Ingresar nuevo precio de producto", style: StyleForm.getTextStyleTitle()),
           //Subtitle
           subtitle: Container(
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: Column(
               children: [
+                ReactiveDropdownField<Distributor>(
+                  formControlName: "${ProductPrice.getKeyDistributor()}Object",
+                  style: StyleForm.getStyleTextField(),
+                  decoration: StyleForm.getDecorationTextField("Distribuidora"),
+                  items: _listDistributorFree.map((e) => DropdownMenuItem<Distributor>(
+                    value: e,
+                    child: Text(e.getName()),
+                  )).toList(),
+                  onChanged: (control) {
+                    _formNewPP.control(ProductPrice.getKeyDistributor()).value = control.value!.getID();
+                    _formNewPP.focus(ProductPrice.getKeyPriceBase());
+                  },
+                  validationMessages: {
+                    ValidationMessage.required: (error) => "(Requerido) Seleccione la distribuidora."
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 ReactiveTextField(
                   style: StyleForm.getStyleTextField(),
                   decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
                   formControlName: ProductPrice.getKeyPriceBase(),
-                  textInputAction: TextInputAction.next,
-                  onSubmitted: (_){
-                    setState(() {});
-                  },
                   validationMessages: {
                     ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
                   },
@@ -276,10 +276,9 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                               description:  const Text("La información ha sido actualizada con éxito.")
                             ).show(context);
                             ref.read(productPriceProvider.notifier).free(ref);
+                            // ignore: unused_result
                             ref.refresh(getProductPricesByIDProvider);
-                            setState(() {
-                              
-                            });
+                            setState(() {});
                           }
                           else{
                             //Caso contrario, mostrar notificación de error.
@@ -314,5 +313,12 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
         ),  
       )
     );
+  }
+
+  ///ProductPricesCatalogWidget: Limpia el formulario de insersion de precio de producto.
+  void _clearForm(){
+    _formNewPP.control(ProductPrice.getKeyDistributor()).value = 0;
+    _formNewPP.control(ProductPrice.getKeyPriceBase()).value = 0.00;
+    _formNewPP.control("${ProductPrice.getKeyDistributor()}Object").value = _listDistributorFree.isEmpty ? null : _listDistributorFree.first;
   }
 }

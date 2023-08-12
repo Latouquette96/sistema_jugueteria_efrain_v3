@@ -9,7 +9,7 @@ const pool = new Pool({
 
 ///Devuelve todas las marcas que han sido cargadas en la base de datos.
 const getLoadedBrands = (request, response) => {
-  pool.query('SELECT distinct p_brand FROM public.products ORDER BY p_brand ASC', (error, results) => {
+  pool.query('SELECT distinct(p_brand) FROM public.products ORDER BY p_brand ASC', (error, results) => {
     if (error) {
       throw error
     }

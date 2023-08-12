@@ -9,11 +9,11 @@ import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart'
 final filterOfLoadedBrandsWithAPIProvider = FutureProvider<List<String>>((ref) async {
 
   final url = ref.watch(urlLoginProvider);
-  final content = await http.get(Uri.http(url, '/products'));
+  final content = await http.get(Uri.http(url, '/filter/brands'));
 
   List<dynamic> map = jsonDecode(content.body);
   List<String> list = map.map((e){
-    return e.toString();
+    return e['p_brand'].toString();
   }).toList();
 
   if (list.isEmpty){
