@@ -2,27 +2,14 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 
 ///Proveedor que almacena la ultima fecha de actualización del catálogo.
 final lastUpdateProvider = StateProvider<String>((ref) => DatetimeCustom.getDatetimeStringNow());
-
-///Proveedor para recuperar TODAS los productos existentes.
-final catalogProductProvider = FutureProvider<Pair<String, List<Product>>>((ref) async {
-  final url = ref.watch(urlLoginProvider);
-  final lastUpdate = ref.watch(lastUpdateProvider.notifier).state;
-  final content = await http.get(Uri.http(url, '/products'));
-
-  List<dynamic> map = jsonDecode(content.body);
-  List<Product> list = map.map((e) => Product.fromJSON(e)).toList();
-  return Pair<String, List<Product>>(v1: lastUpdate, v2: list);
-});
-
 
 ///Proveedor para crear un producto en particular.
 final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
@@ -30,11 +17,17 @@ final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
   final product = ref.watch(productProvider);
   final url = ref.watch(urlLoginProvider);
 
+  //Realiza la petición POST para insertar el producto.
   final response = await http.post(
     Uri.http(url, '/products'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
     body: jsonEncode(product!.getJSON()), 
   );
+
+  //Refrezca las marcas cargadas.
+  await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+  //Refrezca el catalogo de productos.
+  await ref.read(productCatalogProvider.notifier).refresh();
 
   return response;  
 });
@@ -51,6 +44,11 @@ final updateProductWithAPIProvider = FutureProvider<Response>((ref) async {
     body: jsonEncode(product.getJSON()), 
   );
 
+  //Refrezca las marcas cargadas.
+  await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+  //Refrezca el catalogo de productos.
+  await ref.read(productCatalogProvider.notifier).refresh();
+
   return response;  
 });
 
@@ -64,6 +62,11 @@ final removeProductWithAPIProvider = FutureProvider<Response>((ref) async {
     Uri.http(url, '/products/${product!.getID()}'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
+
+  //Refrezca las marcas cargadas.
+  await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+  //Refrezca el catalogo de productos.
+  await ref.read(productCatalogProvider.notifier).refresh();
 
   return response;  
 });

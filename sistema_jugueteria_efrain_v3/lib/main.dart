@@ -10,7 +10,7 @@ Future<void> main() async {
   await FactoryCategory.getInstance().builder();
   await FactoryMinimumAge.getInstance().builder();
   await ConfigurationLocal.getInstance().initialize();
-
+  
   runApp(const ProviderScope(child: MyApp()));
 }
 

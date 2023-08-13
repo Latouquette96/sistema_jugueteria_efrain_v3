@@ -19,7 +19,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
@@ -166,7 +166,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               titleHeader: "Información Producto",
               tooltipClose: "Cerrar información del producto.",
               onClose: (){
-                ref.read(productProvider.notifier).freeProduct(ref);
+                ref.read(productProvider.notifier).free();
               },
           ),
           Expanded(
@@ -339,39 +339,47 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       margin: _marginForms,
                       padding: _paddingForms,
                       decoration: StyleForm.getDecorationFormControl(),
-                      child: FutureBuilder<List<String>>(
-                        future: ref.watch(filterOfLoadedBrandsWithAPIProvider.future),
-                        builder: (context, snap){
-                          if (snap.hasData){
-                            return ReactiveTypeAhead<String, String>(
-                              formControlName: Product.getKeyBrand(),
-                              stringify: (_) => _,
-                              textFieldConfiguration: TextFieldConfiguration(
-                                autofocus: false,
-                                style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
-                                decoration: StyleForm.getDecorationTextField("Marca/importador"),
-                              ),
-                              suggestionsCallback: (pattern) async {
-                                return snap.data!.where((element) => element.contains(pattern));
-                              },
-                              itemBuilder: (context, suggestion) {
-                                return ListTile(
-                                  leading: Icon(MdiIcons.fromString("arrow-right-bold")),
-                                  title: Text(suggestion),
-                                );
-                              }
-                              
-                            );
-                          }
-                          else{
-                            if (snap.hasError){
-                              return const CircularProgressIndicator(color: Colors.redAccent,);
-                            }
-                            else{
-                              return const CircularProgressIndicator(color: Colors.blue,);
-                            }
-                          }
-                        },
+                      child: Column(
+                        children: [
+                          ReactiveTypeAhead<String, String>(
+                            formControlName: _keyBrandAux,
+                            stringify: (_) => _,
+                            textFieldConfiguration: TextFieldConfiguration(
+                              autofocus: false,
+                              style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
+                              decoration: StyleForm.getDecorationTextField("Marca/importador"),
+                            ),
+                            suggestionsCallback: (pattern) async {
+                              return ref.watch(filterOfLoadedBrandsWithAPIProvider).where((element) => element.contains(pattern));
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return ListTile(
+                                leading: Icon(MdiIcons.fromString("arrow-right-bold")),
+                                title: Text(suggestion),
+                              );
+                            },
+                            onSuggestionSelected:(suggestion) {
+                              _form.control(Product.getKeyBrand()).value = suggestion;
+                              setState(() {});
+                              _form.focus(Product.getKeyBrand());
+                            }, 
+                          ),
+                          const SizedBox(height: 10,),
+                          ReactiveTextField(
+                            maxLines: 1,
+                            maxLength: Product.getMaxCharsBrand(),
+                            style: StyleForm.getStyleTextArea(),
+                            decoration: StyleForm.getDecorationTextArea("Marca/importadora"),
+                            formControlName: Product.getKeyBrand(),
+                            textInputAction: TextInputAction.newline,
+                            onChanged: (_){
+                              setState(() {});
+                            },
+                            validationMessages: {
+                              ValidationMessage.email: (error) => '(Requerido) Ingrese una marca/importadora para el producto.',
+                            },
+                          ),
+                        ],
                       )
                     ),
                     //Descripción
@@ -592,7 +600,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       ).show(context);
 
                       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-                      ref.read(productProvider.notifier).freeProduct(ref);
+                      ref.read(productProvider.notifier).free();
+                      setState(() {});
                     }
                     else{
                       //Caso contrario, mostrar notificación de error.

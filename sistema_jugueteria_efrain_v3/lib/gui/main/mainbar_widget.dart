@@ -6,6 +6,8 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/screen_configurat
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_billing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 
 @immutable
@@ -36,6 +38,15 @@ class MainBarWidget extends ConsumerWidget {
         PlutoMenuItem(
           title: "Archivo",
           children: [
+            PlutoMenuItem(
+              icon: MdiIcons.fromString("login"),
+              title: "Iniciar sesión",
+              onTap: () async{
+                //Inicializa los servicios.
+                await ref.watch(productCatalogProvider.notifier).initialize();
+                await ref.watch(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+              }
+            ),
             PlutoMenuItem.checkbox(
               icon: MdiIcons.fromString("cog"),
               title: "Configuraciones",

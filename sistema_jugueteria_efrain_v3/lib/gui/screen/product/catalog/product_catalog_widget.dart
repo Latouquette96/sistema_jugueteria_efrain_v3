@@ -1,6 +1,5 @@
 import 'package:davi/davi.dart';
 import 'package:elegant_notification/elegant_notification.dart';
-import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -12,16 +11,25 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 @immutable
 ///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
-class ProductCatalogWidget extends ConsumerWidget {
+class ProductCatalogWidget extends ConsumerStatefulWidget {
 
   const ProductCatalogWidget({super.key});
   
+ @override
+  ConsumerState<ProductCatalogWidget> createState() {
+    return _ProductCatalogWidgetState();
+  }
+}
+
+class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
+
   ///ProductCatalogWidget: Devuelve un listado de los productos.
   Widget _getListProduct(BuildContext context, WidgetRef ref, List<Product> list) {
     DaviModel<Product>? model = DaviModel<Product>(rows: list, columns: [
@@ -99,7 +107,7 @@ class ProductCatalogWidget extends ConsumerWidget {
               child: const Icon(Icons.edit, color: Colors.green, size: 24),
               onTap: () {
                 ///Carga un producto al proveedor para que pueda ser editado.
-                ref.read(productProvider.notifier).loadProduct(data.data);
+                ref.read(productProvider.notifier).load(data.data);
               },
             );
           }
@@ -110,10 +118,10 @@ class ProductCatalogWidget extends ConsumerWidget {
           resizable: false,
           cellBuilder: (BuildContext context, DaviRow<Product> data) {
             return InkWell(
-              child: Icon(MdiIcons.fromString("cash"), color: Colors.green, size: 24),
+              child: Icon(MdiIcons.fromString("cash"), color: Colors.blue.shade600, size: 24),
               onTap: () {
                 ///Carga un producto para que pueda ser desplegado el catalogo de precios.
-                ref.read(productSearchPriceProvider.notifier).loadProduct(data.data);
+                ref.read(productSearchPriceProvider.notifier).load(data.data);
               },
             );
           }
@@ -131,7 +139,7 @@ class ProductCatalogWidget extends ConsumerWidget {
               ),
               onTap: () {
                 bool isError = false;
-                ref.read(productRemoveProvider.notifier).loadProduct(data.data);
+                ref.read(productRemoveProvider.notifier).load(data.data);
 
                 //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
                 AsyncValue<Response> response = ref.watch(
@@ -156,7 +164,7 @@ class ProductCatalogWidget extends ConsumerWidget {
                     description:  const Text("La información de la producto fue eliminada con éxito.")
                   ).show(context);
 
-                  ref.read(productRemoveProvider.notifier).freeProduct(ref);
+                  ref.read(productRemoveProvider.notifier).free();
                 }
                 else{
                   //Caso contrario, mostrar notificación de error.
@@ -204,10 +212,10 @@ class ProductCatalogWidget extends ConsumerWidget {
             },
             onRowDoubleTap:(Product data) {
               if (ref.read(productProvider)==null){
-                ref.read(productProvider.notifier).loadProduct(data);
+                ref.read(productProvider.notifier).load(data);
               }
               else{
-                ref.read(productProvider.notifier).freeProduct(ref);
+                ref.read(productProvider.notifier).free();
               }
             },
         )
@@ -215,25 +223,9 @@ class ProductCatalogWidget extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final streamProvider = ref.watch(catalogProductProvider);
-    double ancho = MediaQuery.of(context).size.width;
-
-    return streamProvider.when(
-      loading: () {
-        return FadeShimmer(
-          baseColor: Colors.blue,
-          highlightColor: Colors.red,
-          width: ancho,
-          radius: 25,
-          height: 25,
-          fadeTheme: FadeTheme.light,
-        );
-      },
-      error: (err, stack) => Text('Error: $err'),
-      data: (message) {
-        return _getListProduct(context, ref, message.getValue2()!);
-      },
-    );
+  Widget build(BuildContext context) {
+    //Obtiene la lista de productos.
+    final listProduct = ref.watch(productCatalogProvider);
+    return _getListProduct(context, ref, listProduct);
   }
 }

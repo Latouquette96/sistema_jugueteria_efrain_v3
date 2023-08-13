@@ -6,8 +6,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(productProvider.notifier).loadProduct(Product.clean());
+              ref.read(productProvider.notifier).load(Product.clean());
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar un nuevo producto.",
@@ -43,8 +44,8 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           IconButton(
             onPressed: (){
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-              // ignore: unused_result
-              ref.refresh(catalogProductProvider);
+              //Refrezca el catálogo de productos.
+              ref.read(productCatalogProvider.notifier).refresh();
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",

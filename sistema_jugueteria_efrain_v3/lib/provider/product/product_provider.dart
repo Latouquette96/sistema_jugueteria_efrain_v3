@@ -6,12 +6,12 @@ class ProductProvider extends StateNotifier<Product?> {
   ProductProvider(): super(null);
 
   ///ProductProvider: Carga un producto nuevo.
-  void loadProduct(Product d){
+  void load(Product d){
     state = d;
   }
 
   ///ProductProvider: Libera el producto actual.
-  void freeProduct(WidgetRef ref){
+  void free(){
     state = null;
   }
 }

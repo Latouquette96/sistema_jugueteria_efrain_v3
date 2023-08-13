@@ -78,7 +78,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
               titleHeader: "Producto: ${product!.getTitle()}",
               tooltipClose: "Cerrar.",
               onClose: (){
-                ref.read(productSearchPriceProvider.notifier).freeProduct(ref);
+                ref.read(productSearchPriceProvider.notifier).free();
               },
             ),
             FutureBuilder(
