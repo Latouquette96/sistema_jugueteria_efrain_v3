@@ -1,6 +1,5 @@
 import 'package:davi/davi.dart';
 import 'package:elegant_notification/elegant_notification.dart';
-import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -9,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @immutable
@@ -232,24 +232,7 @@ class DistributorCatalogWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final streamProvider = ref.watch(catalogDistributorProvider);
-    double ancho = MediaQuery.of(context).size.width;
-
-    return streamProvider.when(
-      loading: () {
-        return FadeShimmer(
-          baseColor: Colors.blue,
-          highlightColor: Colors.red,
-          width: ancho,
-          radius: 25,
-          height: 25,
-          fadeTheme: FadeTheme.light,
-        );
-      },
-      error: (err, stack) => Text('Error: $err'),
-      data: (message) {
-        return _getListDistributor(context, ref, message.getValue2()!);
-      },
-    );
+    List<Distributor> list = ref.watch(distributorCatalogProvider);
+    return _getListDistributor(context, ref, list);
   }
 }

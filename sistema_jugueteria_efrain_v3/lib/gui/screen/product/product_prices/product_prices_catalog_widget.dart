@@ -8,13 +8,14 @@ import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_in
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 
-///Clase ProductPricesCatalogWidget
+///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
   const ProductPricesCatalogWidget({super.key});
   
@@ -27,15 +28,10 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
   late final FormGroup _formNewPP;
-  late List<Pair<Distributor, ProductPrice>> _listProduct;
-  late List<Distributor> _listDistributorFree;
 
   @override
   void initState() {
     super.initState();
-
-    _listDistributorFree = [];
-    _listProduct = [];
 
     final product = ref.read(productSearchPriceProvider);
 
@@ -65,6 +61,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
   @override
   Widget build(BuildContext context) {
     final product = ref.watch(productSearchPriceProvider);
+    final distributorFree = ref.watch(distributorFreeProductPriceProvider);
 
     return Container(
       width: 400,
@@ -81,34 +78,19 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                 ref.read(productSearchPriceProvider.notifier).free();
               },
             ),
-            FutureBuilder(
-              future: ref.read(getProductPricesByIDProvider.future), 
-              builder: (context, snap){
-                //Si ha finalizado la recuperacion de las distribuidoras.
-                if (snap.hasData){
-                  _listDistributorFree = snap.data!.getValue2()!;
-                  _listProduct = snap.data!.getValue1();
-
-                  //Construye la columna donde se visualiza el listado de precios y el insertar precio de producto.
-                  return Expanded(
-                    child: Column(
-                      children: [
-                        //Construye el ListView
-                        _buildWidgetListView(context, product),
-                        //LISTTILE para crear un nuevo registro.
-                        Visibility(
-                          visible: _listDistributorFree.isNotEmpty,
-                          child: _buildWidgetNewProductPrice(context) 
-                        )
-                      ],
-                    )
-                  );
-                }
-                else{
-                  return CircularProgressIndicator(color: snap.hasError ? Colors.red : Colors.blue);
-                }
-             }
-            ),      
+            Expanded(
+              child: Column(
+                children: [
+                  //Construye el ListView
+                  _buildWidgetListView(context, product),
+                  //LISTTILE para crear un nuevo registro.
+                  Visibility(
+                    visible: distributorFree.isNotEmpty,
+                    child: _buildWidgetNewProductPrice(context) 
+                  )
+                ],
+              )
+            )      
           ]
       )
     );
@@ -116,6 +98,8 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
 
   ///ProductPricesCatalogWidget: Contruye el widget listado de precios de producto.
   Widget _buildWidgetListView(BuildContext context, Product product){
+    final pricesProduct = ref.watch(productPricesByIDProvider);
+
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(5),
@@ -130,7 +114,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                 color: Colors.black26,
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-                  children: _listProduct.map((e){
+                  children: pricesProduct.map((e){
                     return Container(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       margin: const EdgeInsets.fromLTRB(5, 2.5, 2.5, 2.5),
@@ -170,8 +154,6 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                               onPressed: () async{
                                 ref.read(productPriceProvider.notifier).load(e.getValue2()!);
                                 await ref.read(updateProductPriceWithAPIProvider.future);
-                                // ignore: unused_result
-                                ref.refresh(getProductPricesByIDProvider);
                                 setState(() {});
                               },
                             ),
@@ -186,8 +168,6 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                               onPressed: () async{
                                 ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
                                 await ref.read(removeProductPriceWithAPIProvider.future);
-                                // ignore: unused_result
-                                ref.refresh(getProductPricesByIDProvider);
                                 setState(() {});
                               },
                             ),
@@ -207,6 +187,8 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
 
   ///ProductPricesCatalogWidget: Constuye el widget para la insersion de un nuevo precio de producto.
   Widget _buildWidgetNewProductPrice(BuildContext context){
+    final distributorsFree = ref.watch(distributorFreeProductPriceProvider);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -225,7 +207,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                   formControlName: "${ProductPrice.getKeyDistributor()}Object",
                   style: StyleForm.getStyleTextField(),
                   decoration: StyleForm.getDecorationTextField("Distribuidora"),
-                  items: _listDistributorFree.map((e) => DropdownMenuItem<Distributor>(
+                  items: distributorsFree.map((e) => DropdownMenuItem<Distributor>(
                     value: e,
                     child: Text(e.getName()),
                   )).toList(),
@@ -262,7 +244,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                             Text("\tGuardar registro", style: StyleForm.getTextStyleListTileSubtitle(),),
                           ],
                         ),
-                        onPressed: (){
+                        onPressed: () async{
                           ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
                           final response = ref.read(newProductPriceWithAPIProvider);
                           bool error = response.when(
@@ -276,8 +258,6 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                               description:  const Text("La información ha sido actualizada con éxito.")
                             ).show(context);
                             ref.read(productPriceProvider.notifier).free(ref);
-                            // ignore: unused_result
-                            ref.refresh(getProductPricesByIDProvider);
                             setState(() {});
                           }
                           else{
@@ -317,8 +297,9 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
 
   ///ProductPricesCatalogWidget: Limpia el formulario de insersion de precio de producto.
   void _clearForm(){
+    final distributorsFree = ref.read(distributorFreeProductPriceProvider);
     _formNewPP.control(ProductPrice.getKeyDistributor()).value = 0;
     _formNewPP.control(ProductPrice.getKeyPriceBase()).value = 0.00;
-    _formNewPP.control("${ProductPrice.getKeyDistributor()}Object").value = _listDistributorFree.isEmpty ? null : _listDistributorFree.first;
+    _formNewPP.control("${ProductPrice.getKeyDistributor()}Object").value = distributorsFree.isEmpty ? null : distributorsFree.first;
   }
 }

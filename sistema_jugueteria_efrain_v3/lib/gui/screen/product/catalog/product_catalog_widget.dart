@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
-//import 'package:mailto/mailto.dart';
-//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
@@ -14,6 +12,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 @immutable
@@ -122,6 +121,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
               onTap: () {
                 ///Carga un producto para que pueda ser desplegado el catalogo de precios.
                 ref.read(productSearchPriceProvider.notifier).load(data.data);
+                ref.read(productPricesByIDProvider.notifier).refresh();
               },
             );
           }
