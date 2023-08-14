@@ -1,6 +1,7 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
@@ -28,6 +29,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
   late final FormGroup _formNewPP;
+  final TreeController _controller = TreeController(allNodesExpanded: false);
 
   @override
   void initState() {
@@ -98,7 +100,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
 
   ///ProductPricesCatalogWidget: Contruye el widget listado de precios de producto.
   Widget _buildWidgetListView(BuildContext context, Product product){
-    final pricesProduct = ref.watch(productPricesByIDProvider);
+    var pricesProduct = ref.watch(productPricesByIDProvider);
 
     return Expanded(
       child: Container(
@@ -106,84 +108,108 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
         margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: StyleForm.getDecorationFormControl(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Precios de producto por distribuidora", style: StyleForm.getTextStyleTitle()),
-            Expanded(child: 
-              Container(
-                padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                color: Colors.black26,
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-                  children: pricesProduct.map((e){
-                    return Container(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      margin: const EdgeInsets.fromLTRB(5, 2.5, 2.5, 2.5),
-                      decoration: StyleForm.getDecorationListItem(),
-                      child: Stack(
-                        children: [
-                          ListTile(
-                            title: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(),),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: TextField(
-                                    decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
-                                    controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
-                                    onChanged: (String value){
-                                      e.getValue2()!.setPriceBase(double.parse(value));
-                                    },
-                                    onSubmitted:(value) {
-                                      setState(() {});
-                                    },
-                                  ),
+            Expanded(
+              child: Container(
+                color: Colors.blueGrey.shade100,
+                child: SingleChildScrollView(
+                  child: TreeView(
+                    indent: 20,
+                    treeController: _controller,
+                    //Lo nodos serán cada uno de los elementos 'e' que son pares de <Distribuidora, PrecioProducto>
+                    nodes: pricesProduct.map((e){
+                      //Nodo del elemento 'e'
+                      return TreeNode(
+                        content: Container(
+                          decoration: StyleForm.getDecorationControlImage(),
+                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 225,
+                                child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,),
+                              ),
+                              IconButton(
+                                  tooltip: "Guarda los cambios realizados.",
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
+                                  onPressed: () async{
+                                    ref.read(productPriceProvider.notifier).load(e.getValue2()!);
+                                    await ref.read(updateProductPriceWithAPIProvider.future);
+                                    setState(() {});
+                                  },
                                 ),
-                                Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
-                                Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle())
-                              ],
-                            ),
+                                IconButton(
+                                  tooltip: "Elimina el precio del producto.",
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
+                                  onPressed: () async{
+                                    ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
+                                    await ref.read(removeProductPriceWithAPIProvider.future);
+                                    setState(() {});
+                                  },
+                                ),
+                            ],
                           ),
-                          Positioned(
-                            top: 0,
-                            right: 30,
-                            child: IconButton(
-                              tooltip: "Guarda los cambios realizados.",
-                              padding: EdgeInsets.zero,
-                              icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
-                              onPressed: () async{
-                                ref.read(productPriceProvider.notifier).load(e.getValue2()!);
-                                await ref.read(updateProductPriceWithAPIProvider.future);
-                                setState(() {});
-                              },
-                            ),
+                        ),
+                        children: [
+                          //Nodo de precio.
+                          TreeNode(
+                            content: Container(
+                              color: Colors.grey.shade300,
+                              padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
+                              height: 60,
+                              width: 290,
+                              margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: TextField(
+                                decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
+                                controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
+                                onChanged: (String value){
+                                  e.getValue2()!.setPriceBase(double.parse(value));
+                                },
+                                onSubmitted:(value) {
+                                  setState(() {});
+                                },
+                              ),
+                            )
                           ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              tooltip: "Elimina el precio del producto.",
-                              padding: EdgeInsets.zero,
-                              icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
-                              onPressed: () async{
-                                ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
-                                await ref.read(removeProductPriceWithAPIProvider.future);
-                                setState(() {});
-                              },
-                            ),
+                          TreeNode(
+                            content: Container(
+                              color: Colors.grey.shade300,
+                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              height: 40,
+                              width: 290,
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
+                            )
+                          ),
+                          TreeNode(
+                            content: Container(
+                              color: Colors.grey.shade300,
+                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              height: 40,
+                              width: 290,
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
+                            )
                           )
                         ]
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),)
+              )
+            ),
           ],
         )
       )
       
     );
   }
+
 
   ///ProductPricesCatalogWidget: Constuye el widget para la insersion de un nuevo precio de producto.
   Widget _buildWidgetNewProductPrice(BuildContext context){
@@ -246,13 +272,10 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                         ),
                         onPressed: () async{
                           ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
-                          final response = ref.read(newProductPriceWithAPIProvider);
-                          bool error = response.when(
-                            data: (data){ return false; }, 
-                            error: (object, stack) { return true; }, 
-                            loading: (){ return false; }
-                          );
+                          final response = await ref.read(newProductPriceWithAPIProvider.future);
+                          bool error = response.statusCode!=201;
                           if (error==false){
+                            // ignore: use_build_context_synchronously
                             ElegantNotification.success(
                               title:  const Text("Información"),
                               description:  const Text("La información ha sido actualizada con éxito.")
@@ -262,6 +285,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                           }
                           else{
                             //Caso contrario, mostrar notificación de error.
+                            // ignore: use_build_context_synchronously
                             ElegantNotification.error(
                               title:  const Text("Error"),
                               description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
