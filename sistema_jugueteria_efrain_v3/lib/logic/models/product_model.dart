@@ -197,7 +197,35 @@ class Product with MixinJSONalizable<Product> {
 
   ///Product: Devuelve el nombre del archivo de imagen de la posicion index.
   String getFileName(int index){
-    return "$_brand-$_title-$index.jpg";
+
+    String name = "$_brand-$_title-$index.jpg";
+    name = name.replaceAll('"', '_');
+    name = name.replaceAll(">", '');
+    name = name.replaceAll("<", '');
+    name = name.replaceAll("\\", '');
+    name = name.replaceAll("/", '');
+    name = name.replaceAll(":", '');
+    name = name.replaceAll(";", '');
+    name = name.replaceAll("|", '');
+    name = name.replaceAll("[", '');
+    name = name.replaceAll("]", '');
+    name = name.replaceAll("=", '');
+    name = name.replaceAll("+", '');
+    name = name.replaceAll("*", '');
+    name = name.replaceAll("?", '');
+    name = name.replaceAll("¿", '');
+    name = name.replaceAll("!", '');
+    name = name.replaceAll("¡", '');
+    name = name.replaceAll("{", '');
+    name = name.replaceAll("}", '');
+    name = name.replaceAll("^", '');
+    name = name.replaceAll("\$", '');
+    name = name.replaceAll("%", '');
+    name = name.replaceAll("&", '');
+    name = name.replaceAll("#", '');
+    name = name.replaceAll(" ", '');
+
+    return name;
   }
 
 
@@ -380,6 +408,7 @@ class Product with MixinJSONalizable<Product> {
 
   @override
   Map<String, dynamic> getJSON() {
+    
     return {
       _keyID: _id,
       _keyBarcode: _barcode,
@@ -391,7 +420,7 @@ class Product with MixinJSONalizable<Product> {
       _keyStock: _stock,
       _keySubcategory: _subcategory,
       //Construye una cadena con todos los elementos de la lista separados por ','.
-      _keyImages: _images.join(','),
+      _keyImages: _images.join(',').replaceAll(' ', ''),
       _keySizes: _listSize.join(','),
       _keyDateCreated: _dateCreate,
       _keyDateUpdated: _dateUpdate,
@@ -425,6 +454,9 @@ class Product with MixinJSONalizable<Product> {
   
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
   void fromJSONServer(Map<String, dynamic> map) {
+    String imageString =  map[_keyImages].toString().replaceAll("[", "");
+    imageString =  imageString.replaceAll("]", "");
+
     _id = map[_keyID];
     _barcode = map[_keyBarcode];
     _internalCode = map[_keyInternalCode];
@@ -434,7 +466,7 @@ class Product with MixinJSONalizable<Product> {
     _pricePublic = double.parse(map[_keyPricePublic]);
     _stock = map[_keyStock];
     _subcategory = map[_keySubcategory];
-    _images = map[_keyImages].split(',');
+    _images = imageString.replaceAll(' ', '').split(',');
     _listSize = map[_keySizes].split(',');
     _dateCreate = int.parse(map[_keyDateCreated]);
     _dateUpdate = int.parse(map[_keyDateUpdated]);

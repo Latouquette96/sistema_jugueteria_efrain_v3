@@ -10,6 +10,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
@@ -28,7 +29,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 
 class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
-  late final FormGroup _formNewPP;
+  late final FormGroup _formNewPP, _formProductPrice;
   final TreeController _controller = TreeController(allNodesExpanded: false);
 
   @override
@@ -36,6 +37,12 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
     super.initState();
 
     final product = ref.read(productSearchPriceProvider);
+
+    _formProductPrice = FormGroup({
+      Product.getKeyPricePublic(): FormControl<double>(
+        value: product?.getPricePublic() ?? 0
+      )
+    });
 
     //Inicializa el formulario para el nuevo precio de producto.
     _formNewPP = FormGroup({
@@ -83,6 +90,8 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
             Expanded(
               child: Column(
                 children: [
+                  //Precio al público del producto.
+                  _buildWidgetPricePublic(context, product),
                   //Construye el ListView
                   _buildWidgetListView(context, product),
                   //LISTTILE para crear un nuevo registro.
@@ -98,6 +107,60 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
     );
   }  
 
+  Widget _buildWidgetPricePublic(BuildContext context, Product product){
+     return Container(
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      decoration: StyleForm.getDecorationFormControl(),
+      child: ReactiveForm(
+        formGroup: _formProductPrice,
+        child: ListTile(
+          //Title: Distribuidora.
+          title: Text("Precio de producto al público", style: StyleForm.getTextStyleTitle()),
+          //Subtitle
+          subtitle: Container(
+            margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+            child: ReactiveTextField(
+            style: StyleForm.getStyleTextField(),
+            decoration: StyleForm.getDecorationTextField("Precio público"),
+            formControlName: Product.getKeyPricePublic(),
+            validationMessages: {
+              ValidationMessage.required: (error) => "(Requerido) Precio al público es requerido."
+            },
+          ),
+          ),
+          trailing: IconButton(
+            color: Colors.blueGrey,
+            padding: EdgeInsets.zero,
+            icon: Icon(MdiIcons.fromString("content-save")),
+            onPressed: () async{
+              ref.read(productSearchPriceProvider)!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
+              final response = await ref.read(updatePricePublicWithAPIProvider.future);
+              bool error = response.statusCode!=200;
+              if (error==false){
+                // ignore: use_build_context_synchronously
+                ElegantNotification.success(
+                  title:  const Text("Información"),
+                  description:  const Text("La información ha sido actualizada con éxito.")
+                ).show(context);
+                ref.read(productSearchPriceProvider.notifier);
+                setState(() {});
+              }
+              else{
+                //Caso contrario, mostrar notificación de error.
+                // ignore: use_build_context_synchronously
+                ElegantNotification.error(
+                  title:  const Text("Error"),
+                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                ).show(context);
+              }
+            },
+          ),
+        ),  
+      )
+    );
+  }
+
   ///ProductPricesCatalogWidget: Contruye el widget listado de precios de producto.
   Widget _buildWidgetListView(BuildContext context, Product product){
     var pricesProduct = ref.watch(productPricesByIDProvider);
@@ -106,6 +169,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
       child: Container(
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        width: 400,
         decoration: StyleForm.getDecorationFormControl(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

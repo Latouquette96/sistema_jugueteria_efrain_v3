@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
@@ -27,7 +28,9 @@ final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
   //Refrezca las marcas cargadas.
   await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
   //Refrezca el catalogo de productos.
-  await ref.read(productCatalogProvider.notifier).refresh();
+  //await ref.read(productCatalogProvider.notifier).refresh();
+  //Inserta el nuevo producto
+  ref.read(productCatalogProvider.notifier).insert(product);
 
   return response;  
 });
@@ -47,7 +50,24 @@ final updateProductWithAPIProvider = FutureProvider<Response>((ref) async {
   //Refrezca las marcas cargadas.
   await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
   //Refrezca el catalogo de productos.
-  await ref.read(productCatalogProvider.notifier).refresh();
+  //await ref.read(productCatalogProvider.notifier).refresh();
+
+  return response;  
+});
+
+
+///Proveedor para modificar un precio de producto en particular.
+final updatePricePublicWithAPIProvider = FutureProvider<Response>((ref) async {
+  String url = ref.watch(urlLoginProvider);
+
+  //Recupero el producto.
+  final product = ref.watch(productSearchPriceProvider);
+  //Envio la solicitud POST para cargar
+  final response = await http.put(
+    Uri.http(url, '/products/price_public/${product!.getID()}'),
+    headers: {'Content-Type': 'application/json; charset=UTF-8'},
+    body: jsonEncode({Product.getKeyPricePublic(): product.getPricePublic()}), 
+  );
 
   return response;  
 });
@@ -63,10 +83,15 @@ final removeProductWithAPIProvider = FutureProvider<Response>((ref) async {
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
 
+  product.setBarcode("-1");
+
   //Refrezca las marcas cargadas.
   await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
   //Refrezca el catalogo de productos.
-  await ref.read(productCatalogProvider.notifier).refresh();
+  //await ref.read(productCatalogProvider.notifier).refresh();
+
+  //Remueve el producto de la lista
+  ref.read(productCatalogProvider.notifier).remove(product);
 
   return response;  
 });

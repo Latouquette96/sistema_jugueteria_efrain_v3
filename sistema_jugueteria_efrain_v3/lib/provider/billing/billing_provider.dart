@@ -11,7 +11,7 @@ class BillingProvider extends StateNotifier<DistributorBilling?> {
   }
 
   ///BillingProvider: Libera la factura actual.
-  void freeBilling(){
+  void free(){
     state = null;
   }
 }

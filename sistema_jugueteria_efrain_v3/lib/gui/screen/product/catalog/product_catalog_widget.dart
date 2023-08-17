@@ -12,6 +12,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
@@ -32,11 +33,33 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
   ///ProductCatalogWidget: Devuelve un listado de los productos.
   Widget _getListProduct(BuildContext context, WidgetRef ref, List<Product> list) {
     DaviModel<Product>? model = DaviModel<Product>(rows: list, columns: [
+      DaviColumn(
+        name: "",
+        resizable: false,
+        width: 60,
+        cellBuilder: (context, DaviRow<Product> data){
+          return IconButton(
+            onPressed: (){
+              if (ref.read(productSharingProvider.notifier).contains(data.data)){
+                ref.read(productSharingProvider.notifier).remove(data.data);
+              }
+              else{
+                ref.read(productSharingProvider.notifier).insert(data.data);
+              }
+            }, 
+            icon: Container(
+              margin: EdgeInsets.zero,
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Icon(Icons.check_circle, color: ref.read(productSharingProvider.notifier).contains(data.data) ? Colors.blue : Colors.grey, size: 24,),
+            )
+          );
+        }
+      ),
       //CUIT
       DaviColumn(
           name: 'Cód. de barras',
           stringValue: (row) => "${row.getBarcode()} (Cód. int. ${row.getInternalCode()})",
-          width: 150,
+          grow: 40,
           resizable: false,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center),
@@ -46,7 +69,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
         stringValue: (Product p) {
           return p.getTitle();
         },
-        grow: 40,
+        grow: 60,
         headerAlignment: Alignment.center,
       ),
       //MARCA
@@ -55,7 +78,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
           stringValue: (Product p) {
             return p.getBrand();
           },
-          grow: 30,
+          grow: 20,
           headerAlignment: Alignment.center),
       //Categoria y subcategoria
       DaviColumn(
@@ -72,8 +95,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
 
             return texto;
           },
-          grow: 50,
-          width: 150,
+          width: 300,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center),
       //STOCK
@@ -82,7 +104,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
           intValue: (Product p) {
             return p.getStock();
           },
-          grow: 30,
+          width: 75,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center),
       //Precio Público
@@ -91,7 +113,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
           doubleValue: (Product p) {
             return p.getPricePublic();
           },
-          grow: 20,
+          width: 200,
           fractionDigits: 2,
           headerAlignment: Alignment.center,
           cellAlignment: Alignment.center
@@ -137,7 +159,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
                 color: Colors.red,
                 size: 24,
               ),
-              onTap: () {
+              onTap: () async {
                 bool isError = false;
                 ref.read(productRemoveProvider.notifier).load(data.data);
 
@@ -179,6 +201,9 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
     ]);
     return DaviTheme(
         data: DaviThemeData(
+          cell: const CellThemeData(
+            contentHeight: 40
+          ),
           header: HeaderThemeData(
               color: Colors.black87,
               bottomBorderHeight: 4,
@@ -199,7 +224,8 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
           ),
         ),
         child: Davi<Product>(
-            model, 
+            model,
+            //pinnedHorizontalScrollController: _scrollController,
             rowColor: (DaviRow<Product>? rowData) {
               if (rowData == null) {
                 return Colors.white;

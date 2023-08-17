@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum TabEnum {
   distributorCatalogWidget,
   distributorBillingWidget, 
-  productCatalogWidget, configurationWidget
+  productCatalogWidget, configurationWidget, productPDFViewer
 }
 
 @immutable

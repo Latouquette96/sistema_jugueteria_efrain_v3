@@ -82,7 +82,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               titleHeader: "Información Factura-Distribuidora",
               tooltipClose: "Cancelar creación factura-distribuidora.",
               onClose: (){
-                ref.read(billingProvider.notifier).freeBilling();
+                ref.read(billingProvider.notifier).free();
               },
             ),
             Expanded(
@@ -178,7 +178,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   description:  const Text("La información ha sido actualizada con éxito.")
                                 ).show(context);
 
-                                ref.read(billingProvider.notifier).freeBilling();
+                                ref.read(billingProvider.notifier).free();
                               }
                               else{
                                 //Caso contrario, mostrar notificación de error.

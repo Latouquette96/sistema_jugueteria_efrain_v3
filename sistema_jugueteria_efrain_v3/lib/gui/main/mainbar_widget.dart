@@ -5,6 +5,7 @@ import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/screen_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_billing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
@@ -17,6 +18,7 @@ class MainBarWidget extends ConsumerWidget {
   static const TabEnum _keyDistributorBilling = TabEnum.distributorBillingWidget;
   static const TabEnum _keyCatalogProduct = TabEnum.productCatalogWidget;
   static const TabEnum _keyConfiguration = TabEnum.configurationWidget;
+  static const TabEnum _keyProductPDFViewer = TabEnum.productPDFViewer;
 
   //final String _keyCatalogProduct = "catalog_product";
 
@@ -72,10 +74,25 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyCatalogProduct, label:"Catalogo productos", widget: const ScreenProductCatalog());
+                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyCatalogProduct, label:"Catalogo productos", widget: const ScreenProductCatalog(), icon: MdiIcons.fromString("domain"));
                   }
                   else{
                     ref.read(tabProvider.notifier).removeTab(_keyCatalogProduct);
+                  }
+                }
+              },
+            ),
+            PlutoMenuItem.checkbox(
+              title: "Visor PDF",
+              initialCheckValue: ref.read(tabProvider.notifier).isExistTab(_keyProductPDFViewer),
+              enable: ref.read(tabProvider.notifier).isExistTab(_keyProductPDFViewer),
+              onChanged: (bool? isSelected) {
+                if (isSelected!=null){
+                  if (isSelected){
+                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyProductPDFViewer, label:"Visor PDF", widget: const ScreenProductPDFViewerWidget(), icon: MdiIcons.fromString("file-pdf-box"));
+                  }
+                  else{
+                    ref.read(tabProvider.notifier).removeTab(_keyProductPDFViewer);
                   }
                 }
               },
@@ -92,7 +109,7 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyCatalogDistributor, label: "Catalogo distribuidoras", widget: const ScreenDistributorCatalog());
+                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyCatalogDistributor, label: "Catalogo distribuidoras", widget: const ScreenDistributorCatalog(), icon: MdiIcons.fromString("domain"));
                   }
                   else{
                     ref.read(tabProvider.notifier).removeTab(_keyCatalogDistributor);
@@ -107,7 +124,7 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyDistributorBilling, label: "Factura distribuidoras", widget: const ScreenDistributorBilling());
+                    ref.read(tabProvider.notifier).insertTab(tabEnum: _keyDistributorBilling, label: "Factura distribuidoras", widget: const ScreenDistributorBilling(), icon: MdiIcons.fromString("cash"));
                   }
                   else{
                     ref.read(tabProvider.notifier).removeTab(_keyDistributorBilling);

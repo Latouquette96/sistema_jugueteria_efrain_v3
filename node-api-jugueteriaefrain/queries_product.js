@@ -62,6 +62,24 @@ const updateProduct = (request, response) => {
   )
 }
 
+const updatePricePublicProduct = (request, response) => {
+  const p_id = parseInt(request.params.id)
+  const {p_price_public} = request.body
+
+  pool.query(
+    'UPDATE public.products ' +
+    'SET p_price_public=$1 WHERE p_id=$2',
+    [p_price_public, p_id],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send(`Product modified with ID: ${p_id}`)
+    }
+  )
+}
+
+
 const deleteProduct = (request, response) => {
   const p_id = parseInt(request.params.id)
 
@@ -80,5 +98,6 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
+  updatePricePublicProduct,
   deleteProduct,
 }

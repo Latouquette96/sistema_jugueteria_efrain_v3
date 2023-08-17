@@ -52,7 +52,7 @@ class BillingCatalogWidget extends ConsumerWidget {
                                   ref.read(billingSearchProvider.notifier).loadBilling(e);
                                 }
                                 else{
-                                  ref.read(billingSearchProvider.notifier).freeBilling();
+                                  ref.read(billingSearchProvider.notifier).free();
                                 }
                               },
                             ),

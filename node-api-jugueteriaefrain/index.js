@@ -25,6 +25,7 @@ app.get('/products', db_product.getProducts)
 app.get('/products/:id', db_product.getProductById)
 app.post('/products', db_product.createProduct)
 app.put('/products/:id', db_product.updateProduct)
+app.put('/products/price_public/:id', db_product.updatePricePublicProduct)
 app.delete('/products/:id', db_product.deleteProduct)
 
 app.get('/products/prices_products/:id', db_price_product.getProductPriceByID)

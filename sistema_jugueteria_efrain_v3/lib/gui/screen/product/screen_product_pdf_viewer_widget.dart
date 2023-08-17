@@ -1,47 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_pdfview_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 
-///Clase ScreenProductCatalog: Modela un catálogo de productos.
-class ScreenProductCatalog extends ConsumerStatefulWidget {
-  const ScreenProductCatalog({super.key});
+class ScreenProductPDFViewerWidget extends ConsumerStatefulWidget {
+  const ScreenProductPDFViewerWidget({super.key});
 
   @override
-  ConsumerState<ScreenProductCatalog> createState() {
-    return _ScreenProductCatalogState();
+  ConsumerState<ScreenProductPDFViewerWidget> createState() {
+    return _ScreenProductPDFViewerWidgetState();
   }
+
 }
 
-class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
-
-  late final Widget _drawerFilter;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _drawerFilter = const Drawer(
-      width: 400,
-      child: DrawerSharing(),
-    ); 
-  }
-
+class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFViewerWidget> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      endDrawer: _drawerFilter,
       appBar: AppBar(
         title: Row(
           children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos"))],
@@ -51,38 +30,16 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
-          Visibility(
-            visible: ref.watch(productSharingProvider).isNotEmpty,
-            child: IconButton(
-              onPressed: (){
-                _scaffoldKey.currentState!.openEndDrawer();
-              },
-              icon: Icon(MdiIcons.fromString("share-variant")),
-              tooltip: "Compartir seleccionados.",
-            ),
-          ),
-          Visibility(
-            visible: ref.watch(productSharingProvider).isNotEmpty,
-            child: IconButton(
-              onPressed: (){
-                ref.read(productSharingProvider.notifier).clear();
-              },
-              icon: Icon(MdiIcons.fromString("selection-off")),
-              tooltip: "Compartir seleccionados.",
-            ),
-          ),
           IconButton(
             onPressed: (){
-              ref.read(productProvider.notifier).load(Product.clean());
+              
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar un nuevo producto.",
           ),
           IconButton(
             onPressed: (){
-              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-              //Refrezca el catálogo de productos.
-              ref.read(productCatalogProvider.notifier).refresh();
+              
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",
@@ -115,11 +72,11 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           Visibility(
               visible: ref.watch(productSearchPriceProvider) != null,
               child: const SizedBox(
-                width: 400,
+                width: 600,
                 child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(child: ProductPricesCatalogWidget())
+                  Expanded(child: ProductPDFViewWidget())
                 ],
               ))
             )
@@ -127,4 +84,5 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
       ),
     );
   }
+  
 }

@@ -8,6 +8,7 @@ import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_product_widget.dart';
@@ -32,12 +33,9 @@ class ProductInformationWidget extends ConsumerStatefulWidget {
   }
 }
 
-class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidget> {
+class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidget> with ContainerParameters {
 
   late final FormGroup _form;
-  
-  static const EdgeInsets _marginForms = EdgeInsets.all(8.0);
-  static const EdgeInsets _paddingForms = EdgeInsets.all(8.0);
 
   static const String _keyTemplateSize = "pp_template_size";
   static final String _keySizeAux = "${Product.getKeySizes()}Aux";
@@ -179,8 +177,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                   children: [
                     //Categoria y subcategoria.
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       height: 125,
                       child: Column(
@@ -227,8 +225,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     //Control: Imagen
                     Container(
                       height: listImage.isEmpty ? 100 : 300,
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -279,45 +277,44 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Codigo de barras.
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField(
-                            maxLength: Product.getMaxCharsBarcode(),
-                            style: StyleForm.getStyleTextField(),
-                            decoration: StyleForm.getDecorationTextField("Código de barras"),
-                            formControlName: Product.getKeyBarcode(),
-                            textInputAction: TextInputAction.next,
-                            onSubmitted: (_){
-                              setState(() {});
-                              _form.focus(Product.getKeyInternalCode());
-                            },
-                            validationMessages: {
-                              ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
-                            },
-                          ),
-                    ),
-                    //Código interno.
+                        maxLength: Product.getMaxCharsBarcode(),
+                        style: StyleForm.getStyleTextField(),
+                        decoration: StyleForm.getDecorationTextField("Código de barras"),
+                        formControlName: Product.getKeyBarcode(),
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_){
+                          setState(() {});
+                          _form.focus(Product.getKeyInternalCode());
+                        },
+                        validationMessages: {
+                          ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
+                        },
+                      ),
+                    ),                 //Código interno.
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField(
-                            maxLength: 50,
-                            style: StyleForm.getStyleTextField(),
-                            decoration: StyleForm.getDecorationTextField("Código interno"),
-                            formControlName: Product.getKeyInternalCode(),
-                            textInputAction: TextInputAction.next,
-                            onSubmitted: (_){
-                              setState(() {});
-                              _form.focus(Product.getKeyTitle());
-                            },
-                          ),
+                        maxLength: 50,
+                        style: StyleForm.getStyleTextField(),
+                        decoration: StyleForm.getDecorationTextField("Código interno"),
+                        formControlName: Product.getKeyInternalCode(),
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_){
+                          setState(() {});
+                          _form.focus(Product.getKeyTitle());
+                        },
+                      ),
                     ),
                     //Titulo
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField(
                             maxLength: Product.getMaxCharsTitle(),
@@ -336,8 +333,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Marca/importador
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: Column(
                         children: [
@@ -384,8 +381,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Descripción
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       height: 200,
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField(
@@ -405,8 +402,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Stock
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField<int>(
                             style: StyleForm.getStyleTextField(),
@@ -425,8 +422,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Precio Público
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveTextField<double>(
                             style: StyleForm.getStyleTextField(),
@@ -445,8 +442,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ), 
                     //Edad minima recomendada
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       decoration: StyleForm.getDecorationFormControl(),
                       child: ReactiveDropdownField<MinimumAge>(
                             formControlName: Product.getKeyMinimumAge(),
@@ -467,8 +464,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                     ),
                     //Medidas del producto
                     Container(
-                      margin: _marginForms,
-                      padding: _paddingForms,
+                      margin: getMarginInformationForms(),
+                      padding: getPaddingInformationForms(),
                       height: (_form.control(Product.getKeySizes()).value as List<String>).length>3 
                         ? 400 
                         : 220.0 + 50.0*(_form.control(Product.getKeySizes()).value as List<String>).length,
@@ -564,8 +561,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
           ))),
           //Boton Enviar
           Container(
-            margin: _marginForms,
-            padding: _paddingForms,
+            margin: getMarginInformationForms(),
+            padding: getPaddingInformationForms(),
             decoration: StyleForm.getDecorationFormControl(),
             child: Row(
               mainAxisSize: MainAxisSize.max,

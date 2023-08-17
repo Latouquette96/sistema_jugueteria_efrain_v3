@@ -30,7 +30,7 @@ class TabbedViewWidget extends ConsumerWidget {
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     color: Colors.black87,
-                    height: 40,
+                    height: 30,
                     child: TabBar(
                       indicator: const BoxDecoration(color: Color.fromARGB(255, 83, 83, 84),),
                       indicatorColor: Colors.blue,
@@ -44,7 +44,7 @@ class TabbedViewWidget extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(e.iconData),
+                            Icon(e.iconData, color: Colors.yellow, size: 20,),
                             Text(e.label), 
                           ],
                         ),
