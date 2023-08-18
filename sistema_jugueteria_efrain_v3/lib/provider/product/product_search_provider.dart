@@ -22,7 +22,7 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
       final content = await http.get(Uri.http(url, '/products'));
       List<dynamic> map = jsonDecode(content.body);
       List<Product> list = map.map((e) => Product.fromJSON(e)).toList();
-      state = list;
+      state = [...list];
     }
     catch(e){
       state = [];
@@ -31,7 +31,7 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
 
   ///ProductSearchProvider: Refrezca el listado de productos.
   Future<void> refresh() async {
-    state.clear();
+    state = [];
     ref.read(productSharingProvider.notifier).clear();
     await initialize();
   }

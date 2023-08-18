@@ -61,16 +61,6 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
               tooltip: "Compartir seleccionados.",
             ),
           ),
-          Visibility(
-            visible: ref.watch(productSharingProvider).isNotEmpty,
-            child: IconButton(
-              onPressed: (){
-                ref.read(productSharingProvider.notifier).clear();
-              },
-              icon: Icon(MdiIcons.fromString("selection-off")),
-              tooltip: "Compartir seleccionados.",
-            ),
-          ),
           IconButton(
             onPressed: (){
               ref.read(productProvider.notifier).load(Product.clean());

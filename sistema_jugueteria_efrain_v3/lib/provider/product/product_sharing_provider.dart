@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 
 ///Clase ToggleNotifier
 class ToggleNotifier extends StateNotifier<bool> {
@@ -71,9 +72,20 @@ class ProductSharingProvider extends StateNotifier<List<Product>> {
     state = [...state, p];
   }
 
+  ///ProductSharingProvider: Inserta todos los elementos del catalogo de productos.
+  void insertAll(){
+    state.clear();
+    state = ref.read(productCatalogProvider);
+  }
+
+  ///ProductSharingProvider: Remueve todos los elementos del catalogo.
+  void removeAll(){
+    state = [];
+  }
+
   ///ProductSharingProvider: Remueve el producto de la lista.
   void remove(Product p){
-    state.remove(p);
+    state = state.where((element) => element!=p).toList();
   }
 
   ///ProductSharingProvider: Comprueba si el producto está seleccionado o no. Devuelve True en caso afirmativo, de lo contrario, retorna False.
