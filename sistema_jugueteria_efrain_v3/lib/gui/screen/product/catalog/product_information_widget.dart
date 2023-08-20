@@ -574,6 +574,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                   style: StyleForm.getStyleElevatedButtom(),
                   onPressed: (){
                     bool isError = false;
+                    bool isNew = ref.read(productProvider)!.getID()==0;
+                    
                     ref.read(productProvider)?.fromJSON(_form.value);
                     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
                     AsyncValue<Response> response = (ref.read(productProvider)!.getID()==0) 

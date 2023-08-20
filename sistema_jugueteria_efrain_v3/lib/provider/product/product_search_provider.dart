@@ -47,8 +47,6 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
   ///ProductSearchProvider: Inserta un nuevo producto a la lista.
   void insert(Product p){
     state = [...state, p];
-    //Notifica al catalogo.
-    ref.read(stateManagerProductProvider)!.appendRows([p.getPlutoRow()]);
   }
 
   ///ProductSearchProvider: Remueve el producto de la lista.
