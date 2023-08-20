@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager_provider.dart';
 
 ///Clase ProductSearchProvider: Proveedor de servicios para almacenar el estado de un producto.
 class ProductSearchProvider extends StateNotifier<List<Product>> {
@@ -23,6 +24,8 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
       List<dynamic> map = jsonDecode(content.body);
       List<Product> list = map.map((e) => Product.fromJSON(e)).toList();
       state = [...list];
+      //Notifica al catalogo.
+      ref.read(stateManagerProductProvider)!.insertRows(0, state.map((e) => e.getPlutoRow()).toList());
     }
     catch(e){
       state = [];
@@ -31,15 +34,21 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
 
   ///ProductSearchProvider: Refrezca el listado de productos.
   Future<void> refresh() async {
+    //Limpia el catalogo de todas las filas.
+    ref.read(stateManagerProductProvider)!.removeAllRows();
+    //Limpia el estado actual.
     state = [];
+    //Limpia los productos seleccionados.
     ref.read(productSharingProvider.notifier).clear();
+    //Inicializa el catalogo.
     await initialize();
   }
 
   ///ProductSearchProvider: Inserta un nuevo producto a la lista.
   void insert(Product p){
     state = [...state, p];
-    
+    //Notifica al catalogo.
+    ref.read(stateManagerProductProvider)!.appendRows([p.getPlutoRow()]);
   }
 
   ///ProductSearchProvider: Remueve el producto de la lista.

@@ -21,7 +21,9 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_plutorow_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager_provider.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {
@@ -597,6 +599,21 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       ).show(context);
 
                       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                      //Si el producto es nuevo, entonces se debe insertar en el catalogo.
+                      if (ref.read(productProvider)!.getID()!=0){
+                        //Recupero la posición del registro del producto.
+                        int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(productProvider)!.getPlutoRow());
+                        //Si está dentro del arreglo.
+                        if (index>-1){
+                          //Reemplaza el registro por el actualizado.
+                          ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productProvider)!.buildPlutoRow()]);
+                        }
+                      }
+                      else{
+                        //Inserta el nuevo registro por el actualizado.
+                        ref.read(stateManagerProductProvider)!.appendRows([ref.read(productProvider)!.buildPlutoRow()]);
+                      }
+
                       ref.read(productProvider.notifier).free();
                       setState(() {});
                     }
