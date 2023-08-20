@@ -270,6 +270,11 @@ class Product with MixinJSONalizable<Product> {
     return _id;
   }
 
+  ///Product: Establece el ID del producto (solo si id del producto es 0). 
+  void setID(int value) {
+    _id = value;
+  }
+
   //------------------CODIGO DE BARRAS---------------------------------------------
 
   ///Product: Devuelve el código de barras.
@@ -508,4 +513,5 @@ class Product with MixinJSONalizable<Product> {
     
     _plutoRow = buildPlutoRow();
   }
+
 }
