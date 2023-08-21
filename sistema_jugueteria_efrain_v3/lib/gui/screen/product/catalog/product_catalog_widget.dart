@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
@@ -36,6 +37,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     //Agrega las columnas
     _columns.addAll(<PlutoColumn>[
       PlutoColumn(
+        cellPadding: EdgeInsets.zero,
         title: "Opciones", 
         field: "p_options", 
         type: PlutoColumnType.text(),
@@ -57,7 +59,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                     ref.read(productSearchPriceProvider.notifier).load(product);
                     ref.read(productPricesByIDProvider.notifier).refresh();
                   }, 
-                  icon: Icon(MdiIcons.fromString("cash"), color: Colors.green,)
+                  icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
                 )
               ),
               Expanded(child: 
@@ -120,7 +122,11 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
       PlutoColumn(
         title: 'Marca/Importador',
         field: Product.getKeyBrand(),
-        type: PlutoColumnType.text(),
+        type: PlutoColumnType.select(
+          enableColumnFilter: true,
+          ref.read(filterOfLoadedBrandsWithAPIProvider),
+          defaultValue: "IMPORT."
+        ),
       ),
       PlutoColumn(
         title: 'Categoria > Subcategoria',
@@ -162,6 +168,9 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
         columns: _columns,
         rows: _rows,
         onLoaded: (event) {
+          event.stateManager.addListener(() {
+            ref.read(stateManagerProductProvider.notifier);
+          });
           ref.read(stateManagerProductProvider.notifier).load(event.stateManager);
         },
         //Si se selecciona/deselecciona la casilla checked.
@@ -191,8 +200,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                 else{
                   ref.read(productSharingProvider.notifier).insert(product);
                 }
-            }
-            
+            } 
           }
         },
         configuration: PlutoGridConfiguration(
@@ -210,7 +218,6 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                 } else if (column.field == 'date') {
                   return resolver<PlutoFilterTypeLessThan>() as PlutoFilterType;
                 }
-
                 return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
               }
             ),
@@ -219,12 +226,14 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
               scrollbarThickness: 8,
               scrollbarThicknessWhileDragging: 10,
             ),
-            enterKeyAction: PlutoGridEnterKeyAction.toggleEditing,
+            enterKeyAction: PlutoGridEnterKeyAction.none,
             style: PlutoGridStyleConfig(
-                enableGridBorderShadow: true,
-                evenRowColor: Colors.blueGrey.shade50,
-                oddRowColor: Colors.blueGrey.shade100,
-                activatedColor: Colors.lightBlueAccent.shade100
+              rowHeight: 37.5,
+              enableGridBorderShadow: true,
+              evenRowColor: Colors.blueGrey.shade50,
+              oddRowColor: Colors.blueGrey.shade100,
+              activatedColor: Colors.lightBlueAccent.shade100,
+              cellColorInReadOnlyState: Colors.grey.shade300
             )
         ),
       ),
@@ -277,4 +286,18 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     PlutoRow row = rendererContext.row;
     return _getProduct(row);
   }
+}
+
+class ClassYouImplemented implements PlutoFilterType {
+  @override
+  String get title => 'Custom contains';
+
+  @override
+  get compare => ({required String? base, required String? search, required PlutoColumn? column}) {
+        var keys = search!.split(',').map((e) => e.toUpperCase()).toList();
+
+        return keys.contains(base!.toUpperCase());
+      };
+
+  const ClassYouImplemented();
 }

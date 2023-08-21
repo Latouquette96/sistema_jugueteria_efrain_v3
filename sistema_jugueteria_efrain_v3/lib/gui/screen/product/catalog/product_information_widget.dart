@@ -1,4 +1,3 @@
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
@@ -22,7 +22,6 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
@@ -489,7 +488,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 Expanded(child: ElevatedButton(
                   style: StyleForm.getStyleElevatedButtom(),
                   onPressed: () async{
-                    await _insertOrUpdate(context);
+                    bool isNew = ref.read(productProvider)!.getID()==0;
+                    if (isNew) {await _insert(context);}
+                    else  {await _update(context);}
                   } ,
                   child: const Text('Guardar cambios'),
                 )),
@@ -501,58 +502,53 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     );
   }
 
-  Future<void> _insertOrUpdate(BuildContext context) async{
-    bool isNew = ref.read(productProvider)!.getID()==0;
+  Future<void> _insert(BuildContext context) async{
     bool isError = false;
     //Carga los datos del formulario en el producto.
     ref.read(productProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = (isNew) 
-      ? await ref.watch(newProductWithAPIProvider.future)
-      : await ref.watch(updateProductWithAPIProvider.future);
-    //Si se trata de un producto nuevo
-    if (isNew){
-      //Ocurre error si no es el código 201.
-      isError = response.statusCode!=201;
-      if (!isError){
-        //Inserta el nuevo registro por el actualizado.
-        ref.read(stateManagerProductProvider)!.insertRows(0, [ref.read(productProvider)!.buildPlutoRow()]);
-      }
-    }
-    else{
-      //Ocurre error si no es el código 200.
-      isError = response.statusCode!=200;
-      if (!isError){
-        //Recupero la posición del registro del producto.
-        int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(plutoRowProvider)!);
-        //Si está dentro del arreglo.
-        if (index>-1){
-          //Reemplaza el registro por el actualizado.
-          ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productProvider)!.buildPlutoRow()]);
-        }
-      }
-    }
-    //Si ocurre error, entonces mostrar mensaje de error.
-    if (isError){
-      if (context.mounted) {
-        //Mostrar notificación de error.
-        ElegantNotification.error(
-          title:  const Text("Error"),
-          description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-        ).show(context);
-      }
-    }
-    else{
+    Response response = await ref.watch(newProductWithAPIProvider.future);
+
+    //Ocurre error si no es el código 201.
+    isError = response.statusCode!=201;
+    if (!isError){
+      //Inserta el nuevo registro por el actualizado.
+      ref.read(stateManagerProductProvider.notifier).insert(productProvider);
+      //Actualizar datos de ultima actualizacion
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-      if (context.mounted) {
-        ElegantNotification.success(
-          title:  const Text("Información"),
-          description:  const Text("La información ha sido actualizada con éxito.")
-        ).show(context);
-      }
+      //Notifica con exito en la operacion
+      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
+
+      //Libera el producto del proveedor.
+      ref.read(productProvider.notifier).free();
+      setState(() {});
     }
-    //Libera el producto del proveedor.
-    ref.read(productProvider.notifier).free();
-    setState(() {});
+    else{
+      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+    }
+  }
+
+  Future<void> _update(BuildContext context) async{
+    bool isError = false;
+    //Carga los datos del formulario en el producto.
+    ref.read(productProvider)?.fromJSON(_form.value);
+    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+    Response response = await ref.watch(updateProductWithAPIProvider.future);
+    
+    //Ocurre error si no es el código 200.
+    isError = response.statusCode!=200;
+    if (!isError){
+      ref.read(stateManagerProductProvider.notifier).update(productProvider);
+      //Actualizar datos de ultima actualizacion
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
+
+      //Libera el producto del proveedor.
+      ref.read(productProvider.notifier).free();
+      setState(() {});
+    }
+    else{ 
+      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+    }
   }
 }

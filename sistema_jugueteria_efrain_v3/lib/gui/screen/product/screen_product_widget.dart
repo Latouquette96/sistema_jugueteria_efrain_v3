@@ -128,7 +128,7 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text("Cantidad de productos total: ${ref.read(productCatalogProvider).length} (${ref.watch(stateManagerProductProvider)!.filterRows.length} producto/s filtrado/s)", style: StyleForm.getTextStyleListTileSubtitle(),),
+            Text("Cantidad de productos total: ${ref.read(productCatalogProvider).length} (${(ref.watch(stateManagerProductProvider)!=null) ? ref.watch(stateManagerProductProvider)!.refRows.filterOrOriginalLength : 0} producto/s filtrado/s)", style: StyleForm.getTextStyleListTileSubtitle(),),
             Text("Ultima actualización: ${ref.watch(lastUpdateProvider)}", style: StyleForm.getTextStyleListTileSubtitle())
           ],
         ),
