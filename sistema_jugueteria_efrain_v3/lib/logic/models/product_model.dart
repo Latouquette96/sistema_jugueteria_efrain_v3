@@ -90,34 +90,6 @@ class Product with MixinJSONalizable<Product> {
     fromJSONServer(map);
   }
 
-  ///Product: Construye un PlutoRow.
-  PlutoRow buildPlutoRow(){
-    var categoryPair = FactoryCategory.getInstance().search(getSubcategory());
-    
-    _plutoRow = PlutoRow(
-        type: PlutoRowType.normal(),
-        checked: false,
-        cells: {
-          "p_options": PlutoCell(),
-          Product.getKeyID(): PlutoCell(value: getID()),
-          Product.getKeyBarcode(): PlutoCell(value: getBarcode()),
-          Product.getKeyInternalCode(): PlutoCell(value: getInternalCode()),
-          Product.getKeyTitle(): PlutoCell(value: getTitle()),
-          Product.getKeyBrand(): PlutoCell(value: getBrand()),
-          Product.getKeyCategory(): PlutoCell(value: "${categoryPair.getValue1()!.getCategoryName()} > ${categoryPair.getValue2()!.getSubCategoryName()}"),
-          Product.getKeyStock(): PlutoCell(value: getStock()),
-          Product.getKeyPricePublic(): PlutoCell(value: getPricePublic()),
-       },
-    );
-    return _plutoRow!; 
-  }
-
-  ///Product: Devuelve un PlutoRow.
-  PlutoRow getPlutoRow(){
-    _plutoRow ??= buildPlutoRow();
-    return _plutoRow!;
-  }
-
   ///Product: Constructor de Product limpio (sin datos definidos).
   Product.clean() {
     _id = 0;
@@ -272,7 +244,9 @@ class Product with MixinJSONalizable<Product> {
 
   ///Product: Establece el ID del producto (solo si id del producto es 0). 
   void setID(int value) {
-    _id = value;
+    if (_id==0){
+      _id=value;
+    }
   }
 
   //------------------CODIGO DE BARRAS---------------------------------------------
@@ -447,7 +421,6 @@ class Product with MixinJSONalizable<Product> {
 
   @override
   Map<String, dynamic> getJSON() {
-    
     return {
       _keyID: _id,
       _keyBarcode: _barcode,
@@ -489,6 +462,8 @@ class Product with MixinJSONalizable<Product> {
       _dateUpdate = 0;
     }
     _minimumAge = (map[_keyMinimumAge] as MinimumAge).getMinimumAgeID();
+
+    _plutoRow = buildPlutoRow();
   }
   
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
@@ -513,5 +488,39 @@ class Product with MixinJSONalizable<Product> {
     
     _plutoRow = buildPlutoRow();
   }
+
+  //--------------------GRAFICOS---------------------
+
+  
+  ///Product: Construye un PlutoRow.
+  PlutoRow buildPlutoRow(){
+    var categoryPair = FactoryCategory.getInstance().search(getSubcategory());
+    
+    _plutoRow = PlutoRow(
+        type: PlutoRowType.normal(),
+        checked: false,
+        cells: {
+          "p_options": PlutoCell(),
+          Product.getKeyID(): PlutoCell(value: _id),
+          Product.getKeyBarcode(): PlutoCell(value: getBarcode()),
+          Product.getKeyInternalCode(): PlutoCell(value: getInternalCode()),
+          Product.getKeyTitle(): PlutoCell(value: getTitle()),
+          Product.getKeyBrand(): PlutoCell(value: getBrand()),
+          Product.getKeyCategory(): PlutoCell(value: "${categoryPair.getValue1()!.getCategoryName()} > ${categoryPair.getValue2()!.getSubCategoryName()}"),
+          Product.getKeyStock(): PlutoCell(value: getStock()),
+          Product.getKeyPricePublic(): PlutoCell(value: getPricePublic()),
+       },
+    );
+    return _plutoRow!; 
+  }
+
+  ///Product: Devuelve un PlutoRow.
+  PlutoRow getPlutoRow(){
+    _plutoRow ??= buildPlutoRow();
+    return _plutoRow!;
+  }
+
+
+
 
 }

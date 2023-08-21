@@ -5,12 +5,14 @@ import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {
@@ -70,7 +72,12 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           ),
           IconButton(
             onPressed: (){
+              //Actualiza la fecha de sincronización.
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+              //Cierra las pantallas abiertas.
+              if (ref.read(productProvider)!=null) ref.read(productProvider.notifier).free();
+              if (ref.read(productSearchPriceProvider)!=null) ref.read(productSearchPriceProvider.notifier).free();
+              if (ref.read(productBillingProvider)!=null) ref.read(productBillingProvider.notifier).free();
               //Refrezca el catálogo de productos.
               ref.read(productCatalogProvider.notifier).refresh();
             },
@@ -115,6 +122,17 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
             )
         ],
       ),
+      bottomNavigationBar: Container(
+        decoration: StyleForm.getDecorationContainer(),
+        height: 30,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text("Cantidad de productos total: ${ref.read(productCatalogProvider).length} (${ref.watch(stateManagerProductProvider)!.filterRows.length} producto/s filtrado/s)", style: StyleForm.getTextStyleListTileSubtitle(),),
+            Text("Ultima actualización: ${ref.watch(lastUpdateProvider)}", style: StyleForm.getTextStyleListTileSubtitle())
+          ],
+        ),
+      )
     );
   }
 }

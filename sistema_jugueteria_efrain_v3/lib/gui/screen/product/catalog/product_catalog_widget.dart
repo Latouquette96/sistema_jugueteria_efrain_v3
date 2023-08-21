@@ -7,12 +7,12 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_plutorow_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 ///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
@@ -51,8 +51,9 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                   onPressed: (){
                     //Busca el producto de acuerdo a la fila.
                     Product product = _getProductForRendererContext(rendererContext);
+                    ///Carga un producto al proveedor para que pueda ser editado.
+                    ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                     ///Carga un producto para que pueda ser desplegado el catalogo de precios.
-                    ref.read(productPlutoRowProvider.notifier).load(rendererContext.row);
                     ref.read(productSearchPriceProvider.notifier).load(product);
                     ref.read(productPricesByIDProvider.notifier).refresh();
                   }, 
@@ -65,6 +66,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                     //Busca el producto de acuerdo a la fila.
                     Product product = _getProductForRendererContext(rendererContext);
                     ///Carga un producto al proveedor para que pueda ser editado.
+                    ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                     ref.read(productProvider.notifier).load(product);
                   }, 
                   icon: Icon(MdiIcons.fromString("pencil"), color: Colors.black,)

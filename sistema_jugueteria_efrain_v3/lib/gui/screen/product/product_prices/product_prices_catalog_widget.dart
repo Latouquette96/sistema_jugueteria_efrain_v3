@@ -16,6 +16,8 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
@@ -121,38 +123,52 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
           subtitle: Container(
             margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
             child: ReactiveTextField(
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Precio público"),
-            formControlName: Product.getKeyPricePublic(),
-            validationMessages: {
-              ValidationMessage.required: (error) => "(Requerido) Precio al público es requerido."
-            },
-          ),
+              style: StyleForm.getStyleTextField(),
+              decoration: StyleForm.getDecorationTextField("Precio público"),
+              formControlName: Product.getKeyPricePublic(),
+              validationMessages: {
+                ValidationMessage.required: (error) => "(Requerido) Precio al público es requerido."
+              },
+            ),
           ),
           trailing: IconButton(
             color: Colors.blueGrey,
             padding: EdgeInsets.zero,
             icon: Icon(MdiIcons.fromString("content-save")),
             onPressed: () async{
+              //Escribe el nuevo valor al público del producto.
               ref.read(productSearchPriceProvider)!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
+              //Realiza la peticion de escritura en el servidor.
               final response = await ref.read(updatePricePublicWithAPIProvider.future);
+              //Comprueba si resultó exitosa la operacion (cod. 200), en caso contrario, es error.
               bool error = response.statusCode!=200;
               if (error==false){
-                // ignore: use_build_context_synchronously
-                ElegantNotification.success(
-                  title:  const Text("Información"),
-                  description:  const Text("La información ha sido actualizada con éxito.")
-                ).show(context);
+                if (context.mounted){
+                  ElegantNotification.success(
+                    title:  const Text("Información"),
+                    description:  const Text("La información ha sido actualizada con éxito.")
+                  ).show(context);
+                }
+                
+                //Recupero la posición del registro del producto.
+                int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(plutoRowProvider)!);
+                //Si está dentro del arreglo.
+                if (index>-1){
+                  //Reemplaza el registro por el actualizado.
+                  ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productSearchPriceProvider)!.buildPlutoRow()]);
+                }
+
                 ref.read(productSearchPriceProvider.notifier);
                 setState(() {});
               }
               else{
                 //Caso contrario, mostrar notificación de error.
-                // ignore: use_build_context_synchronously
-                ElegantNotification.error(
-                  title:  const Text("Error"),
-                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                ).show(context);
+                if (context.mounted){
+                  ElegantNotification.error(
+                    title:  const Text("Error"),
+                    description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                  ).show(context);
+                }
               }
             },
           ),

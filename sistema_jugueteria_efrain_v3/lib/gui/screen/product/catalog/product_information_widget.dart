@@ -12,18 +12,18 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_product_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_plutorow_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {
@@ -37,98 +37,14 @@ class ProductInformationWidget extends ConsumerStatefulWidget {
 
 class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidget> with ContainerParameters {
 
+  //Atributos de instancia.
   late final FormGroup _form;
-
-  static const String _keyTemplateSize = "pp_template_size";
-  static final String _keySizeAux = "${Product.getKeySizes()}Aux";
-  static final String _keyBrandAux = "${Product.getKeyBrand()}Aux";
-
-  static const List<String> _templateSize = [
-    "Medida (Blíster): # cm de alto x # cm de ancho x # cm de largo.",
-    "Medida (Blíster): # cm de alto x # cm de ancho x # cm de profundidad.",
-    "Medida (Caja): # cm de alto x # cm de ancho x # cm de largo.",
-    "Medida (Caja): # cm de alto x # cm de ancho x # cm de profundidad.",
-    "Medida (Producto): # cm de alto x # cm de ancho x # cm de largo.",
-    "Medida (Producto): # cm de alto x # cm de ancho x # cm de profundidad.",
-    "Medida (Producto): # cm de circunferencia.",
-    "Medida (Producto): # cm de diametro."
-  ];
 
   @override
   void initState() {
     super.initState();
-
-    Pair<Category?, SubCategory?> pairCategory = FactoryCategory.getInstance().search(ref.read(productProvider)!=null ? ref.read(productProvider)!.getSubcategory() : 0);
-    
-    _form = FormGroup({
-      Product.getKeyID(): FormControl<int>(
-        value: ref.read(productProvider)?.getID(),
-      ),
-      Product.getKeyBarcode(): FormControl<String>(
-        value: ref.read(productProvider)?.getBarcode(),
-        validators: [Validators.required, Validators.maxLength(Product.getMaxCharsBarcode())]
-      ),
-      Product.getKeyInternalCode(): FormControl<String>(
-        value: ref.read(productProvider)?.getInternalCode(),
-      ),
-      Product.getKeyTitle(): FormControl<String>(
-        value: ref.read(productProvider)?.getTitle(),
-        validators: [Validators.required, Validators.maxLength(Product.getMaxCharsTitle())]
-      ),
-      _keyBrandAux: FormControl<String>(
-        value: ref.read(productProvider)?.getBrand()
-      ),
-      Product.getKeyBrand(): FormControl<String>(
-        value: ref.read(productProvider)?.getBrand(),
-        validators: [Validators.required, Validators.maxLength(Product.getMaxCharsBrand())]
-      ),     
-      Product.getKeyDescription(): FormControl<String>(
-        value: ref.read(productProvider)?.getDescription(),
-        validators: [Validators.required, Validators.maxLength(Product.getMaxCharsDescription())]
-      ),
-      Product.getKeySizes(): FormControl<List<String>>(
-        value: ref.read(productProvider)?.getSizes(),
-        validators: [Validators.required]
-      ),
-      _keySizeAux: FormControl<String>(
-        value: "",
-      ),
-      Product.getKeyCategory(): FormControl<Category>(
-        value: pairCategory.getValue1(),
-        validators: [Validators.required]
-      ),
-      Product.getKeySubcategory(): FormControl<SubCategory>(
-        value: pairCategory.getValue2(),
-        validators: [Validators.required]
-      ),
-      Product.getKeyStock(): FormControl<int>(
-        value: ref.read(productProvider)?.getStock(),
-        validators: [Validators.required, Validators.number, Validators.min<int>(-1)]
-      ),
-      Product.getKeyPricePublic(): FormControl<double>(
-        value: ref.read(productProvider)?.getPricePublic(),
-        validators: [Validators.required, Validators.number]
-      ),
-      Product.getKeyImages(): FormControl<List<ResourceLink>>(
-        value: ref.read(productProvider)?.getLinkImages(),
-        validators: [Validators.required]
-      ),
-      Product.getKeyMinimumAge(): FormControl<MinimumAge>(
-        value: FactoryMinimumAge.getInstance().search(ref.read(productProvider)?.getMinimumAge() ?? 0),
-        validators: [Validators.required]
-      ),
-      Product.getKeyDateCreated(): FormControl<String>(
-        value: ref.read(productProvider)!.getDateCreate(),
-        validators: [Validators.required]
-      ),
-      Product.getKeyDateUpdated(): FormControl<String>(
-        value: ref.read(productProvider)!.getDateUpdate(),
-        validators: [Validators.required]
-      ),
-      _keyTemplateSize: FormControl<String>(
-        value: ""
-      )
-    });
+    //Inicializa el formgroup.
+    _form = FormGroupProduct.buildFormGroupProduct(ref, productProvider);
   }
 
   @override
@@ -341,7 +257,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       child: Column(
                         children: [
                           ReactiveTypeAhead<String, String>(
-                            formControlName: _keyBrandAux,
+                            formControlName: FormGroupProduct.getKeyBrandAux(),
                             stringify: (_) => _,
                             textFieldConfiguration: TextFieldConfiguration(
                               autofocus: false,
@@ -509,10 +425,10 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                               isExpanded: true,
                               iconSize: 50,
                               icon: const Icon(Icons.arrow_drop_down, size: 25,),
-                              formControlName: _keyTemplateSize,
+                              formControlName: FormGroupProduct.getKeyTemplateSize(),
                               style: StyleForm.getStyleDropdownField(),
                               decoration: StyleForm.getDecorationTextField("Selección de plantilla"),
-                              items: _templateSize.map((e) => DropdownMenuItem<String>(
+                              items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
                                 value: e,
                                 child: Container(
                                   margin: EdgeInsets.zero,
@@ -522,9 +438,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                 ),
                               )).toList(),
                               onChanged: (control) {
-                                _form.control(_keySizeAux).value = _form.control(_keyTemplateSize).value;
+                                _form.control(FormGroupProduct.getKeySizeAux()).value = _form.control(FormGroupProduct.getKeyTemplateSize()).value;
                                 setState(() {});
-                                _form.focus(_keySizeAux);
+                                _form.focus(FormGroupProduct.getKeySizeAux());
                               },
                               validationMessages: {
                                 ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
@@ -536,14 +452,14 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                               minLines: 1,
                               style: StyleForm.getStyleTextArea(),
                               decoration: StyleForm.getDecorationTextField("Insertar medida"),
-                              formControlName: _keySizeAux,
+                              formControlName: FormGroupProduct.getKeySizeAux(),
                               textInputAction: TextInputAction.next,
                               onSubmitted: (_){
                                 List<String> list = _form.control(Product.getKeySizes()).value;
-                                list.add(_form.control(_keySizeAux).value);
+                                list.add(_form.control(FormGroupProduct.getKeySizeAux()).value);
                                 
-                                _form.control(_keySizeAux).value = "";
-                                _form.focus(_keySizeAux);
+                                _form.control(FormGroupProduct.getKeySizeAux()).value = "";
+                                _form.focus(FormGroupProduct.getKeySizeAux());
 
                                 setState(() { });
                               },
@@ -572,60 +488,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               children: [
                 Expanded(child: ElevatedButton(
                   style: StyleForm.getStyleElevatedButtom(),
-                  onPressed: (){
-                    bool isError = false;
-                    bool isNew = ref.read(productProvider)!.getID()==0;
-                    
-                    ref.read(productProvider)?.fromJSON(_form.value);
-                    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-                    AsyncValue<Response> response = (ref.read(productProvider)!.getID()==0) 
-                      ? ref.watch(newProductWithAPIProvider)
-                      : ref.watch(updateProductWithAPIProvider);
-                                    
-                    //Realiza la peticion de modificacion y analiza la respuesta obtenida.
-                    response.when(
-                      data: (data){
-                        isError = false;
-                      }, 
-                      error: (err, stack){
-                        isError = true;
-                      }, 
-                      loading: (){null;}
-                    );
-
-                    //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                    if (isError==false){
-                      ElegantNotification.success(
-                        title:  const Text("Información"),
-                        description:  const Text("La información ha sido actualizada con éxito.")
-                      ).show(context);
-
-                      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-                      //Si el producto es nuevo, entonces se debe insertar en el catalogo.
-                      if (ref.read(productProvider)!.getID()!=0){
-                        //Recupero la posición del registro del producto.
-                        int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(productProvider)!.getPlutoRow());
-                        //Si está dentro del arreglo.
-                        if (index>-1){
-                          //Reemplaza el registro por el actualizado.
-                          ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productProvider)!.buildPlutoRow()]);
-                        }
-                      }
-                      else{
-                        //Inserta el nuevo registro por el actualizado.
-                        ref.read(stateManagerProductProvider)!.appendRows([ref.read(productProvider)!.buildPlutoRow()]);
-                      }
-
-                      ref.read(productProvider.notifier).free();
-                      setState(() {});
-                    }
-                    else{
-                      //Caso contrario, mostrar notificación de error.
-                      ElegantNotification.error(
-                        title:  const Text("Error"),
-                        description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                      ).show(context);
-                    }
+                  onPressed: () async{
+                    await _insertOrUpdate(context);
                   } ,
                   child: const Text('Guardar cambios'),
                 )),
@@ -635,5 +499,60 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         ],
       ),
     );
+  }
+
+  Future<void> _insertOrUpdate(BuildContext context) async{
+    bool isNew = ref.read(productProvider)!.getID()==0;
+    bool isError = false;
+    //Carga los datos del formulario en el producto.
+    ref.read(productProvider)?.fromJSON(_form.value);
+    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+    Response response = (isNew) 
+      ? await ref.watch(newProductWithAPIProvider.future)
+      : await ref.watch(updateProductWithAPIProvider.future);
+    //Si se trata de un producto nuevo
+    if (isNew){
+      //Ocurre error si no es el código 201.
+      isError = response.statusCode!=201;
+      if (!isError){
+        //Inserta el nuevo registro por el actualizado.
+        ref.read(stateManagerProductProvider)!.insertRows(0, [ref.read(productProvider)!.buildPlutoRow()]);
+      }
+    }
+    else{
+      //Ocurre error si no es el código 200.
+      isError = response.statusCode!=200;
+      if (!isError){
+        //Recupero la posición del registro del producto.
+        int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(plutoRowProvider)!);
+        //Si está dentro del arreglo.
+        if (index>-1){
+          //Reemplaza el registro por el actualizado.
+          ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productProvider)!.buildPlutoRow()]);
+        }
+      }
+    }
+    //Si ocurre error, entonces mostrar mensaje de error.
+    if (isError){
+      if (context.mounted) {
+        //Mostrar notificación de error.
+        ElegantNotification.error(
+          title:  const Text("Error"),
+          description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+        ).show(context);
+      }
+    }
+    else{
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      if (context.mounted) {
+        ElegantNotification.success(
+          title:  const Text("Información"),
+          description:  const Text("La información ha sido actualizada con éxito.")
+        ).show(context);
+      }
+    }
+    //Libera el producto del proveedor.
+    ref.read(productProvider.notifier).free();
+    setState(() {});
   }
 }

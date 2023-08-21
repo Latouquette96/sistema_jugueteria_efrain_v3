@@ -13,8 +13,7 @@ class ProductProvider extends StateNotifier<Product?> {
   ///ProductProvider: Libera el producto actual.
   void free(){
     state = null;
-  }
-  
+  }  
 }
 
 ///productProvider es un proveedor que sirve para almacenar el estado de un producto que será actualizado o creado.

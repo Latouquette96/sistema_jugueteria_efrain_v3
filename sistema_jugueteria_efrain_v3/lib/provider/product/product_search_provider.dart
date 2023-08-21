@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ProductSearchProvider: Proveedor de servicios para almacenar el estado de un producto.
 class ProductSearchProvider extends StateNotifier<List<Product>> {

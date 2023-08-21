@@ -14,4 +14,16 @@ class StateManagerProductProvider extends StateNotifier<PlutoGridStateManager?> 
   load(PlutoGridStateManager p) {
     state = p;
   }
+
+  void insert(){
+
+  }
+
+  void update(){
+
+  }
+
+  void remove(){
+    
+  }
 }
