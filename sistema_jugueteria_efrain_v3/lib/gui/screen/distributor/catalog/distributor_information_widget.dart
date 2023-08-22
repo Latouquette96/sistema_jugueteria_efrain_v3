@@ -1,14 +1,16 @@
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase DistributorInformationWidget: Permite mostrar y actualizar la información de una distribuidora.
 class DistributorInformationWidget extends ConsumerStatefulWidget {
@@ -27,39 +29,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
   @override
   void initState() {
     super.initState();
-    _form = FormGroup({
-      Distributor.getKeyID(): FormControl<int>(
-        value: ref.read(distributorProvider)?.getID(),
-      ),
-      Distributor.getKeyCUIT(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getCUIT(),
-        validators: [Validators.required, Validators.maxLength(13)]
-      ),
-      Distributor.getKeyName(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getName(),
-        validators: [Validators.required]
-      ),
-      Distributor.getKeyAddress(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getAddress(),
-        validators: []
-      ),
-      Distributor.getKeyCel(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getPhone(),
-        validators: [Validators.pattern(RegExp(r'^\d\d*-?\d*\d$'))]
-      ),     
-      Distributor.getKeyEmail(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getEmail(),
-        validators: [Validators.email]
-      ),
-      Distributor.getKeyIVA(): FormControl<double>(
-        value: ref.read(distributorProvider)?.getIVA(),
-        validators: [Validators.required, Validators.composeOR([Validators.equals(1.00), Validators.equals(1.21)])]
-      ),
-      Distributor.getKeyWebsite(): FormControl<String>(
-        value: ref.read(distributorProvider)?.getWebsite(),
-        validators: []
-      )}, 
-    );
+    _form = FormGroupDistributor.buildFormGroup(ref, distributorProvider);
   }
 
   @override
@@ -83,7 +53,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
               titleHeader: "Información Distribuidora",
               tooltipClose: "Cerrar información de la distribuidora.",
               onClose: (){
-                ref.read(distributorProvider.notifier).freeDistributor(ref);
+                ref.read(distributorProvider.notifier).free();
               },
             ),
             Expanded(
@@ -190,48 +160,12 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                       children: [
                         Expanded(child: ElevatedButton(
                           style: ElevatedButton.styleFrom(backgroundColor: _form.valid ? Colors.blue : Colors.grey),
-                          onPressed: (){
-                            if(_form.valid){
-                              
-                              bool isError = false;
-                              
-                              ref.read(distributorProvider)?.fromJSON(_form.value);
-
-                              //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-                              AsyncValue<Response> response = (ref.read(distributorProvider)!.getID()==0) 
-                                ? ref.watch(newDistributorWithAPIProvider)
-                                : ref.watch(updateDistributorWithAPIProvider);
-                              
-                              //Realiza la peticion de modificacion y analiza la respuesta obtenida.
-                              response.when(
-                                data: (data){
-                                  isError = false;
-                                }, 
-                                error: (err, stack){
-                                  isError = true;
-                                }, 
-                                loading: (){null;}
-                              );
-
-                              //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                              if (isError==false){
-                                ElegantNotification.success(
-                                  title:  const Text("Información"),
-                                  description:  const Text("La información ha sido actualizada con éxito.")
-                                ).show(context);
-
-                                ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-                                ref.read(distributorProvider.notifier).freeDistributor(ref);
-                              }
-                              else{
-                                //Caso contrario, mostrar notificación de error.
-                                ElegantNotification.error(
-                                  title:  const Text("Error"),
-                                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                                ).show(context);
-                              }
-                            }
-                          } ,
+                          onPressed: () async{
+                            ref.read(distributorProvider)?.fromJSON(_form.value);
+                            bool isNew = ref.read(distributorProvider)!.getID()==0;
+                            if (isNew) {await _insert(context);}
+                            else  {await _update(context);}
+                          },
                           child: const Text('Guardar cambios'),
                         )),
                       ],
@@ -246,5 +180,56 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
         ],
       )
     ));
+  }
+
+  
+  Future<void> _insert(BuildContext context) async{
+    bool isError = false;
+    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+    Response response = await ref.watch(newDistributorWithAPIProvider.future);
+
+    //Ocurre error si no es el código 201.
+    isError = response.statusCode!=201;
+    if (!isError){
+      //Inserta el nuevo registro por el actualizado.
+      ref.read(stateManagerDistributorProvider.notifier).insert(distributorProvider);
+      //Actualizar datos de ultima actualizacion
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      //Notifica con exito en la operacion
+      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
+
+      //Libera el producto del proveedor.
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      ref.read(distributorProvider.notifier).free();
+      setState(() {});
+    }
+    else{
+      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+    }
+  }
+
+  Future<void> _update(BuildContext context) async{
+    bool isError = false;
+    //Carga los datos del formulario en el producto.
+    ref.read(distributorProvider)?.fromJSON(_form.value);
+    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+    Response response = await ref.watch(updateDistributorWithAPIProvider.future);
+    
+    //Ocurre error si no es el código 200.
+    isError = response.statusCode!=200;
+    if (!isError){
+      ref.read(stateManagerDistributorProvider.notifier).update(distributorProvider);
+      //Actualizar datos de ultima actualizacion
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
+
+      //Libera el producto del proveedor.
+      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      ref.read(distributorProvider.notifier).free();
+      setState(() {});
+    }
+    else{ 
+      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+    }
   }
 }

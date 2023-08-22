@@ -1,30 +1,38 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_plutonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
 
-final stateManagerProductProvider = StateNotifierProvider<StateManagerProductProvider, PlutoGridStateManager?>(
-    (ref) => StateManagerProductProvider(ref)
+final stateManagerProvider = StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?>(
+    (ref) => StateManagerProvider(ref)
 );
 
-///Clase ProductProvider: Proveedor de estado de Producto.
-class StateManagerProductProvider extends StateNotifier<PlutoGridStateManager?> {
-  final StateNotifierProviderRef<StateManagerProductProvider, PlutoGridStateManager?> ref;
+final stateManagerProductProvider = StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?>(
+    (ref) => StateManagerProvider(ref)
+);
 
-  //Constructor de ProductProvider.
-  StateManagerProductProvider(this.ref) : super(null);
+final stateManagerDistributorProvider = StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?>(
+    (ref) => StateManagerProvider(ref)
+);
 
-  ///ProductProvider: Carga un producto existente como estado.
+
+///Clase StateManagerProvider: Proveedor de estado de StateManager.
+class StateManagerProvider extends StateNotifier<PlutoGridStateManager?> {
+  final StateNotifierProviderRef<StateManagerProvider, PlutoGridStateManager?> ref;
+
+  //Constructor de StateManagerProvider.
+  StateManagerProvider(this.ref) : super(null);
+
+  ///StateManagerProvider: Carga un producto existente como estado.
   load(PlutoGridStateManager p) {
     state = p;
   }
 
-  void insert(StateNotifierProvider<ProductProvider, Product?> provider){
+  void insert(StateNotifierProvider<StateNotifier<MixinPlutonizable?>, MixinPlutonizable?> provider){
     state!.insertRows(0, [ref.read(provider)!.buildPlutoRow()]);
   }
 
-  void update(StateNotifierProvider<ProductProvider, Product?> provider){
+  void update(StateNotifierProvider<StateNotifier<MixinPlutonizable?>, MixinPlutonizable?>  provider){
     //Recupero la posición del registro del producto.
     int index = state!.rows.indexOf(ref.read(plutoRowProvider)!);
     //Si está dentro del arreglo.

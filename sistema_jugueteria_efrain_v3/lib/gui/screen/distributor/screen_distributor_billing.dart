@@ -38,7 +38,7 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
             onPressed: (){
               setState(() {
                 //ref.read(billingProvider.notifier).freeBilling();
-                ref.read(distributorBillingProvider.notifier).freeDistributor(ref);
+                ref.read(distributorBillingProvider.notifier).free();
                 //ref.refresh(billingsByDistributorProvider);
               });
               
@@ -76,7 +76,7 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
                         child: IconButton(
                           icon: Icon(MdiIcons.fromString("close"),), 
                           onPressed: () { 
-                            ref.read(distributorBillingProvider.notifier).freeDistributor(ref);
+                            ref.read(distributorBillingProvider.notifier).free();
                            },
                         )
                       )

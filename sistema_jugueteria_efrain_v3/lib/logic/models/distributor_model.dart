@@ -1,7 +1,9 @@
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_plutonizable.dart';
 
 ///Clase Distributor: Modela la distribuidora de donde provienen los productos.
-class Distributor with MixinJSONalizable<Distributor> {
+class Distributor with MixinJSONalizable<Distributor>, MixinPlutonizable {
   //Atributos de instancia
   late int _id;
   late String _cuit; //RN-D1.
@@ -11,6 +13,7 @@ class Distributor with MixinJSONalizable<Distributor> {
   late String? _cel; //RN-D3.
   late String? _website; //RN-D7.
   late double _iva; //RN-D5.
+  //Atributos gráficos.
 
   //Atributos de clase
   static const String _keyID      = "d_id";
@@ -41,6 +44,7 @@ class Distributor with MixinJSONalizable<Distributor> {
     _cel = cel;
     _website = website;
     _iva = iva;
+    plutoRow = buildPlutoRow();
   }
 
   ///Distributor: Constructor de distribuidora con datos JSON.
@@ -215,5 +219,28 @@ class Distributor with MixinJSONalizable<Distributor> {
     catch(e){
       _iva = double.parse(map[_keyIVA]);
     }
+
+    plutoRow = buildPlutoRow();
+  }
+
+  @override
+  PlutoRow buildPlutoRow() {
+    plutoRow = PlutoRow(
+        type: PlutoRowType.normal(),
+        checked: false,
+        cells: {
+          getKeyOptions(): PlutoCell(),
+          Distributor.getKeyID(): PlutoCell(value: _id),
+          Distributor.getKeyCUIT(): PlutoCell(value: _cuit),
+          Distributor.getKeyName(): PlutoCell(value: _name),
+          Distributor.getKeyAddress(): PlutoCell(value: _address),
+          Distributor.getKeyCel(): PlutoCell(value: _cel),
+          Distributor.getKeyEmail(): PlutoCell(value: _email),
+          Distributor.getKeyIVA(): PlutoCell(value: _iva),
+          Distributor.getKeyWebsite(): PlutoCell(value: _website),
+       },
+    );
+
+    return plutoRow!;
   }
 }

@@ -28,8 +28,6 @@ final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
   List<dynamic> json = jsonDecode(response.body);
   product.setID(json[0]['p_id']);
 
-  print("obtenido: ${json[0]['p_id']} vs. almacenado: ${product.getID()}");
-
   //Refrezca las marcas cargadas.
   await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
   //Refrezca el catalogo de productos.

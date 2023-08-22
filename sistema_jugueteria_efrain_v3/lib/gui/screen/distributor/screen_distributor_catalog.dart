@@ -7,6 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
 class ScreenDistributorCatalog extends ConsumerStatefulWidget {
@@ -19,6 +20,21 @@ class ScreenDistributorCatalog extends ConsumerStatefulWidget {
 }
 
 class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCatalog> {
+  // The reference to the navigator
+  // ignore: unused_field
+  late NavigatorState _navigator;
+
+  @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +50,19 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(distributorProvider.notifier).loadDistributor(Distributor());
+              ref.read(distributorProvider.notifier).load(Distributor());
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar una nueva distribuidora.",
           ),
           IconButton(
             onPressed: (){
+              //Actualiza la fecha de sincronización.
+              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+              //Cierra las pantallas abiertas.
+              if (ref.read(distributorProvider)!=null) ref.read(distributorProvider.notifier).free();
+              //Refrezca el catálogo de productos.
+              ref.read(distributorCatalogProvider.notifier).refresh();
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
             },
             icon: Icon(MdiIcons.fromString("reload")),

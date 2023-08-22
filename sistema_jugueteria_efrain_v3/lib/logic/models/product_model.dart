@@ -1,6 +1,7 @@
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_plutonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
@@ -9,7 +10,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 
 ///Clase Product: Modela a un producto con todos sus atributos.
-class Product with MixinJSONalizable<Product> {
+class Product with MixinJSONalizable<Product>, MixinPlutonizable {
   ///Atributos de instancia
   late int _id;
   late String? _barcode; //RN-P1.
@@ -25,7 +26,6 @@ class Product with MixinJSONalizable<Product> {
   late int _dateUpdate; //RN-P22.
   late int _dateCreate; //RN-P22.
   late int _minimumAge; 
-  late PlutoRow? _plutoRow;
 
   //Atributos de clase
   static const int _maxCharsBarcode = 48; //RN-P15
@@ -49,7 +49,6 @@ class Product with MixinJSONalizable<Product> {
   static const String _keyDateUpdated  = "p_date_updated";
   static const String _keyDateCreated  = "p_date_created";
   static const String _keyMinimumAge   = "p_minimum_age";
-
 
   ///Product: Constructor genérico de producto.
   Product({
@@ -82,7 +81,7 @@ class Product with MixinJSONalizable<Product> {
     _dateCreate = (dateCreate == 0) ? DatetimeCustom.getDatetimeIntegerNow() : dateCreate;
     _dateUpdate = dateUpdate;
     _minimumAge = minimumAge;
-    _plutoRow = buildPlutoRow();
+    plutoRow = buildPlutoRow();
   }
 
   ///Product: Constructor de Product con datos JSON.
@@ -107,7 +106,7 @@ class Product with MixinJSONalizable<Product> {
     _dateUpdate = 0;
     _minimumAge = 0;
     
-    _plutoRow = buildPlutoRow();
+    plutoRow = buildPlutoRow();
   }
 
   //------------------CONSULTAS ESTÁTICAS---------------------------------------------
@@ -463,7 +462,7 @@ class Product with MixinJSONalizable<Product> {
     }
     _minimumAge = (map[_keyMinimumAge] as MinimumAge).getMinimumAgeID();
 
-    _plutoRow = buildPlutoRow();
+    plutoRow = buildPlutoRow();
   }
   
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
@@ -486,17 +485,16 @@ class Product with MixinJSONalizable<Product> {
     _dateUpdate = int.parse(map[_keyDateUpdated]);
     _minimumAge = map[_keyMinimumAge];
     
-    _plutoRow = buildPlutoRow();
+    plutoRow = buildPlutoRow();
   }
 
   //--------------------GRAFICOS---------------------
 
-  
-  ///Product: Construye un PlutoRow.
+  @override
   PlutoRow buildPlutoRow(){
     var categoryPair = FactoryCategory.getInstance().search(getSubcategory());
     
-    _plutoRow = PlutoRow(
+    plutoRow = PlutoRow(
         type: PlutoRowType.normal(),
         checked: false,
         cells: {
@@ -511,16 +509,6 @@ class Product with MixinJSONalizable<Product> {
           Product.getKeyPricePublic(): PlutoCell(value: getPricePublic()),
        },
     );
-    return _plutoRow!; 
+    return plutoRow!; 
   }
-
-  ///Product: Devuelve un PlutoRow.
-  PlutoRow getPlutoRow(){
-    _plutoRow ??= buildPlutoRow();
-    return _plutoRow!;
-  }
-
-
-
-
 }

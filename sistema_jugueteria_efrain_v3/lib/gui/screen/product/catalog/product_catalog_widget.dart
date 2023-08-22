@@ -287,17 +287,3 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     return _getProduct(row);
   }
 }
-
-class ClassYouImplemented implements PlutoFilterType {
-  @override
-  String get title => 'Custom contains';
-
-  @override
-  get compare => ({required String? base, required String? search, required PlutoColumn? column}) {
-        var keys = search!.split(',').map((e) => e.toUpperCase()).toList();
-
-        return keys.contains(base!.toUpperCase());
-      };
-
-  const ClassYouImplemented();
-}

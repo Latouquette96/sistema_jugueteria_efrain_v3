@@ -6,12 +6,12 @@ class DistributorProvider extends StateNotifier<Distributor?> {
   DistributorProvider(): super(null);
 
   ///DistributorProvider: Carga una distribuidora nueva.
-  void loadDistributor(Distributor d){
+  void load(Distributor d){
     state = d;
   }
 
   ///DistributorProvider: Libera la distribuidora actual.
-  void freeDistributor(WidgetRef ref){
+  void free(){
     state = null;
   }
 }

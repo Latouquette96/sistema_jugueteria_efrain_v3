@@ -47,7 +47,7 @@ class _DropdownDistributorWidgetState extends ConsumerState<DropdownDistributorW
         ),
         onChanged:(value) {
           if (value!=null){
-            ref.watch(distributorBillingProvider.notifier).loadDistributor(value);
+            ref.watch(distributorBillingProvider.notifier).load(value);
           }
         },
         selectedItem: ref.watch(distributorBillingProvider),
