@@ -14,7 +14,6 @@ import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_pr
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-@immutable
 ///DistributorCatalogWidget: Widget que permite visualizar el catalogo de distribuidoras.
 class DistributorCatalogWidget extends ConsumerStatefulWidget {
   const DistributorCatalogWidget({super.key});
@@ -191,7 +190,9 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
         columns: _columns,
         rows: _rows,
         onLoaded: (event) {
-          ref.read(stateManagerDistributorProvider.notifier).load(event.stateManager);
+          if (mounted){
+            ref.read(stateManagerDistributorProvider.notifier).load(event.stateManager);
+          }
         },
         configuration: PlutoGridConfiguration(
             localeText: PlutoConfiguration.getPlutoGridLocaleText(),
