@@ -12,6 +12,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provi
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
@@ -111,12 +112,12 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           ),
           Visibility(
               visible: ref.watch(productSearchPriceProvider) != null,
-              child: const SizedBox(
+              child: SizedBox(
                 width: 400,
                 child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(child: ProductPricesCatalogWidget())
+                  Expanded(child: ProductPricesCatalogWidget(productSearchPriceProvider, productPricesByIDProvider))
                 ],
               ))
             )

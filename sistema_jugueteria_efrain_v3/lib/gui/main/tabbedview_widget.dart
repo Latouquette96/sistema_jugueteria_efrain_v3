@@ -2,7 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/main/mainbar_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
+class TabbedViewWidget extends ConsumerStatefulWidget {
+  const TabbedViewWidget({super.key});
+  
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _TabbedViewWidgetState();
+  }
+}
+
+class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    TabbedView tabbedView = TabbedView(controller: ref.watch(tabbedViewProvider));
+    Widget w = TabbedViewTheme(
+      data: TabbedViewThemeData.classic(),
+      child: tabbedView
+    );
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        toolbarHeight: 30,
+        title: MainBarWidget(key: GlobalKey()),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(5),
+        child: w
+      )
+    );
+  }
+
+}
+/*
 ///TabbedViewWidget: Muestra el contenido de un tabbedview haciendo uso de tabs que se insertan dinámicamente.
 class TabbedViewWidget extends ConsumerWidget {
   const TabbedViewWidget({super.key});
@@ -70,4 +109,4 @@ class TabbedViewWidget extends ConsumerWidget {
         ),
       );
   }
-}
+}*/

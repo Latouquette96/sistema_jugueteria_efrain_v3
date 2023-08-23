@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
@@ -10,9 +11,10 @@ import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manage
 class ProductSearchProvider extends StateNotifier<List<Product>> {
   //Atributos de clase
   final StateNotifierProviderRef<ProductSearchProvider, List<Product>> ref;
+  final StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?> stateProvider;
 
   //Constructor de ProductSearchProvider
-  ProductSearchProvider(this.ref): super([]);
+  ProductSearchProvider(this.ref, this.stateProvider): super([]);
 
   ///ProductSearchProvider: Inicializa el arreglo de producto.
   Future<void> initialize() async{
@@ -25,7 +27,7 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
       List<Product> list = map.map((e) => Product.fromJSON(e)).toList();
       state = [...list];
       //Notifica al catalogo.
-      ref.read(stateManagerProductProvider)!.insertRows(0, state.map((e) => e.getPlutoRow()).toList());
+      ref.read(stateProvider)!.insertRows(0, state.map((e) => e.getPlutoRow()).toList());
     }
     catch(e){
       state = [];
@@ -35,7 +37,7 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
   ///ProductSearchProvider: Refrezca el listado de productos.
   Future<void> refresh() async {
     //Limpia el catalogo de todas las filas.
-    ref.read(stateManagerProductProvider)!.removeAllRows();
+    ref.read(stateProvider)!.removeAllRows();
     //Limpia el estado actual.
     state = [];
     //Limpia los productos seleccionados.
@@ -57,4 +59,7 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
 
 
 ///productCatalogProvider es un proveedor que almacena la lista de productos.
-final productCatalogProvider = StateNotifierProvider<ProductSearchProvider, List<Product>>((ref) => ProductSearchProvider(ref));
+final productCatalogProvider = StateNotifierProvider<ProductSearchProvider, List<Product>>((ref) => ProductSearchProvider(ref, stateManagerProductProvider));
+
+///productCatalogPDFProvider es un proveedor que almacena la lista de productos.
+final productCatalogPDFProvider = StateNotifierProvider<ProductSearchProvider, List<Product>>((ref) => ProductSearchProvider(ref, stateManagerProductPricePDFProvider));

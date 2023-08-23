@@ -18,3 +18,6 @@ class PlutoRowProvider extends StateNotifier<PlutoRow?> {
 
 ///productProvider es un proveedor que sirve para almacenar el estado de un PlutoRow que será actualizado o creado.
 final plutoRowProvider = StateNotifierProvider<PlutoRowProvider, PlutoRow?>((ref) => PlutoRowProvider());
+
+///plutoRowPDFProvider es un proveedor que sirve para almacenar el estado de un PlutoRow que será actualizado o creado.
+final plutoRowPDFProvider = StateNotifierProvider<PlutoRowProvider, PlutoRow?>((ref) => PlutoRowProvider());

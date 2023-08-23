@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
@@ -13,9 +14,11 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor
 class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, ProductPrice>>> {
   //Atributos de clase
   final StateNotifierProviderRef<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> ref;
-  
+  final StateNotifierProvider<ProductProvider, Product?> providerSearch;
+
+
   //Constructor de ProductPriceSearchProvider
-  ProductPriceSearchProvider(this.ref): super([]);
+  ProductPriceSearchProvider(this.ref, this.providerSearch): super([]);
 
   ///ProductPriceSearchProvider: Inicializa el arreglo de precios del producto.
   Future<void> initialize() async{
@@ -24,7 +27,7 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
     //Obtiene la respuesta a la solicitud http.
     try{
       //Producto sobre el cual se busca los precios de producto.
-      final product = ref.watch(productSearchPriceProvider);
+      final product = ref.watch(providerSearch);
 
       //Obtiene todas las distribuidoras existentes.
       List<Distributor> listDistributor = (await ref.read(distributorCatalogProvider));
@@ -59,4 +62,7 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
 }
 
 ///productPricesByIDProvider es un proveedor que almacena la lista de productos.
-final productPricesByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref));
+final productPricesByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productSearchPriceProvider));
+
+///productPricesPDFByIDProvider es un proveedor que almacena la lista de productos.
+final productPricesPDFByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productSearchPDFPriceProvider));

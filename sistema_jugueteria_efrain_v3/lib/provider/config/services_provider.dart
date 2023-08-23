@@ -17,6 +17,7 @@ class ServiceProvider {
   Future<void> run() async {
     //Inicializa los servicios.
     await ref.watch(productCatalogProvider.notifier).initialize();
+    await ref.watch(productCatalogPDFProvider.notifier).initialize();
     await ref.watch(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
     await ref.watch(distributorCatalogProvider.notifier).refresh();
   }
@@ -24,6 +25,7 @@ class ServiceProvider {
   ///ServiceProvider: Detiene todos los servicios ene ejcución.
   void stop() {
     //Inicializa los servicios.
+    ref.watch(productCatalogPDFProvider.notifier).dispose();
     ref.watch(productCatalogProvider.notifier).dispose();
     ref.watch(filterOfLoadedBrandsWithAPIProvider.notifier).dispose();
     ref.watch(distributorCatalogProvider.notifier).dispose();

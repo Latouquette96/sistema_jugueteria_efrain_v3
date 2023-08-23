@@ -9,6 +9,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_in
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
@@ -21,15 +22,31 @@ import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manage
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
-  const ProductPricesCatalogWidget({super.key});
+
+  final StateNotifierProvider<ProductProvider, Product?> provider;
+  final StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> providerID;
+
+  ///Constructor de ProductPricesCatalogWidget
+  ///
+  ///[provider] es el provider a emplear. Debe ser StateNotifierProvider<ProductProvider, Product?>
+  const ProductPricesCatalogWidget(this.provider, this.providerID, {super.key});
   
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
     return _ProductPricesCatalogWidgetState();
   }
+
+   StateNotifierProvider<ProductProvider, Product?> getProvider(){
+    return provider;
+  }
+  
+  StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> getProviderID(){
+    return providerID;
+  }
+
 }
 
-class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
+class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalogWidget> {
 
   late final FormGroup _formNewPP, _formProductPrice;
   final TreeController _controller = TreeController(allNodesExpanded: false);
@@ -37,8 +54,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
   @override
   void initState() {
     super.initState();
-
-    final product = ref.read(productSearchPriceProvider);
+    final product = ref.read(widget.getProvider());
 
     _formProductPrice = FormGroup({
       Product.getKeyPricePublic(): FormControl<double>(
@@ -71,7 +87,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
   
   @override
   Widget build(BuildContext context) {
-    final product = ref.watch(productSearchPriceProvider);
+    final product = ref.watch(widget.getProvider());
     final distributorFree = ref.watch(distributorFreeProductPriceProvider);
 
     return Container(
@@ -86,7 +102,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
               titleHeader: "Producto: ${product!.getTitle()}",
               tooltipClose: "Cerrar.",
               onClose: (){
-                ref.read(productSearchPriceProvider.notifier).free();
+                ref.read(widget.getProvider().notifier).free();
               },
             ),
             Expanded(
@@ -137,7 +153,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
             icon: Icon(MdiIcons.fromString("content-save")),
             onPressed: () async{
               //Escribe el nuevo valor al público del producto.
-              ref.read(productSearchPriceProvider)!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
+              ref.read(widget.getProvider())!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
               //Realiza la peticion de escritura en el servidor.
               final response = await ref.read(updatePricePublicWithAPIProvider.future);
               //Comprueba si resultó exitosa la operacion (cod. 200), en caso contrario, es error.
@@ -155,10 +171,10 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
                 //Si está dentro del arreglo.
                 if (index>-1){
                   //Reemplaza el registro por el actualizado.
-                  ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(productSearchPriceProvider)!.buildPlutoRow()]);
+                  ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(widget.getProvider())!.buildPlutoRow()]);
                 }
 
-                ref.read(productSearchPriceProvider.notifier);
+                ref.read(widget.getProvider().notifier);
                 setState(() {});
               }
               else{
@@ -179,7 +195,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ConsumerStatefulWid
 
   ///ProductPricesCatalogWidget: Contruye el widget listado de precios de producto.
   Widget _buildWidgetListView(BuildContext context, Product product){
-    var pricesProduct = ref.watch(productPricesByIDProvider);
+    var pricesProduct = ref.watch(widget.getProviderID());
 
     return Expanded(
       child: Container(

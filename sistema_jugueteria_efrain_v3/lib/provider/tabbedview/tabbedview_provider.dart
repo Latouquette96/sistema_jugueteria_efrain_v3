@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
 enum TabEnum {
   distributorCatalogWidget,
   distributorBillingWidget, 
-  productCatalogWidget, configurationWidget, productPDFViewer
+  productCatalogWidget, 
+  configurationWidget, 
+  productPDFViewer
 }
 
 @immutable
@@ -34,13 +37,6 @@ class TabNotifier extends StateNotifier<List<TabModel>>{
   TabNotifier(): super([]);
 
   ///TabNotifier: Inserta un nuevo tab al inicio de la lista.
-  void insertTab2(TabModel t){
-    if (state.where((element) => element.key==t.key).toList().isEmpty){
-      state = [t, ...state];
-    }
-  }
-
-  ///TabNotifier: Inserta un nuevo tab al inicio de la lista.
   void insertTab({required TabEnum tabEnum, required String label, required Widget widget, IconData? icon}){
     if (state.where((element) => element.key==tabEnum).toList().isEmpty){
       TabModel t = TabModel(key: tabEnum, label: label, widget: widget, iconData: icon);
@@ -60,3 +56,33 @@ class TabNotifier extends StateNotifier<List<TabModel>>{
 }
 
 final tabProvider = StateNotifierProvider<TabNotifier, List<TabModel>>((ref) => TabNotifier());
+
+
+class TabbedViewProvider extends StateNotifier<TabbedViewController> {
+  TabbedViewProvider() : super(TabbedViewController([]));
+
+  ///TabNotifier: Inserta un nuevo tab al inicio de la lista.
+  void insertTab({required TabEnum tabEnum, required String label, required Widget widget, IconData? icon}){
+    state.addTab(TabData(
+      value: tabEnum,
+      text: label,
+      closable: true,
+      content: widget
+    ));
+  }
+
+  ///TabNotifier: Remueve el tab de clave 'key'.
+  void removeTab(TabEnum tabEnum){
+    int index = state.tabs.indexWhere((element) => element.value==tabEnum);
+    state.removeTab(index);
+  }
+
+  ///TabNotifier: Consulta si existe el tab de clave 'key'.
+  bool isExistTab(TabEnum key){
+    print(state.tabs.where((element) => element.value==key).isNotEmpty);
+    return state.tabs.where((element) => element.value==key).isNotEmpty;
+  }
+
+}
+
+final tabbedViewProvider = StateNotifierProvider<TabbedViewProvider, TabbedViewController>((ref) => TabbedViewProvider());

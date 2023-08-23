@@ -160,6 +160,11 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(15),
@@ -168,10 +173,9 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
         columns: _columns,
         rows: _rows,
         onLoaded: (event) {
-          event.stateManager.addListener(() {
-            ref.read(stateManagerProductProvider.notifier);
-          });
-          ref.read(stateManagerProductProvider.notifier).load(event.stateManager);
+          if (context.mounted){
+            ref.read(stateManagerProductProvider.notifier).load(event.stateManager);
+          }
         },
         //Si se selecciona/deselecciona la casilla checked.
         onRowChecked:(event) {
