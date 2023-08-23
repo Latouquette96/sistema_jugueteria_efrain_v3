@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -20,9 +25,14 @@ class ProductPDFViewWidget extends ConsumerStatefulWidget {
 class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
   
   late final PdfViewerController _pdfViewerController;
+  late File? _file;
+  late bool _isFileWeb;
+  late ResourceLink _linkPDF = ResourceLink("https://www.dropbox.com/scl/fi/u4jmep8ynoy3oc0wm6487/prueba.pdf?rlkey=83i5a3dzrfqs91a2se2lh0ez4&dl=1", mode: ResourceLinkMode.documentPDF);
 
   @override
   void initState() {
+    _isFileWeb = false;
+    _file = null;
     _pdfViewerController = ref.read(pdfViewControllerProvider);
     super.initState();
   }
@@ -67,8 +77,22 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                   child: IconButton(
                     tooltip: "Abrir PDF almacenado en el sistema.",
                     icon: Icon(MdiIcons.fromString("folder"), color: Colors.white, size: 24,),
-                    onPressed: (){
+                    onPressed: () async{
+                      FilePickerResult? result = await FilePicker.platform.pickFiles(
+                        dialogTitle: "Abrir archivo...",
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf'],
+                      );
 
+                      if (result != null) {
+                        //Si se abre un nuevo documento, se libera el producto en busqueda.
+                        _file = File(result.files.first.path!);
+                        _isFileWeb = false;
+                        setState(() {});
+                      } 
+                      else {
+                        // User canceled the picker
+                      }
                     },
                   )
                 ),
@@ -77,20 +101,34 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                   child: IconButton(
                     tooltip: "Abrir PDF por enlace de archivo en internet",
                     icon: Icon(MdiIcons.fromString("web")), color: Colors.white,
-                    onPressed: (){
-                      
+                    onPressed: () async{
+                      ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
+                      String? copiedtext = (cdata!=null) ? cdata.text : null;
+
+                      if (copiedtext!=null){
+                        _linkPDF = ResourceLink(copiedtext, mode: ResourceLinkMode.documentPDF);
+                        _isFileWeb = true;
+                        setState(() {});
+                      }
                     },
                   )
                 )
               ],
             ),
             Expanded(
-              child: SfPdfViewer.network(
-                "https://www.dropbox.com/scl/fi/u4jmep8ynoy3oc0wm6487/prueba.pdf?rlkey=83i5a3dzrfqs91a2se2lh0ez4&dl=1", 
-                controller: _pdfViewerController,
-                currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
-                otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
-              )
+              child: (_isFileWeb || _file==null)
+                ? SfPdfViewer.network(
+                    _linkPDF.getLink(), 
+                    controller: _pdfViewerController,
+                    currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
+                    otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
+                  )
+                : SfPdfViewer.file(
+                    _file!, 
+                    controller: _pdfViewerController,
+                    currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
+                    otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
+                  )
             ),
             Container(
               color: Colors.black54,

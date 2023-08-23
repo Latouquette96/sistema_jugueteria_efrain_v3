@@ -1,18 +1,34 @@
+enum ResourceLinkMode{
+  imageJPG,
+  documentPDF
+}
+
+
 ///Clase ResourceLink: Modela un link de imagen válido para poder ser compartido.
 class ResourceLink {
   //Atributos de instancia
   late String _link;
+  late ResourceLinkMode? _mode;
 
   ///Constructor de ResourceLink.
-  ResourceLink(String link) {
+  ResourceLink(String link, {ResourceLinkMode mode = ResourceLinkMode.imageJPG}) {
+    //Modo de analisis del archivo.
+    _mode = mode;
     //Si es un link de Google Drive.
-    if (link.contains("https://drive.google.com/")) {
+    if (link.contains("https://drive.google.com/") || link.contains("https://www.drive.google.com/")) {
       _link = _convertLinkToGoogleDrive(link);
     } else {
-      if (link.contains("https://dropbox.com/")) {
+      if (link.contains("https://dropbox.com/") || link.contains("https://www.dropbox.com/")) {
         _link = _convertLinkToDropbox(link);
       } else {
-        _link = _getLinkDefect();
+        //Si es un link de internet (https, http o ftp)
+        if (link.contains("https://") || link.contains("http://") || link.contains("ftp://")){
+          _link = link;
+        }
+        //Si está mal escrito, entonces cargar otra cosa.
+        else{
+          _link = _getLinkDefect();
+        }
       }
     }
   }
@@ -46,7 +62,12 @@ class ResourceLink {
 
   ///ResourceLink: Devuelve el link por defecto.
   String _getLinkDefect() {
-    return "https://drive.google.com/uc?export=view&id=1Mh8yFhGtvhq7AkKzs09jad8d5pjwADKi";
+    if (_mode==ResourceLinkMode.imageJPG){
+      return "https://drive.google.com/uc?export=view&id=1Mh8yFhGtvhq7AkKzs09jad8d5pjwADKi";
+    }
+    else{
+      return "https://www.dropbox.com/scl/fi/u4jmep8ynoy3oc0wm6487/prueba.pdf?rlkey=83i5a3dzrfqs91a2se2lh0ez4&dl=1";
+    }
   }
 
   ///ResourceLink: Devuelve el link de imagen.

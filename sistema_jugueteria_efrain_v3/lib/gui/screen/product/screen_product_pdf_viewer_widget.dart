@@ -28,7 +28,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos"))],
+          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos - Lector PDF"))],
         ),
         backgroundColor: const Color.fromARGB(255, 44, 43, 43),
         toolbarHeight: 40,
