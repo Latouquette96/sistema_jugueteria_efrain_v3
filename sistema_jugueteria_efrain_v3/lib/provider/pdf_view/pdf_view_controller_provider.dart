@@ -8,8 +8,8 @@ class PDFViewControllerProvider extends StateNotifier<PdfViewerController> {
   PDFViewControllerProvider(): super(PdfViewerController());
 
   ///PDFViewControllerProvider: Refrezca el controlador.
-  void initialize(PdfViewerController pdfViewerController){
-    state = pdfViewerController;
+  void initialize(){
+    state = PdfViewerController();
   }
 
   void disposeController(){
