@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
-enum TabEnum {
-  distributorCatalogWidget,
-  distributorBillingWidget, 
-  productCatalogWidget, 
-  configurationWidget, 
-  productPDFViewer
-}
-
 class TabbedViewProvider extends StateNotifier<TabbedViewController> {
-  TabbedViewProvider() : super(TabbedViewController([]));
+  final StateNotifierProviderRef<TabbedViewProvider, TabbedViewController> ref;
+  
+  TabbedViewProvider(this.ref) : super(TabbedViewController([]));
 
-  ///TabNotifier: Inserta un nuevo tab al inicio de la lista.
-  void insertTab({required TabEnum tabEnum, required String label, required Widget widget, IconData? icon}){
-    state.addTab(TabData(
-      value: tabEnum,
+  ///TabbedViewProvider: Inserta un nuevo tab al inicio de la lista.
+  void insertTab({required String label, required Widget widget, IconData? icon, required StateNotifierProvider<TabDataProvider, TabData?> tabProvider}){
+    TabData tab = TabData(
       text: label,
-      closable: true,
+      closable: false,
       content: widget
-    ));
+    );
+    
+    state.addTab(tab);
+    ref.read(tabProvider.notifier).load(tab);
   }
 
   ///TabNotifier: Remueve el tab de clave 'key'.
-  void removeTab(TabEnum tabEnum){
-    int index = state.tabs.indexWhere((element) => element.value==tabEnum);
+  void removeTab(StateNotifierProvider<TabDataProvider, TabData?> tabProvider){
+    int index = state.tabs.indexOf(ref.read(tabProvider));
     state.removeTab(index);
+    ref.read(tabProvider.notifier).clear();
   }
-
-  ///TabNotifier: Consulta si existe el tab de clave 'key'.
-  bool isExistTab(TabEnum key){
-    return state.tabs.where((element) => element.value==key).isNotEmpty;
-  }
-
 }
 
-final tabbedViewProvider = StateNotifierProvider<TabbedViewProvider, TabbedViewController>((ref) => TabbedViewProvider());
+final tabbedViewProvider = StateNotifierProvider<TabbedViewProvider, TabbedViewController>((ref) => TabbedViewProvider(ref));

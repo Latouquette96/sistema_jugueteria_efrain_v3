@@ -10,18 +10,11 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_w
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
 
 @immutable
 class MainBarWidget extends ConsumerWidget {
   const MainBarWidget({super.key});
-
-  static const TabEnum _keyCatalogDistributor = TabEnum.distributorCatalogWidget;
-  static const TabEnum _keyDistributorBilling = TabEnum.distributorBillingWidget;
-  static const TabEnum _keyCatalogProduct = TabEnum.productCatalogWidget;
-  static const TabEnum _keyConfiguration = TabEnum.configurationWidget;
-  static const TabEnum _keyProductPDFViewer = TabEnum.productPDFViewer;
-
-  //final String _keyCatalogProduct = "catalog_product";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,15 +43,15 @@ class MainBarWidget extends ConsumerWidget {
             PlutoMenuItem.checkbox(
               icon: MdiIcons.fromString("cog"),
               title: "Configuraciones",
-              initialCheckValue: ref.read(tabbedViewProvider.notifier).isExistTab(_keyConfiguration),
-              enable: ref.read(tabbedViewProvider.notifier).isExistTab(_keyConfiguration),
+              initialCheckValue: ref.watch(tabConfigurationProvider)!=null,
+              enable: ref.watch(tabConfigurationProvider)!=null,
               onChanged: (bool? isSelected){
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(tabEnum: _keyConfiguration, label: "Configuraciones", widget: const ScreenConfiguration(), icon: MdiIcons.fromString("cog"));
+                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Configuraciones", widget: const ScreenConfiguration(), icon: MdiIcons.fromString("cog"), tabProvider: tabConfigurationProvider);
                   }
                   else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(_keyConfiguration);
+                    ref.read(tabbedViewProvider.notifier).removeTab(tabConfigurationProvider);
                   }
                 }
               }
@@ -70,33 +63,33 @@ class MainBarWidget extends ConsumerWidget {
           children: [
             PlutoMenuItem.checkbox(
               title: "Catálogo de productos",
-              initialCheckValue: ref.read(tabbedViewProvider.notifier).isExistTab(_keyCatalogProduct),
-              enable: ref.read(tabbedViewProvider.notifier).isExistTab(_keyCatalogProduct),
+              initialCheckValue: ref.watch(tabProductCatalogProvider)!=null,
+              enable: ref.watch(tabProductCatalogProvider)!=null,
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(tabEnum: _keyCatalogProduct, label:"Catalogo productos", widget: const ScreenProductCatalog(), icon: MdiIcons.fromString("domain"));
+                    ref.read(tabbedViewProvider.notifier).insertTab(label:"Catalogo productos", widget: const ScreenProductCatalog(), icon: MdiIcons.fromString("domain"), tabProvider: tabProductCatalogProvider);
                   }
                   else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(_keyCatalogProduct);
+                    ref.read(tabbedViewProvider.notifier).removeTab(tabProductCatalogProvider);
                   }
                 }
               },
             ),
             PlutoMenuItem.checkbox(
               title: "Visor PDF",
-              initialCheckValue: ref.read(tabbedViewProvider.notifier).isExistTab(_keyProductPDFViewer),
-              enable: ref.read(tabbedViewProvider.notifier).isExistTab(_keyProductPDFViewer),
+              initialCheckValue: ref.watch(tabProductCatalogPDFProvider)!=null,
+              enable: ref.watch(tabProductCatalogPDFProvider)!=null,
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
                     ref.read(pdfViewControllerProvider.notifier).initialize();
                     ref.read(pdfTextSearchResultProvider.notifier).free();
                     
-                    ref.read(tabbedViewProvider.notifier).insertTab(tabEnum: _keyProductPDFViewer, label:"Visor PDF", widget: const ScreenProductPDFViewerWidget(), icon: MdiIcons.fromString("file-pdf-box"));
+                    ref.read(tabbedViewProvider.notifier).insertTab(label:"Visor PDF", widget: const ScreenProductPDFViewerWidget(), icon: MdiIcons.fromString("file-pdf-box"), tabProvider: tabProductCatalogPDFProvider);
                   }
                   else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(_keyProductPDFViewer);
+                    ref.read(tabbedViewProvider.notifier).removeTab(tabProductCatalogPDFProvider);
                   }
                 }
               },
@@ -108,30 +101,30 @@ class MainBarWidget extends ConsumerWidget {
           children: [
             PlutoMenuItem.checkbox(
               title: "Catálogo de distribuidoras",
-              initialCheckValue: ref.read(tabbedViewProvider.notifier).isExistTab(_keyCatalogDistributor),
-              enable: ref.read(tabbedViewProvider.notifier).isExistTab(_keyCatalogDistributor),
+              initialCheckValue: ref.watch(tabDistributorCatalogProvider)!=null,
+              enable: ref.watch(tabDistributorBillingCatalogProvider)!=null,
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(tabEnum: _keyCatalogDistributor, label: "Catalogo distribuidoras", widget: const ScreenDistributorCatalog(), icon: MdiIcons.fromString("domain"));
+                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Catalogo distribuidoras", widget: const ScreenDistributorCatalog(), icon: MdiIcons.fromString("domain"), tabProvider: tabDistributorCatalogProvider);
                   }
                   else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(_keyCatalogDistributor);
+                    ref.read(tabbedViewProvider.notifier).removeTab(tabDistributorCatalogProvider);
                   }
                 }
               },
             ),
             PlutoMenuItem.checkbox(
               title: "Facturas de distribuidoras",
-              initialCheckValue: ref.read(tabbedViewProvider.notifier).isExistTab(_keyDistributorBilling),
-              enable: ref.read(tabbedViewProvider.notifier).isExistTab(_keyDistributorBilling),
+              initialCheckValue: ref.watch(tabDistributorBillingCatalogProvider)!=null,
+              enable: ref.watch(tabDistributorBillingCatalogProvider)!=null,
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(tabEnum: _keyDistributorBilling, label: "Factura distribuidoras", widget: const ScreenDistributorBilling(), icon: MdiIcons.fromString("cash"));
+                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Factura distribuidoras", widget: const ScreenDistributorBilling(), icon: MdiIcons.fromString("cash"), tabProvider: tabDistributorBillingCatalogProvider);
                   }
                   else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(_keyDistributorBilling);
+                    ref.read(tabbedViewProvider.notifier).removeTab(tabDistributorBillingCatalogProvider);
                   }
                 }
               },
