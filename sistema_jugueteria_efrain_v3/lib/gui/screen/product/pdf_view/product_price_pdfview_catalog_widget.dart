@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_conf
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
@@ -48,11 +49,17 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
                 IconButton(
                   tooltip: "Buscar en el PDF",
                   onPressed: (){
-                    //Busca el producto de acuerdo a la fila.
-                    Product product = _getProductForRendererContext(rendererContext);
-                    ///Carga un producto al proveedor para que pueda ser editado.
-                    ref.read(plutoRowPDFProvider.notifier).load(rendererContext.row);
-                    ref.read(pdfTextSearchResultProvider.notifier).search(product);
+                    if ( ref.read(productSearchPDFPriceProvider)!=null){
+                      ref.read(plutoRowPDFProvider.notifier).free();
+                      ref.read(productSearchPDFPriceProvider.notifier).free();
+                    }
+                    else{
+                      //Busca el producto de acuerdo a la fila.
+                      Product product = _getProductForRendererContext(rendererContext);
+                      ///Carga un producto al proveedor para que pueda ser editado.
+                      ref.read(plutoRowPDFProvider.notifier).load(rendererContext.row);
+                      ref.read(pdfTextSearchResultProvider.notifier).search(product);
+                    }
                   }, 
                   icon: Icon(MdiIcons.fromString("file-search"), color: Colors.green)
                 )

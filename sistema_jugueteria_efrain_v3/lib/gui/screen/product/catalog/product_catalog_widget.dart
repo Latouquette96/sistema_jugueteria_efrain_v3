@@ -51,29 +51,42 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
               Expanded(child: 
                 IconButton(
                   onPressed: (){
-                    //Busca el producto de acuerdo a la fila.
-                    Product product = _getProductForRendererContext(rendererContext);
-                    ///Carga un producto al proveedor para que pueda ser editado.
-                    ref.read(plutoRowProvider.notifier).load(rendererContext.row);
-                    ///Carga un producto para que pueda ser desplegado el catalogo de precios.
-                    ref.read(productSearchPriceProvider.notifier).load(product);
-                    ref.read(productPricesByIDProvider.notifier).refresh();
+                    if ( ref.read(productSearchPriceProvider)!=null){
+                      ref.read(productSearchPriceProvider.notifier).free();
+                    }
+                    else{
+                      //Busca el producto de acuerdo a la fila.
+                      Product product = _getProductForRendererContext(rendererContext);
+                      ///Carga un producto al proveedor para que pueda ser editado.
+                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
+                      ///Carga un producto para que pueda ser desplegado el catalogo de precios.
+                      ref.read(productSearchPriceProvider.notifier).load(product);
+                      ref.read(productPricesByIDProvider.notifier).refresh();
+                    }
                   }, 
                   icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
                 )
               ),
+              //IconButton para mostrar informacion del producto.
               Expanded(child: 
                 IconButton(
                   onPressed: (){
-                    //Busca el producto de acuerdo a la fila.
-                    Product product = _getProductForRendererContext(rendererContext);
-                    ///Carga un producto al proveedor para que pueda ser editado.
-                    ref.read(plutoRowProvider.notifier).load(rendererContext.row);
-                    ref.read(productProvider.notifier).load(product);
+                    if (ref.read(productProvider)==null){
+                      //Busca el producto de acuerdo a la fila.
+                      Product product = _getProductForRendererContext(rendererContext);
+                      ///Carga un producto al proveedor para que pueda ser editado.
+                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
+                      ref.read(productProvider.notifier).load(product);
+                    }
+                    else{
+                      ref.read(plutoRowProvider.notifier).free();
+                      ref.read(productProvider.notifier).free();
+                    }
                   }, 
                   icon: Icon(MdiIcons.fromString("pencil"), color: Colors.black,)
                 )
               ),
+              //IconButton para eliminar al producto.
               Expanded(child: 
                 IconButton(
                   onPressed: () async {

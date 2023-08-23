@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 ///Clase PDFViewControllerProvider: Proveedor de servicios para almacenar el estado de un producto.
@@ -35,8 +36,8 @@ class PdfTextSearchResultProvider extends StateNotifier<PdfTextSearchResult?> {
 
   ///PdfTextSearchResultProvider: Buscar el producto.
   void search(Product p){
-      //state = ref.read(pdfViewControllerProvider).searchText(p.getBarcode() ?? p.getInternalCode() ?? "");
-      PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBrand());
+      PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBarcode() ?? p.getInternalCode() ?? "");
+      //PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBrand());
       textSearchResult.addListener(() {
         //Si se ha obtenido el resultado.
         if (textSearchResult.hasResult){
@@ -46,6 +47,7 @@ class PdfTextSearchResultProvider extends StateNotifier<PdfTextSearchResult?> {
             state = textSearchResult;
             //Si aparece el texto buscado, entonces mostrar el producto.
             if (textSearchResult.totalInstanceCount>0){
+              ref.read(productPricesPDFByIDProvider.notifier).refresh();
               ref.read(productSearchPDFPriceProvider.notifier).load(p);
             }
           }

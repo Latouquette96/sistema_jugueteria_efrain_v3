@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
@@ -23,13 +24,18 @@ import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manage
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 
-  final StateNotifierProvider<ProductProvider, Product?> provider;
-  final StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> providerID;
+  final StateNotifierProvider<ProductProvider, Product?> providerProduct;
+  final StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> providerPriceDistributor;
+  final StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?> providerStateManager;
+  final StateNotifierProvider<PlutoRowProvider, PlutoRow?> providerPlutoRow;
 
   ///Constructor de ProductPricesCatalogWidget
   ///
-  ///[provider] es el provider a emplear. Debe ser StateNotifierProvider<ProductProvider, Product?>
-  const ProductPricesCatalogWidget(this.provider, this.providerID, {super.key});
+  ///[providerProduct] es el provider del producto actual.
+  ///[providerPriceDistributor] es el provider que almacena los pares <precio,distribuidora> del producto actual.
+  ///[providerStateManager] el el provider del controlador del catálogo de productos.
+  ///[providerPlutoRow] es el provider que almacena el PlutoRow para poder actualizarlo de ser necesario.
+  const ProductPricesCatalogWidget({super.key, required this.providerProduct, required this.providerPriceDistributor, required this.providerStateManager, required this.providerPlutoRow,});
   
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -37,13 +43,20 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
   }
 
    StateNotifierProvider<ProductProvider, Product?> getProvider(){
-    return provider;
+    return providerProduct;
   }
   
   StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> getProviderID(){
-    return providerID;
+    return providerPriceDistributor;
   }
 
+  StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?> getProviderStateManager(){
+    return providerStateManager;
+  }
+
+  StateNotifierProvider<PlutoRowProvider, PlutoRow?> getProviderPlutoRow(){
+    return providerPlutoRow;
+  }
 }
 
 class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalogWidget> {
@@ -167,11 +180,11 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                 }
                 
                 //Recupero la posición del registro del producto.
-                int index = ref.read(stateManagerProductProvider)!.rows.indexOf(ref.read(plutoRowProvider)!);
+                int index = ref.read(widget.getProviderStateManager())!.rows.indexOf(ref.read(widget.getProviderPlutoRow())!);
                 //Si está dentro del arreglo.
                 if (index>-1){
                   //Reemplaza el registro por el actualizado.
-                  ref.read(stateManagerProductProvider)!.refRows.setAll(index, [ref.read(widget.getProvider())!.buildPlutoRow()]);
+                  ref.read(widget.getProviderStateManager())!.refRows.setAll(index, [ref.read(widget.getProvider())!.buildPlutoRow()]);
                 }
 
                 ref.read(widget.getProvider().notifier);
@@ -235,6 +248,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                                   onPressed: () async{
                                     ref.read(productPriceProvider.notifier).load(e.getValue2()!);
                                     await ref.read(updateProductPriceWithAPIProvider.future);
+                                    await ref.read(widget.getProviderID().notifier).refresh();
                                     setState(() {});
                                   },
                                 ),
@@ -245,6 +259,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                                   onPressed: () async{
                                     ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
                                     await ref.read(removeProductPriceWithAPIProvider.future);
+                                    await ref.read(widget.getProviderID().notifier).refresh();
                                     setState(() {});
                                   },
                                 ),
@@ -377,6 +392,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                               description:  const Text("La información ha sido actualizada con éxito.")
                             ).show(context);
                             ref.read(productPriceProvider.notifier).free(ref);
+                            await ref.read(widget.getProviderID().notifier).refresh();
                             setState(() {});
                           }
                           else{

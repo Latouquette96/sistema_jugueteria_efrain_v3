@@ -7,6 +7,8 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/p
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
 
 
 class ScreenProductPDFViewerWidget extends ConsumerStatefulWidget {
@@ -64,17 +66,6 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
             )),
             child: const ProductPricePDFViewCatalogWidget(),
           )),
-          Visibility(
-              visible: ref.watch(productSearchPDFPriceProvider) != null,
-              child: SizedBox(
-                width: 400,
-                child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(child: ProductPricesCatalogWidget(productSearchPDFPriceProvider, productPricesPDFByIDProvider))
-                ],
-              ))
-          ),
           const Visibility(
               visible: true,
               child: SizedBox(
@@ -85,7 +76,23 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
                   Expanded(child: ProductPDFViewWidget())
                 ],
               ))
-            )
+          ),
+          Visibility(
+              visible: ref.watch(productSearchPDFPriceProvider) != null,
+              child: SizedBox(
+                width: 400,
+                child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(child: ProductPricesCatalogWidget(
+                    providerProduct: productSearchPDFPriceProvider, 
+                    providerPriceDistributor: productPricesPDFByIDProvider, 
+                    providerStateManager: stateManagerProductPricePDFProvider, 
+                    providerPlutoRow: plutoRowPDFProvider,
+                  ))
+                ],
+              ))
+          ),
         ],
       ),
     );

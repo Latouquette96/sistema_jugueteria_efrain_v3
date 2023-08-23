@@ -20,12 +20,10 @@ class ProductPDFViewWidget extends ConsumerStatefulWidget {
 class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
   
   late final PdfViewerController _pdfViewerController;
-  late final PdfTextSearchResult? _pdfTextSearchResult;
 
   @override
   void initState() {
     _pdfViewerController = ref.read(pdfViewControllerProvider);
-    _pdfTextSearchResult = ref.read(pdfTextSearchResultProvider);
     super.initState();
   }
 
@@ -104,7 +102,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                       tooltip: "Ir a resultado anterior",
                       icon: Icon(Icons.arrow_circle_left, color: Colors.blueGrey.shade100), 
                       onPressed: (){ 
-                        if (_pdfTextSearchResult!=null){
+                        if (ref.read(pdfTextSearchResultProvider)!=null){
                           ref.read(pdfTextSearchResultProvider)!.previousInstance();
                           setState((){});
                         }
@@ -112,7 +110,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                     )
                   ),
                   Expanded(child: 
-                    (_pdfTextSearchResult!=null)
+                    (ref.read(pdfTextSearchResultProvider)!=null)
                     ? Center(child: Text("${ref.watch(pdfTextSearchResultProvider)!.currentInstanceIndex}/${ref.watch(pdfTextSearchResultProvider)!.totalInstanceCount}", style: StyleForm.getStyleTextField(),))
                     : Center(child: Text("Sin resultados", style: StyleForm.getStyleTextField()),)
                   ),
@@ -121,7 +119,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                       tooltip: "Ir a resultado siguiente",
                       icon: Icon(Icons.arrow_circle_right, color: Colors.blueGrey.shade100),
                       onPressed: (){ 
-                        if (_pdfTextSearchResult!=null){
+                        if (ref.read(pdfTextSearchResultProvider)!=null){
                           ref.read(pdfTextSearchResultProvider.notifier).next();
                           setState(() {});
                         }
