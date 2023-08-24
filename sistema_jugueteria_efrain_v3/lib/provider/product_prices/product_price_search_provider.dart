@@ -50,7 +50,9 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
       state = listProduct;
     }
     catch(e){
-      state = [];
+      if (mounted){
+        state = [];
+      }
     }
   }
 
