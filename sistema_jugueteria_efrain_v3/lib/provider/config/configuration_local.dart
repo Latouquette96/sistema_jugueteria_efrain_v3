@@ -37,6 +37,11 @@ class ConfigurationLocal {
     };
   }
 
+  static String getKeyCatalogPath(){
+    return _keyCatalogPath;
+  }
+
+
   ///ConfigurationLocal: Inicializa las configuraciones del sistema.
   Future<void> initialize() async {
     //Recupera la instancia de SharedPreferences.

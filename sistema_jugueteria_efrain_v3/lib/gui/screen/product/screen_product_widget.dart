@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/builder_pdf/builder_pdf.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
@@ -55,6 +57,26 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
+          Visibility(
+            visible: ref.watch(productSharingProvider).isNotEmpty,
+            child: IconButton(
+              onPressed: () async{
+                try{
+                  await BuilderPDF.buildPDF(ref.read(productSharingProvider));
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationSuccess(context);
+                  }
+                }
+                catch(e){
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationError(context);
+                  }
+                }
+              },
+              icon: Icon(MdiIcons.fromString("file-pdf-box")),
+              tooltip: "Generar archivo PDF (productos seleccionados).",
+            ),
+          ),
           Visibility(
             visible: ref.watch(productSharingProvider).isNotEmpty,
             child: IconButton(

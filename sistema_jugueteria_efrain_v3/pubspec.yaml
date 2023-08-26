@@ -28,7 +28,9 @@ dependencies:
   material_design_icons_flutter: ^7.0.7296
   mysql1: ^0.20.0
   path_provider: ^2.0.15
+  pdf: ^3.10.4
   pluto_menu_bar: ^3.0.1
+  printing: ^5.11.0
   reactive_flutter_typeahead: ^2.0.0
   reactive_forms: ^16.0.2
   shared_preferences: ^2.2.0
@@ -55,9 +57,9 @@ flutter:
   uses-material-design: true
 
   assets:
-  #  - images/
+    - images/
     - json/
-  #  - fonts/
+    - fonts/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
