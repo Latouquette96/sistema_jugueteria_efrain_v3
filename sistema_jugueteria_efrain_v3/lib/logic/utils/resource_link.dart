@@ -18,7 +18,7 @@ class ResourceLink {
     if (link.contains("https://drive.google.com/") || link.contains("https://www.drive.google.com/")) {
       _link = _convertLinkToGoogleDrive(link);
     } else {
-      if (link.contains("https://dropbox.com/") || link.contains("https://www.dropbox.com/")) {
+      if (link.contains("https://dropbox.com/") || link.contains("https://www.dropbox.com")) {
         _link = _convertLinkToDropbox(link);
       } else {
         //Si es un link de internet (https, http o ftp)
@@ -53,8 +53,9 @@ class ResourceLink {
   ///ResourceLink: Convertir a link valido de Dropbox.
   String _convertLinkToDropbox(String link) {
     String url = link;
-    if (url.contains("?dl=0")) {
-      url = url.replaceAll("?dl=0", "?dl=1");
+    //https://www.dropbox.com/scl/fi/xew3uxohs815e1hmvnyxx/Hot-wheels.png?rlkey=1b00aiutbrne1pkn21gjq77lz&dl=0
+    if (url.contains("&dl=0")) {
+      url = url.replaceAll("&dl=0", "&dl=1");
     }
 
     return url;

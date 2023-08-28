@@ -14,8 +14,6 @@ class BuilderPDF {
 
   ///BuilderPDF: Construye el pdf de acuerdo a la lista de productos dada.
   static Future<void> buildPDF(List<Product> list) async {
-    int current = -1;
-
     var dataRegular = await rootBundle.load("fonts/OpenSans-Regular.ttf");
     var dataBold = await rootBundle.load("fonts/OpenSans-SemiBold.ttf");
     var dataBoldItalic = await rootBundle.load("fonts/OpenSans-SemiBoldItalic.ttf");
@@ -51,10 +49,11 @@ class BuilderPDF {
       }
       else{
         try{
-          image = await networkImage(listPDF[i].getLinkImages()[0].getLink());
+          image = pw.Image(await networkImage(listPDF[i].getLinkImages()[0].getLink()));
         }
         catch(d){
           image = imageTemp;
+          print(d);
         }
       }
        
@@ -76,7 +75,7 @@ class BuilderPDF {
         width: PdfPageFormat.a4.width-PdfPageFormat.a4.marginRight,
         child: pw.Container(
           padding: const pw.EdgeInsets.all(5),
-          color: current%2==0 ? PdfColor.fromRYB(0, 0.25, 0) : PdfColor.fromRYB(0, 0.35, 0),
+          color: i%2==0 ? PdfColor.fromRYB(0, 0.25, 0) : PdfColor.fromRYB(0, 0.35, 0),
           width: PdfPageFormat.a4.width,
           height: 135,
           child: pw.Row(
@@ -141,10 +140,6 @@ class BuilderPDF {
     final file = File("${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyCatalogPath())}/$name.pdf");
     await file.writeAsBytes(await pdf.save());
   }
-
-
-  
-
 
   ///BuilderPDF: Construye el pdf de la venta realizada recibiendo un listado de Triple, donde contiene:
   ///Value1: Producto, Value2: Cantidad, Value3: Descuento/recargo aplicado.
