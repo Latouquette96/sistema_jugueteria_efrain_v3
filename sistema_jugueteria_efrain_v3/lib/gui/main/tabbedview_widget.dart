@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/main/mainbar_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
@@ -38,13 +39,16 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        toolbarHeight: 30,
+        toolbarHeight: 45,
         title: MainBarWidget(key: GlobalKey()),
       ),
       body: Container(
         padding: const EdgeInsets.all(5),
         child: w
-      )
+      ),
+      endDrawer: const Drawer(
+        child: DrawerLogin()
+      ),
     );
   }
 

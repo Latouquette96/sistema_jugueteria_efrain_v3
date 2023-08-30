@@ -211,7 +211,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                           ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
                         },
                       ),
-                    ),                 //Código interno.
+                    ),                
+                     //Código interno.
                     Container(
                       margin: getMarginInformationForms(),
                       padding: getPaddingInformationForms(),

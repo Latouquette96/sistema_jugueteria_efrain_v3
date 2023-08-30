@@ -7,7 +7,6 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distr
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
@@ -33,13 +32,6 @@ class MainBarWidget extends ConsumerWidget {
         PlutoMenuItem(
           title: "Archivo",
           children: [
-            PlutoMenuItem(
-              icon: MdiIcons.fromString("login"),
-              title: "Iniciar sesión",
-              onTap: () async{
-                await ref.read(serviceProvider).run();
-              }
-            ),
             PlutoMenuItem.checkbox(
               icon: MdiIcons.fromString("cog"),
               title: "Configuraciones",

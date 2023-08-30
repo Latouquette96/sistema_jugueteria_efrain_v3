@@ -47,7 +47,6 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
               //IconButton para mostrar precios de producto.
               Expanded(child: 
                 IconButton(
-                  tooltip: "Buscar en el PDF",
                   onPressed: (){
                     if ( ref.read(productSearchPDFPriceProvider)!=null){
                       ref.read(plutoRowPDFProvider.notifier).free();
@@ -155,6 +154,19 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
         mode: PlutoGridMode.popup,
         columns: _columns,
         rows: _rows,
+        onRowDoubleTap: (event) {
+          if ( ref.read(productSearchPDFPriceProvider)!=null){
+              ref.read(plutoRowPDFProvider.notifier).free();
+              ref.read(productSearchPDFPriceProvider.notifier).free();
+            }
+            else{
+              //Busca el producto de acuerdo a la fila.
+              Product product = _getProduct(event.row);
+              ///Carga un producto al proveedor para que pueda ser editado.
+              ref.read(plutoRowPDFProvider.notifier).load(event.row);
+              ref.read(pdfTextSearchResultProvider.notifier).search(product);
+            }
+        },
         onLoaded: (event) {
           if (context.mounted){
             ref.read(stateManagerProductPricePDFProvider.notifier).load(event.stateManager);

@@ -16,7 +16,7 @@ class TabbedViewProvider extends StateNotifier<TabbedViewController> {
       content: widget
     );
     
-    state.addTab(tab);
+    state.insertTab(0, tab);
     ref.read(tabProvider.notifier).load(tab);
   }
 

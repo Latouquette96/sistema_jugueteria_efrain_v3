@@ -27,7 +27,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
   late final PdfViewerController _pdfViewerController;
   late File? _file;
   late bool _isFileWeb;
-  late ResourceLink _linkPDF = ResourceLink("https://www.dropbox.com/scl/fi/u4jmep8ynoy3oc0wm6487/prueba.pdf?rlkey=83i5a3dzrfqs91a2se2lh0ez4&dl=1", mode: ResourceLinkMode.documentPDF);
+  late ResourceLink _linkPDF = ResourceLink("https://www.dropbox.com/scl/fi/8uv4aenxfinq0wqlgtfsn/20230828-171203.pdf?rlkey=ef63k9622j10zy4xencr4limq&dl=1", mode: ResourceLinkMode.documentPDF);
 
   @override
   void initState() {
