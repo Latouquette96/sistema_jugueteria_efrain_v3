@@ -30,5 +30,5 @@ mixin MixinFactoryJSONDefault<E, S> {
   }
 
   ///MixinFactoryJSONDefault: Realiza la busqueda de acuerdo al identificador dado.
-  S search(int id);
+  S search(int v1, {int? v2, int? v3});
 }

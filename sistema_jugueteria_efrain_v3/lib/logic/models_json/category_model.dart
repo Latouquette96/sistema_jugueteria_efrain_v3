@@ -9,11 +9,11 @@ class Category {
 
   ///Constructor de Category
   Category(Map<String, dynamic> values){
-    _catId = values['id'];
-    _catName = values['name'];
+    _catId = values['cat_name'];
+    _catName = values['cat_id'];
     _catSubcategory = [];
 
-    for (var subcat in values['members']){
+    for (var subcat in values['cat_subcat']){
       _catSubcategory.add(SubCategory(values: subcat));
     }
   }

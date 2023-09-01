@@ -1,396 +1,395 @@
+[
 {
-	"categories":[
-	  {
-	    "name": "Sin definir",
-	    "id": 0,
-	    "members": [
-	      {"idcat": 0, "name": "Todos"}
+	    "cat_name": "Sin definir",
+	    "cat_id": 0,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0, "cat_name": "Todos"}
 	    ]
 	  },
 	  {
-	    "name": "Armas y Espadas",
-	    "id": 1,
-	    "members": [
-	      {"idcat": 0, "name": "Todos"},
-		  {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Armas y espadas"},
-		  {"idcat": 3,"name": "Set de batalla"}
+	    "cat_name": "Armas y Espadas",
+	    "cat_id": 1,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0, "cat_name": "Todos"},
+		  {"id_google": 3627, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 3627, "sub_id": 2,"sub_name": "Armas y espadas"},
+		  {"id_google": 3627, "sub_id": 3,"sub_name": "Set de batalla"}
 	    ]
 	  },
 	  {
-	    "name": "Actividades",
-	    "id": 2,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-		  {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Bolitas"},
-	      {"idcat":3,"name": "Burbujeros"},
-	      {"idcat":4,"name": "Juegos de vasos y bolas"},
-	      {"idcat":5,"name": "Juegos de padbol"},
-	      {"idcat":6,"name": "Matatenas"},
-	      {"idcat":7,"name": "Muelles mágicos"},
-	      {"idcat":8,"name": "Pelotas saltarinas"},
-	      {"idcat":9,"name": "Yoyos"}
+	    "cat_name": "Actividades",
+	    "cat_id": 2,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+		  {"id_google": 4352, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3534, "sub_id":2,"sub_name": "Bolitas"},
+	      {"id_google": 3874, "sub_id":3,"sub_name": "Burbujeros"},
+	      {"id_google": 7519, "sub_id":4,"sub_name": "Juegos de vasos y bolas"},
+	      {"id_google": 7425, "sub_id":5,"sub_name": "Juegos de padbol"},
+	      {"id_google": 4216, "sub_id":6,"sub_name": "Matatenas"},
+	      {"id_google": 4177, "sub_id":7,"sub_name": "Muelles mágicos"},
+	      {"id_google": 3733, "sub_id":8,"sub_name": "Pelotas saltarinas"},
+	      {"id_google": 3929, "sub_id":9,"sub_name": "Yoyos"}
 	    ]
 	  },
 	  {
-	    "name": "Construcción",
-	    "id": 3,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-		  {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Bloques de encaje"},
-	      {"idcat":3,"name": "Bloques de madera"},
-	      {"idcat":4,"name": "Kits de construcción"},
-	      {"idcat":5,"name": "Laberinto de bolitas"},
-	      {"idcat":4,"name": "Mecatrón"}
+	    "cat_name": "Construcción",
+	    "cat_id": 3,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+		  {"id_google": 1254, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3287, "sub_id":2,"sub_name": "Bloques de encaje"},
+	      {"id_google": 3617, "sub_id":3,"sub_name": "Bloques de madera"},
+	      {"id_google": 3805, "sub_id":4,"sub_name": "Kits de construcción"},
+	      {"id_google": 3163, "sub_id":5,"sub_name": "Laberinto de bolitas"},
+	      {"id_google": 3805, "sub_id":4,"sub_name": "Mecatrón"}
 	    ]
 	  },
 	  {
-	    "name": "Cosmética infantil",
-	    "id": 4,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-		  {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Cosmética"},
-	      {"idcat":3,"name": "Decoración de cabello"},
-		  {"idcat":4,"name": "Decoración de uñas"}
+	    "cat_name": "Cosmética infantil",
+	    "cat_id": 4,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+		  {"id_google": 6069, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 6069, "sub_id":2,"sub_name": "Cosmética"},
+		  {"id_google": 5975, "sub_id":3,"sub_name": "Decoración de uñas"},
+	      {"id_google": 5975, "sub_id":4,"sub_name": "Decoración de cabello"}
 	    ]
 	  },
 	  {
-	    "name": "Didácticos",
-	    "id": 5,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Actividades"},
-	      {"idcat":3,"name": "Alfombras"},
-	      {"idcat":4,"name": "Arrastre"},
-	      {"idcat":5,"name": "Clasificación y encastre"},
-	      {"idcat":6,"name": "Mordedores"},
-	      {"idcat":7,"name": "Móviles para bebés"},
-	      {"idcat":8,"name": "Sonajeros"},
-		  {"idcat":9,"name": "Tableros didácticos"}
+	    "cat_name": "Didácticos",
+	    "cat_id": 5,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 2847, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 7198, "sub_id":2,"sub_name": "Actividades"},
+	      {"id_google": 543612, "sub_id":3,"sub_name": "Alfombras"},
+	      {"id_google": 3459, "sub_id":4,"sub_name": "Arrastre"},
+	      {"id_google": 3860, "sub_id":5,"sub_name": "Clasificación y encastre"},
+	      {"id_google": 7360, "sub_id":6,"sub_name": "Mordedores"},
+	      {"id_google": 1242, "sub_id":7,"sub_name": "Móviles para bebés"},
+	      {"id_google": 1244, "sub_id":8,"sub_name": "Sonajeros"},
+		  {"id_google": 500015, "sub_id":9,"sub_name": "Tableros didácticos"}
 	    ]
 	  },
 	  {
-	    "name": "Dibujo & Manualidades",
-	    "id": 6,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Kits de artesanía"},
-	      {"idcat":3,"name": "Kits de dibujo y pintura"},
-	      {"idcat":4,"name": "Kits para fabricar joyas"},
-	      {"idcat":5,"name": "Masas"},
-	      {"idcat":6,"name": "Slimes"},
-          {"idcat":7,"name": "Pizzarón y pizzaras mágicas"},
-          {"idcat":8,"name": "Tabletas de dibujo"}
+	    "cat_name": "Dibujo & Manualidades",
+	    "cat_id": 6,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 3731, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 4986, "sub_id":2,"sub_name": "Kits de artesanía"},
+	      {"id_google": 4778, "sub_id":3,"sub_name": "Kits de dibujo y pintura"},
+	      {"id_google": 502979, "sub_id":4,"sub_name": "Kits para fabricar joyas"},
+	      {"id_google": 505818, "sub_id":5,"sub_name": "Masas"},
+	      {"id_google": 505818, "sub_id":6,"sub_name": "Slimes"},
+          {"id_google": 3079, "sub_id":7,"sub_name": "Pizzarón y pizzaras mágicas"},
+          {"id_google": 3079, "sub_id":8,"sub_name": "Tabletas de dibujo"}
 	    ]
 	  },
 	  {
-	    "name": "Disfraces & accesorios",
-	    "id": 7,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-		  {"idcat":2,"name": "Accesorios"},
-	      {"idcat":3,"name": "Joyas falsas"},
-	      {"idcat":4,"name": "Kits de accesorios"},
-	      {"idcat":5,"name": "Máscaras"},
-	      {"idcat":6,"name": "Zapatos falsos"}
+	    "cat_name": "Disfraces & accesorios",
+	    "cat_id": 7,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 184, "sub_id":1,"sub_name": "General"},
+		  {"id_google": 5192, "sub_id":2,"sub_name": "Accesorios"},
+	      {"id_google": 8018, "sub_id":3,"sub_name": "Joyas falsas"},
+	      {"id_google": 5192, "sub_id":4,"sub_name": "Kits de accesorios"},
+	      {"id_google": 5194, "sub_id":5,"sub_name": "Máscaras"},
+	      {"id_google": 5387, "sub_id":6,"sub_name": "Zapatos falsos"}
 	    ]
 	  },
 	  {
-	    "name": "Educativos",
-	    "id": 8,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Ábacos de juguete"},
-	      {"idcat":3,"name": "Granjas de hormigas"},
-	      {"idcat":4,"name": "Ciencias y exploración"},
-		  {"idcat":5,"name": "Maquetas educativas"},
-	      {"idcat":6,"name": "Modelos de astronomia"},
-	      {"idcat":7,"name": "Tarjetas educativas"},
-          {"idcat":8,"name": "Telescopios y microscopios"}
+	    "cat_name": "Educativos",
+	    "cat_id": 8,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1262, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 6466, "sub_id":2,"sub_name": "Ábacos de juguete"},
+	      {"id_google": 3088, "sub_id":3,"sub_name": "Granjas de hormigas"},
+	      {"id_google": 3500, "sub_id":4,"sub_name": "Ciencias y exploración"},
+		  {"id_google": 37, "sub_id":5,"sub_name": "Maquetas educativas"},
+	      {"id_google": 499938, "sub_id":6,"sub_name": "Modelos de astronomia"},
+	      {"id_google": 500015, "sub_id":7,"sub_name": "Tarjetas educativas"},
+          {"id_google": 3500, "sub_id":8,"sub_name": "Telescopios y microscopios"}
 	    ]
 	  },
 	  {
-	    "name": "Interior",
-	    "id": 9,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Billar y pool"},
-	      {"idcat":3,"name": "Dardos"},
-	      {"idcat":4,"name": "Metegol"},
-	      {"idcat":5,"name": "Hockey de mesa"},
-	      {"idcat":6,"name": "Mesas multijuegos"},
-	      {"idcat":7,"name": "Ping pong"}
+	    "cat_name": "Interior",
+	    "cat_id": 9,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1001, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 1003, "sub_id":2,"sub_name": "Billar y pool"},
+	      {"id_google": 1005, "sub_id":3,"sub_name": "Dardos"},
+	      {"id_google": 1007, "sub_id":4,"sub_name": "Metegol"},
+	      {"id_google": 1002, "sub_id":5,"sub_name": "Hockey de mesa"},
+	      {"id_google": 7010, "sub_id":6,"sub_name": "Mesas multijuegos"},
+	      {"id_google": 1008, "sub_id":7,"sub_name": "Ping pong"}
 	    ]
 	  },
 	  {
-	    "name": "Juegos de mesa",
-	    "id": 10,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Bingo"},
-	      {"idcat":3,"name": "Blackjack"},
-	      {"idcat":4,"name": "Cartas"},
-	      {"idcat":5,"name": "Dados"},
-	      {"idcat":6,"name": "Electrónicos portátiles"},
-	      {"idcat":7,"name": "Estrategia"},
-	      {"idcat":8,"name": "Habilidad"},
-	      {"idcat":9,"name": "Juegos de mesa"},
-	      {"idcat":10,"name": "Pinball (flippers)"},
-	      {"idcat":11,"name": "Poker"},
-	      {"idcat":12,"name": "Ruletas"},
-	      {"idcat":13,"name": "Trompos de batalla"},
-		  {"idcat":14,"name": "Juegos de memoria"},
-		  {"idcat":15,"name": "Juegos de memoria > Electrónicos"}
+	    "cat_name": "Juegos de mesa",
+	    "cat_id": 10,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1239, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3749, "sub_id":2,"sub_name": "Bingo"},
+	      {"id_google": 7411, "sub_id":3,"sub_name": "Blackjack"},
+	      {"id_google": 1247, "sub_id":4,"sub_name": "Cartas"},
+	      {"id_google": 6037, "sub_id":5,"sub_name": "Dados"},
+	      {"id_google": 4554, "sub_id":6,"sub_name": "Electrónicos portátiles"},
+	      {"id_google": 6038, "sub_id":7,"sub_name": "Estrategia"},
+	      {"id_google": 6054, "sub_id":8,"sub_name": "Habilidad"},
+	      {"id_google": 1246, "sub_id":9,"sub_name": "Juegos de mesa"},
+	      {"id_google": 6054, "sub_id":10,"sub_name": "Pinball (flippers)"},
+	      {"id_google": 1247, "sub_id":11,"sub_name": "Poker"},
+	      {"id_google": 7412, "sub_id":12,"sub_name": "Ruletas"},
+	      {"id_google": 6329, "sub_id":13,"sub_name": "Trompos de batalla"},
+		  {"id_google": 1239, "sub_id":14,"sub_name": "Juegos de memoria"},
+		  {"id_google": 1239, "sub_id":15,"sub_name": "Juegos de memoria > Electrónicos"}
 	    ]
 	  },
 	  {
-	    "name": "Juguetes de deporte",
-	    "id": 11,
-	    "members": [
-	      {"idcat":0, "name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Actividad física"},
-	      {"idcat":3,"name": "Basquet > Accesorios"},
-	      {"idcat":4,"name": "Basquet > Pelotas"},
-          {"idcat":5,"name": "Béisbol > Accesorios"},
-          {"idcat":6,"name": "Béisbol > Pelotas"},
-	      {"idcat":7,"name": "Bowling de juguete"},
-	      {"idcat":8,"name": "Bumeranes"},
-	      {"idcat":9,"name": "Discos voladores"},
-	      {"idcat":10,"name": "Futbol > Accesorios"},
-	      {"idcat":11,"name": "Futbol > Arcos"},
-	      {"idcat":12,"name": "Futbol > Pelotas"},
-	      {"idcat":13,"name": "Golf de juguete"},
-	      {"idcat":14,"name": "Hockey de juguete"},
-	      {"idcat":15,"name": "Hula hula"},
-	      {"idcat":16,"name": "Juegos de pesca"},
-	      {"idcat":17,"name": "Juguetes con raqueta"},
-	      {"idcat":18,"name": "Pelotas para jugar"}
+	    "cat_name": "Juguetes de deporte",
+	    "cat_id": 11,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0, "cat_name": "Todos"},
+	      {"id_google": 1266, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3199, "sub_id":2,"sub_name": "Actividad física"},
+	      {"id_google": 3552, "sub_id":3,"sub_name": "Basquet > Accesorios"},
+	      {"id_google": 3552, "sub_id":4,"sub_name": "Basquet > Pelotas"},
+          {"id_google": 3776, "sub_id":5,"sub_name": "Béisbol > Accesorios"},
+          {"id_google": 3776, "sub_id":6,"sub_name": "Béisbol > Pelotas"},
+	      {"id_google": 3665, "sub_id":7,"sub_name": "Bowling de juguete"},
+	      {"id_google": 3675, "sub_id":8,"sub_name": "Bumeranes"},
+	      {"id_google": 4167, "sub_id":9,"sub_name": "Discos voladores"},
+	      {"id_google": 3371, "sub_id":10,"sub_name": "Futbol > Accesorios"},
+	      {"id_google": 3371, "sub_id":11,"sub_name": "Futbol > Arcos"},
+	      {"id_google": 3371, "sub_id":12,"sub_name": "Futbol > Pelotas"},
+	      {"id_google": 3226, "sub_id":13,"sub_name": "Golf de juguete"},
+	      {"id_google": 3943, "sub_id":14,"sub_name": "Hockey de juguete"},
+	      {"id_google": 3215, "sub_id":15,"sub_name": "Hula hula"},
+	      {"id_google": 8529, "sub_id":16,"sub_name": "Juegos de pesca"},
+	      {"id_google": 505284, "sub_id":17,"sub_name": "Juguetes con raqueta"},
+	      {"id_google": 499965, "sub_id":18,"sub_name": "Pelotas para jugar"}
 	    ]
 	  },
 	  {
-	    "name": "Juguetes para montarse",
-	    "id": 12,
-	    "members": [
-	      {"idcat": 0,"name": "Todos"},
-	      {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Caballitos"},
-	      {"idcat": 3,"name": "Carretas"},
-	      {"idcat": 4,"name": "Skate y monopatín"},
-	      {"idcat": 5,"name": "Vehículos a pedales o para empujar"},
-	      {"idcat": 6,"name": "Vehículos eléctricos de juguete"}
+	    "cat_name": "Juguetes para montarse",
+	    "cat_id": 12,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0,"sub_name": "Todos"},
+	      {"id_google": 2799, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 6407, "sub_id": 2,"sub_name": "Caballitos"},
+	      {"id_google": 6379, "sub_id": 3,"sub_name": "Carretas"},
+	      {"id_google": 2799, "sub_id": 4,"sub_name": "Skate y monopatín"},
+	      {"id_google": 2724, "sub_id": 5,"sub_name": "Vehículos a pedales o para empujar"},
+	      {"id_google": 2753, "sub_id": 6,"sub_name": "Vehículos eléctricos de juguete"}
 	    ]
 	  },
 	  {
-	    "name": "Juguetes para playa & baño",
-	    "id": 13,
-	    "members": [
-	      {"idcat": 0,"name": "Todos"},
-		  {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Baño > Juguetes de goma"},
-	      {"idcat": 3,"name": "Juguetes para malabares"},
-		  {"idcat": 4,"name": "Playa > Flotadores y salvavidas"},
-		  {"idcat": 5,"name": "Playa > Kits de playa"},
-	      {"idcat": 6,"name": "Playa > Pistolas de agua"},
-		  {"idcat": 7,"name": "Playa > Tejos"}
+	    "cat_name": "Juguetes para playa & baño",
+	    "cat_id": 13,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0,"sub_name": "Todos"},
+		  {"id_google": 3911, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 3911, "sub_id": 2,"sub_name": "Baño > Juguetes de goma"},
+	      {"id_google": 33, "sub_id": 3,"sub_name": "Juguetes para malabares"},
+		  {"id_google": 1268, "sub_id": 4,"sub_name": "Playa > Flotadores y salvavidas"},
+		  {"id_google": 1268, "sub_id": 5,"sub_name": "Playa > Kits de playa"},
+	      {"id_google": 1268, "sub_id": 6,"sub_name": "Playa > Pistolas de agua"},
+		  {"id_google": 1268, "sub_id": 7,"sub_name": "Playa > Tejos"}
 	    ]
 	  },
 	  {
-	    "name": "Casas de muñecas",
-	    "id": 14,
-	    "members": [
-	      {"idcat": 0,"name": "Todos"},
-	      {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Accesorios"},
-	      {"idcat": 3,"name": "Casa de muñecas"},
-	      {"idcat": 4,"name": "Kits de accesorios"},
-	      {"idcat": 5,"name": "Muebles para casa de muñeca"}
+	    "cat_name": "Casas de muñecas",
+	    "cat_id": 14,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0,"sub_name": "Todos"},
+	      {"id_google": 2499, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 2499, "sub_id": 2,"sub_name": "Accesorios"},
+	      {"id_google": 2499, "sub_id": 3,"sub_name": "Casa de muñecas"},
+	      {"id_google": 2499, "sub_id": 4,"sub_name": "Kits de accesorios"},
+	      {"id_google": 2499, "sub_id": 5,"sub_name": "Muebles para casa de muñeca"}
 	    ]
 	  },
 	  {
-	    "name": "Muñecas & bebotes",
-	    "id": 15,
-	    "members": [
-	      {"idcat": 0,"name": "Todos"},
-	      {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Bebote simple"},
-	      {"idcat": 3,"name": "Bebote con mecanismo"},
-	      {"idcat": 4,"name": "Muñecas > General"},
-	      {"idcat": 5,"name": "Muñecas > Kit con accesorios"},
-	      {"idcat": 6,"name": "Muñecas > Pepona"}
+	    "cat_name": "Muñecas & bebotes",
+	    "cat_id": 15,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0,"sub_name": "Todos"},
+	      {"id_google": 1255, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 1255, "sub_id": 2,"sub_name": "Bebote simple"},
+	      {"id_google": 1255, "sub_id": 3,"sub_name": "Bebote con mecanismo"},
+	      {"id_google": 1257, "sub_id": 4,"sub_name": "Muñecas > General"},
+	      {"id_google": 1257, "sub_id": 5,"sub_name": "Muñecas > Kit con accesorios"},
+	      {"id_google": 8021, "sub_id": 6,"sub_name": "Muñecas > Pepona"}
 	    ]
 	  },
 	  {
-	    "name": "Muñecos & figuras de acción",
-	    "id": 16,
-	    "members": [
-	      {"idcat": 0,"name": "Todos"},
-		  {"idcat": 1,"name": "General"},
-	      {"idcat": 2,"name": "Figuras de acción (coleccionable)"},
-		  {"idcat": 3,"name": "Figuras Funko POP"},
-	      {"idcat": 4,"name": "Muñecos de acción"},
-		  {"idcat": 5,"name": "Soldaditos de juguete"}
+	    "cat_name": "Muñecos & figuras de acción",
+	    "cat_id": 16,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id": 0,"sub_name": "Todos"},
+		  {"id_google": 6058, "sub_id": 1,"sub_name": "General"},
+	      {"id_google": 6058, "sub_id": 2,"sub_name": "Figuras de acción (coleccionable)"},
+		  {"id_google": 7114, "sub_id": 3,"sub_name": "Figuras Funko POP"},
+	      {"id_google": 6058, "sub_id": 4,"sub_name": "Muñecos de acción"},
+		  {"id_google": 6058, "sub_id": 5,"sub_name": "Soldaditos de juguete"}
 	    ]
 	  },
 	  {
-	    "name": "Musicales",
-	    "id": 17,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Cajas musicales"},
-		  {"idcat":3,"name": "Instrumentos musicales"},
-		  {"idcat":4,"name": "Juguetes musicales"}
+	    "cat_name": "Musicales",
+	    "cat_id": 17,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1264, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 1264, "sub_id":2,"sub_name": "Cajas musicales"},
+		  {"id_google": 3252, "sub_id":3,"sub_name": "Instrumentos musicales"},
+		  {"id_google": 1264, "sub_id":4,"sub_name": "Juguetes musicales"}
 	    ]
 	  },
 	  {
-	    "name": "Peluches",
-	    "id": 18,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Peluches"},
-	      {"idcat":3,"name": "Peluches con mecanismo"},
-		  {"idcat":4,"name": "Titeres"}
+	    "cat_name": "Peluches",
+	    "cat_id": 18,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1259, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 1259, "sub_id":2,"sub_name": "Peluches"},
+	      {"id_google": 1259, "sub_id":3,"sub_name": "Peluches con mecanismo"},
+		  {"id_google": 1259, "sub_id":4,"sub_name": "Titeres"}
 	    ]
 	  },
 	  {
-	    "name": "Radio Control",
-	    "id": 19,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Aviones"},
-	      {"idcat":3,"name": "Barcos"},
-	      {"idcat":4,"name": "Coches"},
-		  {"idcat":5,"name": "Drones"},
-	      {"idcat":6,"name": "Helicópteros"},
-	      {"idcat":7,"name": "Motos"},
-	      {"idcat":8,"name": "Robots"},
-	      {"idcat":9,"name": "Tanques"},
-	      {"idcat":10,"name": "Voladores"}
+	    "cat_name": "Radio Control",
+	    "cat_id": 19,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 2546, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3677, "sub_id":2,"sub_name": "Aviones"},
+	      {"id_google": 3532, "sub_id":3,"sub_name": "Barcos"},
+	      {"id_google": 3601, "sub_id":4,"sub_name": "Coches"},
+		  {"id_google": 6059, "sub_id":5,"sub_name": "Drones"},
+	      {"id_google": 3554, "sub_id":6,"sub_name": "Helicópteros"},
+	      {"id_google": 5968, "sub_id":7,"sub_name": "Motos"},
+	      {"id_google": 6059, "sub_id":8,"sub_name": "Robots"},
+	      {"id_google": 5969, "sub_id":9,"sub_name": "Tanques"},
+	      {"id_google": 7090, "sub_id":10,"sub_name": "Voladores"}
 	    ]
 	  },
 	  {
-	    "name": "Rompecabezas & Puzzles",
-	    "id": 20,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "Puzzles > General"},
-	      {"idcat":2,"name": "Puzzles (mini)"},
-	      {"idcat":3,"name": "Puzzles (didactico)"},
-	      {"idcat":4,"name": "Puzzles (mediano)"},
-	      {"idcat":5,"name": "Puzzles (grande)"},
-		  {"idcat":6,"name": "Puzzles (gigante)"},
-		  {"idcat":7,"name": "Rompecabezas con mecanismos"}
+	    "cat_name": "Rompecabezas & Puzzles",
+	    "cat_id": 20,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 3867, "sub_id":1,"sub_name": "Puzzles > General"},
+	      {"id_google": 2618, "sub_id":2,"sub_name": "Puzzles (mini)"},
+	      {"id_google": 2618, "sub_id":3,"sub_name": "Puzzles (didactico)"},
+	      {"id_google": 2618, "sub_id":4,"sub_name": "Puzzles (mediano)"},
+	      {"id_google": 2618, "sub_id":5,"sub_name": "Puzzles (grande)"},
+		  {"id_google": 2618, "sub_id":6,"sub_name": "Puzzles (gigante)"},
+		  {"id_google": 4011, "sub_id":7,"sub_name": "Rompecabezas con mecanismos"}
 	    ]
 	  },
 	  {
-	    "name": "Simulación",
-	    "id": 21,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Ama de casa"},
-	      {"idcat":3,"name": "Banco y dinero"},
-	      {"idcat":4,"name": "Comprar y vender"},
-		  {"idcat":5,"name": "Casa y Cocina > Electrodométicos"},
-	      {"idcat":6,"name": "Cocina y Comida"},
-	      {"idcat":7,"name": "Cocina y Comida > Cocinas de juguete"},
-	      {"idcat":8,"name": "Cocina y Comida > Comida de juguete"},
-	      {"idcat":9,"name": "Cocina y Comida > Utensilios de cocina de juguete"},
-	      {"idcat":10,"name": "Cocina y Comida > Utensilios de mesa de juguete"},
-	      {"idcat":11,"name": "Electricista"},
-	      {"idcat":12,"name": "Herramientas"},
-	      {"idcat":13,"name": "Jardinería"},
-	      {"idcat":14,"name": "Profesiones y roles"}
+	    "cat_name": "Simulación",
+	    "cat_id": 21,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 3229, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 4004, "sub_id":2,"sub_name": "Ama de casa"},
+	      {"id_google": 3680, "sub_id":3,"sub_name": "Banco y dinero"},
+	      {"id_google": 8295, "sub_id":4,"sub_name": "Comprar y vender"},
+		  {"id_google": 3298, "sub_id":5,"sub_name": "Casa y Cocina > Electrodométicos"},
+	      {"id_google": 3298, "sub_id":6,"sub_name": "Cocina y Comida"},
+	      {"id_google": 543622, "sub_id":7,"sub_name": "Cocina y Comida > Cocinas de juguete"},
+	      {"id_google": 543624, "sub_id":8,"sub_name": "Cocina y Comida > Comida de juguete"},
+	      {"id_google": 543690, "sub_id":9,"sub_name": "Cocina y Comida > Utensilios de cocina de juguete"},
+	      {"id_google": 543623, "sub_id":10,"sub_name": "Cocina y Comida > Utensilios de mesa de juguete"},
+	      {"id_google": 3659, "sub_id":11,"sub_name": "Electricista"},
+	      {"id_google": 3751, "sub_id":12,"sub_name": "Herramientas"},
+	      {"id_google": 3288, "sub_id":13,"sub_name": "Jardinería"},
+	      {"id_google": 3129, "sub_id":14,"sub_name": "Profesiones y roles"},
+		  {"id_google": 3129, "sub_id":15,"sub_name": "Profesiones y roles > Valijas"}
 	    ]
 	  },
 	  {
-	    "name": "Vehículos",
-	    "id": 22,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Aviones y Helicópteros"},
-	      {"idcat":3,"name": "Barcos"},
-	      {"idcat":4,"name": "Coches"},
-	      {"idcat":5,"name": "Coches > Coleccionables"},
-	      {"idcat":6,"name": "Motos y cuatriciclos"},
-	      {"idcat":7,"name": "Motos y cuatriciclos > coleccionables"},
-	      {"idcat":8,"name": "Naves espaciales"},
-	      {"idcat":9,"name": "Pistas de vehículos"},
-	      {"idcat":10,"name": "Trenes"},
-		  {"idcat":11,"name": "Trenes > Pistas de trenes"},
-	      {"idcat":11,"name": "Vehículos de construcción y camiones"},
-	      {"idcat":12,"name": "Vehículos para dedos"}
+	    "cat_name": "Vehículos",
+	    "cat_id": 22,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 2505, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3444, "sub_id":2,"sub_name": "Aviones y Helicópteros"},
+	      {"id_google": 3792, "sub_id":3,"sub_name": "Barcos"},
+	      {"id_google": 3551, "sub_id":4,"sub_name": "Coches"},
+	      {"id_google": 3474, "sub_id":5,"sub_name": "Coches > Coleccionables"},
+	      {"id_google": 3590, "sub_id":6,"sub_name": "Motos y cuatriciclos"},
+	      {"id_google": 3590, "sub_id":7,"sub_name": "Motos y cuatriciclos > coleccionables"},
+	      {"id_google": 3589, "sub_id":8,"sub_name": "Naves espaciales"},
+	      {"id_google": 3474, "sub_id":9,"sub_name": "Pistas de vehículos"},
+	      {"id_google": 5152, "sub_id":10,"sub_name": "Trenes"},
+		  {"id_google": 5152, "sub_id":11,"sub_name": "Trenes > Pistas de trenes"},
+	      {"id_google": 3296, "sub_id":11,"sub_name": "Vehículos de construcción y camiones"},
+	      {"id_google": 2505, "sub_id":12,"sub_name": "Vehículos para dedos"}
 	    ]
 	  },
 	  {
-	    "name": "Acuaticos",
-	    "id": 23,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Aspersores de juego"},
-	      {"idcat":3,"name": "Mesas de agua"},
-	      {"idcat":4,"name": "Parques acuáticos y toboganes"}
+	    "cat_name": "Acuaticos",
+	    "cat_id": 23,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 6464, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 6465, "sub_id":2,"sub_name": "Aspersores de juego"},
+	      {"id_google": 3556, "sub_id":3,"sub_name": "Mesas de agua"},
+	      {"id_google": 500095, "sub_id":4,"sub_name": "Parques acuáticos y toboganes"}
 	    ]
 	  },
 	  {
-	    "name": "Coleccionables",
-	    "id": 24,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Cromos coleccionables"},
-		  {"idcat":3,"name": "Figuras coleccionables"},
-	      {"idcat":4,"name": "Maquetas a escala"}
+	    "cat_name": "Coleccionables",
+	    "cat_id": 24,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 216, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 6997, "sub_id":2,"sub_name": "Cromos coleccionables"},
+		  {"id_google": 216, "sub_id":3,"sub_name": "Figuras coleccionables"},
+	      {"id_google": 37, "sub_id":4,"sub_name": "Maquetas a escala"}
 	    ]
 	  },
 	  {
-	    "name": "Electrónica",
-	    "id": 25,
-	    "members": [
-	      {"idcat":0, "name": "Todos"},
-	      {"idcat":1,"name": "Consolas portátiles"},
-	      {"idcat":2,"name": "Máquinas de pinball"},
-	      {"idcat":3,"name": "Videoconsolas"}
+	    "cat_name": "Electrónica",
+	    "cat_id": 25,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0, "cat_name": "Todos"},
+	      {"id_google": 1294, "sub_id":1,"sub_name": "Consolas portátiles"},
+	      {"id_google": 3140, "sub_id":2,"sub_name": "Máquinas de pinball"},
+	      {"id_google": 1294, "sub_id":3,"sub_name": "Videoconsolas"}
 	    ]
 	  },
 	  {
-	    "name": "Juegos Voladores",
-	    "id": 26,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Cohetes de agua y aire"},
-	      {"idcat":3,"name": "Cometas y barriletes"},
-		  {"idcat":4,"name": "Lanzadores de discos"},
-	      {"idcat":5,"name": "Paracaidistas de juguete"},
-	      {"idcat":6,"name": "Planeadores de juguete"}
+	    "cat_name": "Juegos Voladores",
+	    "cat_id": 26,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 1261, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3966, "sub_id":2,"sub_name": "Cohetes de agua y aire"},
+	      {"id_google": 3460, "sub_id":3,"sub_name": "Cometas y barriletes"},
+		  {"id_google": 1261, "sub_id":4,"sub_name": "Lanzadores de discos"},
+	      {"id_google": 3263, "sub_id":5,"sub_name": "Paracaidistas de juguete"},
+	      {"id_google": 3378, "sub_id":6,"sub_name": "Planeadores de juguete"}
 	    ]
 	  },
 	  {
-	    "name": "Vehículos de muñecas",
-	    "id": 27,
-	    "members": [
-	      {"idcat":0,"name": "Todos"},
-	      {"idcat":1,"name": "General"},
-	      {"idcat":2,"name": "Aviones y Helicópteros"},
-		  {"idcat":3,"name": "Barcos"},
-	      {"idcat":4,"name": "Coches"},
-	      {"idcat":5,"name": "Motos y cuatriciclos"}
+	    "cat_name": "Vehículos de muñecas",
+	    "cat_id": 27,
+	    "cat_subcat": [
+	      {"id_google": 0, "sub_id":0,"sub_name": "Todos"},
+	      {"id_google": 2505, "sub_id":1,"sub_name": "General"},
+	      {"id_google": 3444, "sub_id":2,"sub_name": "Aviones y Helicópteros"},
+		  {"id_google": 3792, "sub_id":3,"sub_name": "Barcos"},
+	      {"id_google": 3551, "sub_id":4,"sub_name": "Coches"},
+	      {"id_google": 3590, "sub_id":5,"sub_name": "Motos y cuatriciclos"}
 	    ]
 	  }
-	]
-}
+]

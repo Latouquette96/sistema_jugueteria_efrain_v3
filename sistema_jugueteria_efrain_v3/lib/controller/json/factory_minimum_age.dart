@@ -27,7 +27,7 @@ class FactoryMinimumAge with MixinFactoryJSONDefault<MinimumAge, MinimumAge>{
   }
   
   @override
-  MinimumAge search(int id) {
-    return getList().firstWhere((element) => element.getMinimumAgeID()==id);
+  MinimumAge search(int v1, {int? v2, int? v3}) {
+    return getList().firstWhere((element) => element.getMinimumAgeID()==v1);
   }
 }

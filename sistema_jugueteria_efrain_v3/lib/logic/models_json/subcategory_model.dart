@@ -2,11 +2,13 @@
 class SubCategory {
   late int _subcatId;
   late String _subcatName;
+  late int _subcatIDGoogle;
 
   ///Constructor de SubCategory
   SubCategory({required Map<String, dynamic> values}){
-    _subcatId = values['idcat'];
-    _subcatName = values['name'];
+    _subcatId = values['sub_id'];
+    _subcatName = values['sub_name'];
+    _subcatIDGoogle = values['id_google'];
   }
 
   ///SubCategory: Devuelve el ID de la subcategoria.
@@ -17,5 +19,10 @@ class SubCategory {
   ///SubCategory: Devuelve el nombre de la subcategoria.
   String getSubCategoryName(){
     return _subcatName;
+  }
+
+  ///SubCategory: Devuelve el ID de categoria según Google.
+  int getSubCategoryIDGoogle(){
+    return _subcatIDGoogle;
   }
 }

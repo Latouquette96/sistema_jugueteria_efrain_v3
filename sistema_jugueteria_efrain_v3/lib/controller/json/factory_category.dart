@@ -7,17 +7,22 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
 ///Clase FactoryCategory: Permite construir las posibles categorias que podran ser utilizadas en el sistema.
 class FactoryCategory with MixinFactoryJSONDefault<Category, Pair<Category?, SubCategory?>>{
-  static final FactoryCategory _instance = FactoryCategory._();
+  //Atributos de instancia
+  late final String _resource;
 
+  static final FactoryCategory _instance = FactoryCategory._("product_categories.json");
+  
   ///Constructor de FactoryCategory
-  FactoryCategory._();
+  FactoryCategory._(String resource){
+    _resource = resource;
+  }
 
   @override
   Future<void> builder() async {
-    await loadAsset("product_categories.json");
+    await loadAsset(_resource);
 
     var value = jsonDecode(super.getJSONString());
-    for (var score in value['categories']){
+    for (var score in value){
       Category cat = Category(score);
       super.getList().add(cat);
     }
@@ -29,14 +34,14 @@ class FactoryCategory with MixinFactoryJSONDefault<Category, Pair<Category?, Sub
   }
 
   @override
-  Pair<Category?, SubCategory?> search(int id){
+  Pair<Category?, SubCategory?> search(int v1, {int? v2, int? v3}){
     Pair<Category?, SubCategory?> pair;
     
-    if (id==0){
+    if (v1==0){
       pair = Pair<Category?, SubCategory?>(v1: getList()[0], v2: getList()[0].getListSubcategory()[0]);
     }
     else{
-      String valueStr = (id>999) ? id.toString() : "0${id.toString()}";
+      String valueStr = (v1>999) ? v1.toString() : "0${v1.toString()}";
       int categoryID = int.parse(valueStr.substring(0,2));
       int subcategoryID = int.parse(valueStr.substring(2, 4));
 

@@ -7,6 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/test/test_provider.dart';
 
 ///Clase DrawerLogin: Widget que permite controlar las configuraciones del sistema.
 class DrawerLogin extends ConsumerStatefulWidget{
@@ -182,7 +183,8 @@ class _DrawerLoginState extends ConsumerState<ConsumerStatefulWidget> with Conta
                 //Si los datos son validados, entonces conectar al servidor.
                 ref.read(userLoginProvider.notifier).state = _form.control(_keyUser).value.toString(); 
                 ref.read(passwordLoginProvider.notifier).state = _form.control(_keyPassword).value.toString();
-                ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString();    
+                ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString(); 
+                await ref.read(testMultipleRows.future);   
 
                 //Sincronizar
                 try{
