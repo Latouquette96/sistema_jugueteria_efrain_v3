@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+const db_tests = require('./queries_tests')
 const db_product = require('./queries_product')
 const db_distributor = require('./queries_distributor')
 const db_billing = require('./queries_billings')
@@ -18,6 +19,8 @@ app.use(
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
+
+app.post('/tests/multipleRows', db_tests.insertValues)
 
 app.get('/filter/brands', db_filter.getLoadedBrands)
 
