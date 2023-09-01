@@ -9,8 +9,8 @@ class CategoryMySQL {
   ///Constructor de CategoryMySQL
   CategoryMySQL(Map<String, dynamic> values){
     _catNewID = values['id_new'];
-    _catId = values['cat_name'];
-    _catName = values['cat_id'];
+    _catId = values['cat_id'];
+    _catName = values['cat_name'];
     _catSubCategoryMySQL = [];
 
     for (var subcat in values['cat_subcat']){
@@ -20,8 +20,8 @@ class CategoryMySQL {
 
   ///Constructor de CategoryMySQL
   CategoryMySQL.clean(){
-    _catNewID = -1;
-    _catId = -1;
+    _catNewID = 0;
+    _catId = 0;
     _catName = "";
     _catSubCategoryMySQL = [];
   }

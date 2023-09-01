@@ -20,7 +20,7 @@ class FactoryCategoryMySQL with MixinFactoryJSONDefault<CategoryMySQL, SubCatego
   Future<void> builder() async {
     await loadAsset(_resource);
 
-    var value = jsonDecode(super.getJSONString());
+    List<dynamic> value = jsonDecode(super.getJSONString());
     for (var score in value){
       CategoryMySQL cat = CategoryMySQL(score);
       super.getList().add(cat);
@@ -38,12 +38,28 @@ class FactoryCategoryMySQL with MixinFactoryJSONDefault<CategoryMySQL, SubCatego
     SubCategoryMySQL subcat;
 
     if (cat.getCategoryMySQLNewID()>-1){
-      subcat = cat.getListSubCategoryMySQL().firstWhere((element) => element.getSubCategoryMySQLID()==(v2 ?? 0));
+      subcat = cat.getListSubCategoryMySQL().firstWhere((element) => element.getID()==(v2 ?? 0));
     }
     else{
       subcat = SubCategoryMySQL.clean();
     }
     
     return subcat;
+  }
+  
+  @override
+  CategoryMySQL searchKeyForID(int id) {
+    CategoryMySQL? categoryMySQL;
+    
+    for (int i=0; i<getList().length && categoryMySQL==null; i++){
+      if (getList()[i].getCategoryMySQLID()==id){
+        categoryMySQL = getList()[i];
+      }
+    }
+
+    //Control para verificar si se encontró la categoria o no.
+    categoryMySQL ??= getList().firstWhere((element) => element.getCategoryMySQLID()==0);
+
+    return categoryMySQL;
   }
 }

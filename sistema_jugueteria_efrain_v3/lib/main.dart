@@ -8,8 +8,8 @@ import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FactoryCategory.getInstance().builder();
   await FactoryCategoryMySQL.getInstance().builder();
+  await FactoryCategory.getInstance().builder();
   await FactoryMinimumAge.getInstance().builder();
   await ConfigurationLocal.getInstance().initialize();
   

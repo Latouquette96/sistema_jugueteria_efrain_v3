@@ -3,14 +3,14 @@
 	    "cat_name": "Sin definir",
 	    "cat_id": 0,
 	    "cat_subcat": [
-	      {"id_google": 0, "sub_id": 0, "cat_name": "Todos"}
+	      {"id_google": 0, "sub_id": 0, "sub_name": "Todos"}
 	    ]
 	  },
 	  {
 	    "cat_name": "Armas y Espadas",
 	    "cat_id": 1,
 	    "cat_subcat": [
-	      {"id_google": 0, "sub_id": 0, "cat_name": "Todos"},
+	      {"id_google": 0, "sub_id": 0, "sub_name": "Todos"},
 		  {"id_google": 3627, "sub_id": 1,"sub_name": "General"},
 	      {"id_google": 3627, "sub_id": 2,"sub_name": "Armas y espadas"},
 		  {"id_google": 3627, "sub_id": 3,"sub_name": "Set de batalla"}
@@ -155,7 +155,7 @@
 	    "cat_name": "Juguetes de deporte",
 	    "cat_id": 11,
 	    "cat_subcat": [
-	      {"id_google": 0, "sub_id":0, "cat_name": "Todos"},
+	      {"id_google": 0, "sub_id":0, "sub_name": "Todos"},
 	      {"id_google": 1266, "sub_id":1,"sub_name": "General"},
 	      {"id_google": 3199, "sub_id":2,"sub_name": "Actividad física"},
 	      {"id_google": 3552, "sub_id":3,"sub_name": "Basquet > Accesorios"},
@@ -361,7 +361,7 @@
 	    "cat_name": "Electrónica",
 	    "cat_id": 25,
 	    "cat_subcat": [
-	      {"id_google": 0, "sub_id":0, "cat_name": "Todos"},
+	      {"id_google": 0, "sub_id":0, "sub_name": "Todos"},
 	      {"id_google": 1294, "sub_id":1,"sub_name": "Consolas portátiles"},
 	      {"id_google": 3140, "sub_id":2,"sub_name": "Máquinas de pinball"},
 	      {"id_google": 1294, "sub_id":3,"sub_name": "Videoconsolas"}

@@ -19,6 +19,10 @@ final stateManagerProductPricePDFProvider = StateNotifierProvider<StateManagerPr
     (ref) => StateManagerProvider(ref)
 );
 
+final stateManagerProductMySQLProvider = StateNotifierProvider<StateManagerProvider, PlutoGridStateManager?>(
+    (ref) => StateManagerProvider(ref)
+);
+
 ///Clase StateManagerProvider: Proveedor de estado de StateManager.
 class StateManagerProvider extends StateNotifier<PlutoGridStateManager?> {
   final StateNotifierProviderRef<StateManagerProvider, PlutoGridStateManager?> ref;

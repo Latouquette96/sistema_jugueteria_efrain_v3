@@ -9,8 +9,8 @@ class Category {
 
   ///Constructor de Category
   Category(Map<String, dynamic> values){
-    _catId = values['cat_name'];
-    _catName = values['cat_id'];
+    _catId = values['cat_id'];
+    _catName = values['cat_name'];
     _catSubcategory = [];
 
     for (var subcat in values['cat_subcat']){

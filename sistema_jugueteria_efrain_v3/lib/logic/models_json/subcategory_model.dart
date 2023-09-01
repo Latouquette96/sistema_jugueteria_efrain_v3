@@ -7,7 +7,7 @@ class SubCategory {
   ///Constructor de SubCategory
   SubCategory({required Map<String, dynamic> values}){
     _subcatId = values['sub_id'];
-    _subcatName = values['sub_name'];
+    _subcatName = values['sub_name'] ?? "-";
     _subcatIDGoogle = values['id_google'];
   }
 

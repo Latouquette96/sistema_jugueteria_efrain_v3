@@ -53,4 +53,24 @@ class FactoryCategory with MixinFactoryJSONDefault<Category, Pair<Category?, Sub
 
     return pair;
   }
+
+  Category getCategory(int id){
+    return getList().firstWhere((element) => element.getCategoryID().compareTo(id)==0, orElse: () => getList().firstWhere((element1) => element1.getCategoryID()==0));
+  }
+  
+  @override
+  Category searchKeyForID(int id) {
+    Category? category;
+    
+    for (int i=0; i<getList().length && category==null; i++){
+      if (getList()[i].getCategoryID()==id){
+        category = getList()[i];
+      }
+    }
+
+    //Control para verificar si se encontró la categoria o no.
+    category ??= getList().firstWhere((element) => element.getCategoryID()==0);
+
+    return category;
+  }
 }
