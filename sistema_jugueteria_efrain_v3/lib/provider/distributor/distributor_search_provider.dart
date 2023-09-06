@@ -14,15 +14,16 @@ class DistributorSearchProvider extends StateNotifier<List<Distributor>> {
 
   ///DistributorSearchProvider: Inicializa el arreglo de distribuidora.
   Future<void> initialize() async{
+    state = [];
     //Obtiene la direccion del servidor.
-    final url = ref.watch(urlLoginProvider);
+    final url = ref.watch(urlAPIProvider);
     //Obtiene la respuesta a la solicitud http.
     try{
       final content = await http.get(Uri.http(url, '/distributors'));
 
       List<dynamic> map = jsonDecode(content.body);
       List<Distributor> list = map.map((e) => Distributor.fromJSON(e)).toList();
-      state = list;
+      state = [...list];
     }
     catch(e){
       state = [];

@@ -7,7 +7,6 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/test/test_provider.dart';
 
 ///Clase DrawerLogin: Widget que permite controlar las configuraciones del sistema.
 class DrawerLogin extends ConsumerStatefulWidget{
@@ -141,7 +140,7 @@ class _DrawerLoginState extends ConsumerState<ConsumerStatefulWidget> with Conta
                       ValidationMessage.required: (error) => "(Requerido) Ingrese la contraseña."
                     },
                   ),),
-                  Container(
+                  SizedBox(
                     width: 50,
                     child: IconButton(
                     onPressed: (){
@@ -179,30 +178,21 @@ class _DrawerLoginState extends ConsumerState<ConsumerStatefulWidget> with Conta
           Expanded(child: ElevatedButton(
             style: StyleForm.getStyleElevatedButtom(),
             onPressed: () async {
-              if (_form.valid){
-                //Si los datos son validados, entonces conectar al servidor.
-                ref.read(userLoginProvider.notifier).state = _form.control(_keyUser).value.toString(); 
-                ref.read(passwordLoginProvider.notifier).state = _form.control(_keyPassword).value.toString();
-                ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString(); 
-                await ref.read(testMultipleRows.future);   
-
-                //Sincronizar
-                try{
-                  await ref.read(serviceProvider).run();
-                  if (context.mounted){
-                    ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
-                  }
-                }
-                catch(e){
-                  if (context.mounted){
-                    ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión:\n${e.toString()}");
-                  }
+              //Si los datos son validados, entonces conectar al servidor.
+              ref.read(userLoginProvider.notifier).state = _form.control(_keyUser).value.toString(); 
+              ref.read(passwordLoginProvider.notifier).state = _form.control(_keyPassword).value.toString();
+              ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString();    
+              //Sincronizar
+              try{
+                await ref.read(serviceProvider).run();
+                if (context.mounted){
+                  ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
                 }
               }
-              else{
+              catch(e){
                 if (context.mounted){
-                    ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión: Datos no válidos.");
-                  }
+                  ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión:\n${e.toString()}");
+                }
               }
               if (context.mounted){
                 Navigator.pop(context);

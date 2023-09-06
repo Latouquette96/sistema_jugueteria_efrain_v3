@@ -34,7 +34,6 @@ class MySQLConnection {
     }
     catch(e){
       toReturn = false;
-      print(e.toString());
     }
     return toReturn;
   }
@@ -47,11 +46,9 @@ class MySQLConnection {
       try {
         await _connection?.query('SELECT 1');
         conexionActiva = true;
-        print('La conexión está activa');
       }
-      catch (e) {
-        print('La conexión no está activa');
-      }
+      // ignore: empty_catches
+      catch (e) {}
     }
 
     return conexionActiva;

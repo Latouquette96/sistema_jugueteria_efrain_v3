@@ -439,6 +439,25 @@ class Product with MixinJSONalizable<Product>, MixinPlutonizable {
     };
   }
 
+  Map<String, dynamic> getJSONWithoutID() {
+    return {
+      _keyBarcode: _barcode,
+      _keyInternalCode: _internalCode,
+      _keyTitle: _title,
+      _keyDescription: _description,
+      _keyBrand: _brand,
+      _keyPricePublic: _pricePublic,
+      _keyStock: _stock,
+      _keySubcategory: _subcategory,
+      //Construye una cadena con todos los elementos de la lista separados por ','.
+      _keyImages: _images.join(',').replaceAll(' ', ''),
+      _keySizes: _listSize.join(','),
+      _keyDateCreated: _dateCreate,
+      _keyDateUpdated: _dateUpdate,
+      _keyMinimumAge: _minimumAge
+    };
+  }
+
   @override
   void fromJSON(Map<String, dynamic> map) {
     _id = map[_keyID];
@@ -468,24 +487,24 @@ class Product with MixinJSONalizable<Product>, MixinPlutonizable {
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
   void fromJSONServer(Map<String, dynamic> map) {
     String imageString =  map[_keyImages].toString().replaceAll("[", "");
-    imageString =  imageString.replaceAll("]", "");
+      imageString =  imageString.replaceAll("]", "");
 
-    _id = map[_keyID];
-    _barcode = map[_keyBarcode];
-    _internalCode = map[_keyInternalCode];
-    _title = map[_keyTitle];
-    _description = map[_keyDescription];
-    _brand = map[_keyBrand];
-    _pricePublic = double.parse(map[_keyPricePublic]);
-    _stock = map[_keyStock];
-    _subcategory = map[_keySubcategory];
-    _images = imageString.replaceAll(' ', '').split(',');
-    _listSize = map[_keySizes].split(',');
-    _dateCreate = int.parse(map[_keyDateCreated]);
-    _dateUpdate = int.parse(map[_keyDateUpdated]);
-    _minimumAge = map[_keyMinimumAge];
-    
-    plutoRow = buildPlutoRow();
+      _id = map[_keyID];
+      _barcode = map[_keyBarcode];
+      _internalCode = map[_keyInternalCode];
+      _title = map[_keyTitle];
+      _description = map[_keyDescription];
+      _brand = map[_keyBrand];
+      _pricePublic = double.parse(map[_keyPricePublic].toString());
+      _stock = map[_keyStock];
+      _subcategory = map[_keySubcategory];
+      _images = imageString.replaceAll(' ', '').split(',');
+      _listSize = map[_keySizes].split(',');
+      _dateCreate = int.parse(map[_keyDateCreated].toString());
+      _dateUpdate = int.parse(map[_keyDateUpdated].toString());
+      _minimumAge = map[_keyMinimumAge];
+      
+      plutoRow = buildPlutoRow();
   }
 
   //--------------------GRAFICOS---------------------

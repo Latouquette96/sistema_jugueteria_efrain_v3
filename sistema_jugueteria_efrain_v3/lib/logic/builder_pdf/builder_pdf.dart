@@ -40,6 +40,7 @@ class BuilderPDF {
     for (int i=0; i<listPDF.length; i++){
       Product e = listPDF[i];
       //Image a insertar.
+      // ignore: prefer_typing_uninitialized_variables
       var image;
       //Busca el archivo (si es que existe) del producto.
       File fileImg = File("${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyImagePath())!}\\${listPDF[i].getFileName(0)}");
@@ -53,7 +54,6 @@ class BuilderPDF {
         }
         catch(d){
           image = imageTemp;
-          print(d);
         }
       }
        
@@ -134,9 +134,7 @@ class BuilderPDF {
     String date = DatetimeCustom.getDatetimeStringNow();
     String name = date.replaceAll("/", "");
     name = name.replaceAll(":", "");
-
-    print("${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyCatalogPath())}\\$name.pdf");
-
+    
     final file = File("${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyCatalogPath())}/$name.pdf");
     await file.writeAsBytes(await pdf.save());
   }

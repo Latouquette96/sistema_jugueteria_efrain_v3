@@ -33,17 +33,17 @@ class FactoryMinimumAge with MixinFactoryJSONDefault<MinimumAge, MinimumAge>{
   
   @override
   MinimumAge searchKeyForID(int id) {
-    MinimumAge? categoryMySQL;
+    MinimumAge? minimumAge;
     
-    for (int i=0; i<getList().length && categoryMySQL==null; i++){
+    for (int i=0; i<getList().length && minimumAge==null; i++){
       if (getList()[i].getMinimumAgeID()==id){
-        categoryMySQL = getList()[i];
+        minimumAge = getList()[i];
       }
     }
 
     //Control para verificar si se encontró la categoria o no.
-    categoryMySQL ??= getList().firstWhere((element) => element.getMinimumAgeID()==0);
+    minimumAge ??= getList().firstWhere((element) => element.getMinimumAgeID()==0, orElse:() => getList().first,);
 
-    return categoryMySQL;
+    return minimumAge;
   }
 }

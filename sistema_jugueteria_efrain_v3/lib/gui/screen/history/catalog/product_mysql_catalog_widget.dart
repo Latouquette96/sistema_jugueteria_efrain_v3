@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
@@ -28,12 +29,44 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
     //Agrega las columnas
     _columns.addAll(<PlutoColumn>[
       PlutoColumn(
+        cellPadding: EdgeInsets.zero,
+        title: "Opciones", 
+        field: "p_options", 
+        type: PlutoColumnType.text(),
+        enableRowChecked: true,
+        width: 150,
+        minWidth: 150,
+        renderer: (rendererContext) {
+          return Row(
+            children: [
+              //IconButton para mostrar precios de producto.
+              Expanded(child: 
+                IconButton(
+                  onPressed: (){}, 
+                  icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
+                )
+              ),
+            ],
+          );
+        },
+      ),
+      PlutoColumn(
+        hide: true,
+        title: 'ID',
+        field: Product.getKeyID(),
+        width: 75,
+        minWidth: 75,
+        type: PlutoColumnType.number(
+          format: "#"
+        ),
+        readOnly: true
+      ),
+      PlutoColumn(
         title: 'Barcode',
         width: 150,
         minWidth: 150,
         field: Product.getKeyBarcode(),
         type: PlutoColumnType.text(),
-        readOnly: true
       ),
       PlutoColumn(
         title: 'Cód. Int.',
@@ -41,27 +74,21 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
         minWidth: 100,
         field: Product.getKeyInternalCode(),
         type: PlutoColumnType.text(),
-        readOnly: true
       ),
       PlutoColumn(
         title: 'Titulo',
         field: Product.getKeyTitle(),
         type: PlutoColumnType.text(),
-        readOnly: true
       ),
       PlutoColumn(
         title: 'Marca/Importador',
         field: Product.getKeyBrand(),
-        type: PlutoColumnType.text(
-          defaultValue: "IMPORT."
-        ),
-        readOnly: true
+        type: PlutoColumnType.text(defaultValue: "IMPORT."),
       ),
       PlutoColumn(
         title: 'Categoria > Subcategoria',
         field: Product.getKeyCategory(),
         type: PlutoColumnType.text(),
-        readOnly: true
       ),
       PlutoColumn(
         title: "Stock",
@@ -71,7 +98,6 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
         ),
         width: 100,
         minWidth: 100,
-        readOnly: true
       ),
       PlutoColumn(
         title: "Precio Público",
@@ -82,12 +108,11 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
         ),
         width: 150,
         minWidth: 150,
-        readOnly: true
       )
     ]);
     //Agrega las filas.
     _rows.addAll(ref.read(importProductMySQLProvider).map((e){
-      return e.getPlutoRow();
+      return e.getValue1().getPlutoRow();
     }).toList());
   }
 

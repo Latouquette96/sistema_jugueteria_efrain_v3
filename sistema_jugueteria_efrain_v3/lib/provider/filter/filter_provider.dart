@@ -36,4 +36,4 @@ class FilterBrandsProvider extends StateNotifier<List<String>> {
 }
 
 ///filterOfLoadedBrandsWithAPIProvider es un proveedor que permite mantener actualizado el listado de marcas de productos utilizadas.
-final filterOfLoadedBrandsWithAPIProvider = StateNotifierProvider<FilterBrandsProvider, List<String>>((ref) => FilterBrandsProvider(ref.watch(urlLoginProvider)));
+final filterOfLoadedBrandsWithAPIProvider = StateNotifierProvider<FilterBrandsProvider, List<String>>((ref) => FilterBrandsProvider(ref.watch(urlAPIProvider)));

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
 final testMultipleRows = FutureProvider<void>((ref) async {
-  String url = ref.watch(urlLoginProvider);
+  String url = ref.watch(urlAPIProvider);
 
   //Envio la solicitud POST para cargar
   await http.post(

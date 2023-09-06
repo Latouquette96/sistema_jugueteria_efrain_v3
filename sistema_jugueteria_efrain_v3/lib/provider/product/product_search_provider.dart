@@ -18,8 +18,10 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
 
   ///ProductSearchProvider: Inicializa el arreglo de producto.
   Future<void> initialize() async{
+    //Limpia el estado actual.
+    state = [];
     //Obtiene la direccion del servidor.
-    final url = ref.watch(urlLoginProvider);
+    final url = ref.watch(urlAPIProvider);
     //Obtiene la respuesta a la solicitud http.
     try{
       final content = await http.get(Uri.http(url, '/products'));
@@ -38,8 +40,6 @@ class ProductSearchProvider extends StateNotifier<List<Product>> {
   Future<void> refresh() async {
     //Limpia el catalogo de todas las filas.
     ref.read(stateProvider)!.removeAllRows();
-    //Limpia el estado actual.
-    state = [];
     //Limpia los productos seleccionados.
     ref.read(productSharingProvider.notifier).clear();
     //Inicializa el catalogo.

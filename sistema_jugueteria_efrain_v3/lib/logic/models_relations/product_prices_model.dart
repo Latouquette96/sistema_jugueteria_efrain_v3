@@ -88,6 +88,11 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
     return _productID;
   }
 
+  ///ProductPrice: Establece el producto.
+  void setProduct(Product p){
+    _productID = p.getID();
+  }
+
   //--------------------DISTRIBUIDORA----------------------
 
   ///ProductPrice: Devuelve la distribuidora.
