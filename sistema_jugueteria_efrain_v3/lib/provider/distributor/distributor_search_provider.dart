@@ -1,42 +1,26 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/catalog_state_notifier.dart';
 
-///Clase DistributorSearchProvider: Proveedor de servicios para almacenar el estado de una distribuidora.
-class DistributorSearchProvider extends StateNotifier<List<Distributor>> {
+///Clase CatalogDistributorProvider: Provider para almacenar una lista de Distribuidoras.
+class CatalogDistributorProvider extends CatalogStateNotifier<Distributor> {
   //Atributos de clase
-  final StateNotifierProviderRef<DistributorSearchProvider, List<Distributor>> ref;
+  final StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?> stateProvider;
 
-  //Constructor de DistributorSearchProvider
-  DistributorSearchProvider(this.ref): super([]);
-
-  ///DistributorSearchProvider: Inicializa el arreglo de distribuidora.
-  Future<void> initialize() async{
-    state = [];
-    //Obtiene la direccion del servidor.
-    final url = ref.watch(urlAPIProvider);
-    //Obtiene la respuesta a la solicitud http.
-    try{
-      final content = await http.get(Uri.http(url, '/distributors'));
-
-      List<dynamic> map = jsonDecode(content.body);
-      List<Distributor> list = map.map((e) => Distributor.fromJSON(e)).toList();
-      state = [...list];
-    }
-    catch(e){
-      state = [];
-    }
-  }
-
-  ///DistributorSearchProvider: Refrezca el listado de distribuidoras.
-  Future<void> refresh() async {
-    state.clear();
-    await initialize();
-  }
+  //Constructor de CatalogDistributorProvider
+  CatalogDistributorProvider(StateNotifierProviderRef ref, this.stateProvider): 
+    super(
+      [], 
+      ref: ref, 
+      path: "/distributors", 
+      stateProvider: stateProvider,
+      buildElement: (List<dynamic> list){
+        return list.map((e) => Distributor.fromJSON(e)).toList();
+      }
+    );
 }
 
-
 ///distributorCatalogProvider es un proveedor que almacena la lista de distribuidoras.
-final distributorCatalogProvider = StateNotifierProvider<DistributorSearchProvider, List<Distributor>>((ref) => DistributorSearchProvider(ref));
+final distributorCatalogProvider = StateNotifierProvider<CatalogDistributorProvider, List<Distributor>>((ref) => CatalogDistributorProvider(ref, stateManagerDistributorProvider));

@@ -1,16 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
-
-///Clase ToggleNotifier
-class ToggleNotifier extends StateNotifier<bool> {
-  ToggleNotifier() : super(false);
-
-  ///ToggleNotifier: Realizar el toggle.
-  void toggle() {
-    state = !state;
-  }
-}
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
 ///productDescriptionComplete es un proveedor que permite comprobar si se muestra o no la descripción completa.
 final productDescriptionComplete = StateNotifierProvider<ToggleNotifier, bool>((ref) {
@@ -57,47 +49,5 @@ final descriptionProductSharingProvider = Provider<String>((ref) {
   return toReturn;
 });
 
-
-
-///Clase ProductSharingProvider: Proveedor de servicios para almacenar el estado de un producto.
-class ProductSharingProvider extends StateNotifier<List<Product>> {
-  //Atributos de clase
-  final StateNotifierProviderRef<ProductSharingProvider, List<Product>> ref;
-
-  //Constructor de ProductSharingProvider
-  ProductSharingProvider(this.ref): super([]);
-
-  ///ProductSharingProvider: Inserta un nuevo producto a la lista.
-  void insert(Product p){
-    state = [...state, p];
-  }
-
-  ///ProductSharingProvider: Inserta todos los elementos del catalogo de productos.
-  void insertAll(){
-    state.clear();
-    state = ref.read(productCatalogProvider);
-  }
-
-  ///ProductSharingProvider: Remueve todos los elementos del catalogo.
-  void removeAll(){
-    state = [];
-  }
-
-  ///ProductSharingProvider: Remueve el producto de la lista.
-  void remove(Product p){
-    state = state.where((element) => element!=p).toList();
-  }
-
-  ///ProductSharingProvider: Comprueba si el producto está seleccionado o no. Devuelve True en caso afirmativo, de lo contrario, retorna False.
-  bool contains(Product p){
-    return state.contains(p);
-  }
-
-  ///ProductSharingProvider: Limpia el catalogo de productos seleccionados.
-  void clear(){
-    state = [];
-  }
-}
-
 ///productSharingProvider es un proveedor que almacena la lista de productos seleccionados para compartir.
-final productSharingProvider = StateNotifierProvider<ProductSharingProvider, List<Product>>((ref) => ProductSharingProvider(ref));
+final productSharingProvider = StateNotifierProvider<SelectedItemsProvider<Product>, List<Product>>((ref) => SelectedItemsProvider(ref, productCatalogProvider));

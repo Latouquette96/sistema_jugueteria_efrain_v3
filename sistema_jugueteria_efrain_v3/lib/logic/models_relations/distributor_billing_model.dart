@@ -1,9 +1,10 @@
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+import 'package:pluto_grid/pluto_grid.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 
 ///Clase DistributorBilling: Modela una factura de una distribuidora.
-class DistributorBilling with MixinJSONalizable<DistributorBilling> {
+class DistributorBilling extends JSONalizable<DistributorBilling> {
   //Atributos de instancia
   late int _id; //RN-FD4.
   late ResourceLink _urlFile; //RN-FD1.
@@ -152,5 +153,10 @@ class DistributorBilling with MixinJSONalizable<DistributorBilling> {
       _keyTotal: _total,
       _keyDistributor: _distributorID
     };
+  }
+
+  @override
+  PlutoRow? buildPlutoRow() {
+    return null;
   }
 }

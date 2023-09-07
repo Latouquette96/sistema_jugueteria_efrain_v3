@@ -1,7 +1,6 @@
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_plutonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
@@ -10,7 +9,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 
 ///Clase Product: Modela a un producto con todos sus atributos.
-class Product with MixinJSONalizable<Product>, MixinPlutonizable {
+class Product extends JSONalizable<Product> {
   ///Atributos de instancia
   late int _id;
   late String? _barcode; //RN-P1.

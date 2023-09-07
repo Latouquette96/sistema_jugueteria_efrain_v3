@@ -1,9 +1,11 @@
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
+// ignore: implementation_imports
+import 'package:pluto_grid/src/model/pluto_row.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 
 ///Clase ProductPrice: Modela un precio para un producto de una determinada distribuidora.
-class ProductPrice with MixinJSONalizable<ProductPrice>{
+class ProductPrice extends JSONalizable<ProductPrice>{
   //Atributos de instancia
   late int _id;
   late int _productID;
@@ -142,5 +144,10 @@ class ProductPrice with MixinJSONalizable<ProductPrice>{
       _keyDateUpdate: _dateLastUpdated,
       _keyPriceBase: _priceBase
     };
+  }
+
+  @override
+  PlutoRow? buildPlutoRow() {
+    return null;
   }
 }

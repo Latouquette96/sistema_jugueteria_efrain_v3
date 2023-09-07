@@ -7,7 +7,7 @@ class PlutoRowProvider extends StateNotifier<PlutoRow?> {
 
   ///PlutoRowProvider: Carga un PlutoRow nuevo.
   void load(PlutoRow d){
-    state = d;
+    state = d; 
   }
 
   ///PlutoRowProvider: Libera el PlutoRow actual.

@@ -7,7 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 
 ///Proveedor que almacena la ultima fecha de actualización del catálogo.
 final lastUpdateProvider = StateProvider<String>((ref) => DatetimeCustom.getDatetimeStringNow());

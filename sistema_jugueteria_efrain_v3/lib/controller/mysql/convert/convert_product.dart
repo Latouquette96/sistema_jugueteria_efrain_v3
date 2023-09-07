@@ -43,7 +43,7 @@ class ConvertProduct {
 
     //Construcción del mapeo.
     Map<String, dynamic> map = {
-      Product.getKeyID(): 0,
+      Product.getKeyID():           data['p_id'],
       Product.getKeyBarcode():      data['p_codebar'],
       Product.getKeyInternalCode(): data['p_internal_code'],
       Product.getKeyTitle():        data['p_title'],

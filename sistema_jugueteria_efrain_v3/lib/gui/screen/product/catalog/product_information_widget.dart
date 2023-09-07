@@ -22,7 +22,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {

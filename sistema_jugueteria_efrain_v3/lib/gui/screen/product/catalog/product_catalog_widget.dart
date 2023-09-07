@@ -9,11 +9,11 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 ///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
@@ -168,7 +168,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     ]);
     //Agrega las filas.
     _rows.addAll(ref.read(productCatalogProvider).map((e){
-      return e.getPlutoRow();
+      return e.getPlutoRow()!;
     }).toList());
   }
 
@@ -281,7 +281,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
         description:  const Text("La información de la producto fue eliminada con éxito.")
       ).show(context);
 
-      ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()]);
+      ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()!]);
       ref.read(productRemoveProvider.notifier).free();
     }
     else{

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/history/catalog/product_mysql_catalog_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 
 ///Clase ScreenImportProductWidget: Modela un catálogo de productos provenientes de MySQL.
 class ScreenImportProductWidget extends ConsumerStatefulWidget {
@@ -38,6 +40,33 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
+          Visibility(
+            visible: ref.watch(catalogImportProvider).isNotEmpty,
+            child: IconButton(
+              onPressed: () async{
+                try{
+                  bool success = await ref.read(importProductWithAPIProvider.future);
+                  if (success){
+                    if (context.mounted){
+                      ElegantNotificationCustom.showNotificationSuccess(context);
+                    }
+                  }
+                  else{
+                    if (context.mounted){
+                      ElegantNotificationCustom.showNotificationError(context);
+                    }
+                  }
+                }
+                catch(e){
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationError(context);
+                  }
+                }
+              },
+              icon: Icon(MdiIcons.fromString("import")),
+              tooltip: "Importar productos seleccionados.",
+            ),
+          ),
           IconButton(
             onPressed: () async{
               //Refrezca el catálogo de productos.

@@ -38,7 +38,7 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
             onPressed: (){
               setState(() {
                 //ref.read(billingProvider.notifier).freeBilling();
-                ref.read(distributorBillingProvider.notifier).free();
+                ref.read(distributorStateBillingProvider.notifier).free();
                 //ref.refresh(billingsByDistributorProvider);
               });
               
@@ -76,18 +76,18 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
                         child: IconButton(
                           icon: Icon(MdiIcons.fromString("close"),), 
                           onPressed: () { 
-                            ref.read(distributorBillingProvider.notifier).free();
+                            ref.read(distributorStateBillingProvider.notifier).free();
                            },
                         )
                       )
                     ],
                   )),
                   Visibility(
-                    visible: ref.watch(distributorBillingProvider)!=null,
+                    visible: ref.watch(distributorStateBillingProvider)!=null,
                     child: const Expanded(child: BillingCatalogWidget(),)
                   ),
                   Visibility(
-                    visible: ref.watch(distributorBillingProvider)!=null,
+                    visible: ref.watch(distributorStateBillingProvider)!=null,
                     child: Container(
                       margin: const EdgeInsets.all(5),
                       child: Row(
@@ -95,7 +95,7 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
                           ElevatedButton(
                             style: StyleForm.getStyleElevatedButtom(),
                             onPressed: (){
-                              int distributorID = ref.read(distributorBillingProvider)!.getID();
+                              int distributorID = ref.read(distributorStateBillingProvider)!.getID();
                               ref.read(billingProvider.notifier).loadBilling(DistributorBilling.newBilling(distributorID: distributorID));
                             }, 
                             child: const Text("Agregar nueva factura")

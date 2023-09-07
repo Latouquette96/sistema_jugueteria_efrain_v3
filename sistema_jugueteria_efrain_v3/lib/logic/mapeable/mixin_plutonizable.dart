@@ -1,6 +1,6 @@
 import 'package:pluto_grid/pluto_grid.dart';
 
-///mixin MixinPlutonizable: Operaciones para construir un PlutoRow de un modelo de datos
+///mixin MixinPlutonizable: Modela la construccion y devolución de un PlutoRow para una clase de elementos genérica.
 mixin MixinPlutonizable {
   //Atributos de instancia
   late PlutoRow? plutoRow;
@@ -12,10 +12,10 @@ mixin MixinPlutonizable {
   }
 
   ///MixinPlutonizable: Construye un nuevo objeto PlutoRow.
-  PlutoRow buildPlutoRow();
+  PlutoRow? buildPlutoRow();
 
   ///MixinPlutonizable: Devuelve el objeto PlutoRow.
-  PlutoRow getPlutoRow(){
+  PlutoRow? getPlutoRow(){
     plutoRow ??= buildPlutoRow();
     return plutoRow!;
   }

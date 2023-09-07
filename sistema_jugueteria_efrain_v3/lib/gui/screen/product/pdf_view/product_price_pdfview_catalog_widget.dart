@@ -7,9 +7,9 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 ///ProductPricePDFViewCatalogWidget: Widget que permite visualizar el catalogo de productos.
@@ -141,7 +141,7 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
     ]);
     //Agrega las filas.
     _rows.addAll(ref.read(productCatalogPDFProvider).map((e){
-      return e.getPlutoRow();
+      return e.getPlutoRow()!;
     }).toList());
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 
 final serviceProvider = Provider<ServiceProvider>((ref) => ServiceProvider(ref));
 
@@ -16,10 +17,11 @@ class ServiceProvider {
   ///ServiceProvider: Inicializa las service del sistema.
   Future<void> run() async {
     //Inicializa los servicios.
-    await ref.watch(productCatalogProvider.notifier).initialize();
-    await ref.watch(productCatalogPDFProvider.notifier).initialize();
-    await ref.watch(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
-    await ref.watch(distributorCatalogProvider.notifier).refresh();
+    await ref.read(productCatalogProvider.notifier).refresh();
+    await ref.read(importProductMySQLProvider.notifier).refresh();
+    await ref.read(productCatalogPDFProvider.notifier).refresh();
+    await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+    await ref.read(distributorCatalogProvider.notifier).refresh();
   }
 
   ///ServiceProvider: Detiene todos los servicios ene ejcución.

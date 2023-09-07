@@ -7,11 +7,11 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///DistributorCatalogWidget: Widget que permite visualizar el catalogo de distribuidoras.
@@ -53,7 +53,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
                     Distributor distributor = _getDistributorForRendererContext(rendererContext);
                     ///Carga un distribuidor al proveedor para que pueda ser editado.
                     ref.read(plutoRowProvider.notifier).load(rendererContext.row);
-                    ref.read(distributorProvider.notifier).load(distributor);
+                    ref.read(distributorStateProvider.notifier).load(distributor);
                   }, 
                   icon: Icon(MdiIcons.fromString("pencil"), color: Colors.black,)
                 )
@@ -172,7 +172,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     //Agrega las filas.
     _rows.addAll(ref.read(distributorCatalogProvider).map((e){
-      return e.getPlutoRow();
+      return e.getPlutoRow()!;
     }).toList());
   }
 
@@ -234,7 +234,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
   
   Future<void> _remove(Distributor distributor) async{
     bool isError = false;
-    ref.read(distributorRemoveProvider.notifier).load(distributor);
+    ref.read(distributorStateRemoveProvider.notifier).load(distributor);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
     Response response = await ref.read(removeDistributorWithAPIProvider.future);
     //Consulta el estado de la respuesta.
@@ -244,8 +244,8 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
       if (context.mounted){
         ElegantNotificationCustom.showNotificationSuccess(context);
       }
-      ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorRemoveProvider)!.getPlutoRow()]);
-      ref.read(distributorRemoveProvider.notifier).free();
+      ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorStateRemoveProvider)!.getPlutoRow()!]);
+      ref.read(distributorStateRemoveProvider.notifier).free();
     }
     else{
       if (context.mounted){

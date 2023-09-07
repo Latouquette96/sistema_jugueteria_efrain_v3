@@ -5,7 +5,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/dist
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
 
@@ -50,7 +50,7 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(distributorProvider.notifier).load(Distributor());
+              ref.read(distributorStateProvider.notifier).load(Distributor());
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar una nueva distribuidora.",
@@ -60,7 +60,7 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
               //Actualiza la fecha de sincronización.
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
               //Cierra las pantallas abiertas.
-              if (ref.read(distributorProvider)!=null) ref.read(distributorProvider.notifier).free();
+              if (ref.read(distributorStateProvider)!=null) ref.read(distributorStateProvider.notifier).free();
               //Refrezca el catálogo de productos.
               ref.read(distributorCatalogProvider.notifier).refresh();
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
@@ -83,7 +83,7 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
             child: const DistributorCatalogWidget(),
           )),
           Visibility(
-              visible: ref.watch(distributorProvider) != null,
+              visible: ref.watch(distributorStateProvider) != null,
               child: const SizedBox(
                 width: 400,
                 child: Column(

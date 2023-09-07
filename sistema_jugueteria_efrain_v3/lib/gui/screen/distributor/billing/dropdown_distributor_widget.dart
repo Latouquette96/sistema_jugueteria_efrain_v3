@@ -31,7 +31,7 @@ class _DropdownDistributorWidgetState extends ConsumerState<DropdownDistributorW
 
       return DropdownSearch<Distributor>(
         popupProps: PopupProps.menu(
-          showSelectedItems: ref.watch(distributorBillingProvider) != null,
+          showSelectedItems: ref.watch(distributorStateBillingProvider) != null,
         ),
         items: list,
         itemAsString:(item) {
@@ -47,10 +47,10 @@ class _DropdownDistributorWidgetState extends ConsumerState<DropdownDistributorW
         ),
         onChanged:(value) {
           if (value!=null){
-            ref.watch(distributorBillingProvider.notifier).load(value);
+            ref.watch(distributorStateBillingProvider.notifier).load(value);
           }
         },
-        selectedItem: ref.watch(distributorBillingProvider),
+        selectedItem: ref.watch(distributorStateBillingProvider),
         compareFn: (d1, d2){
           return d1.getID()==d2.getID();
         },

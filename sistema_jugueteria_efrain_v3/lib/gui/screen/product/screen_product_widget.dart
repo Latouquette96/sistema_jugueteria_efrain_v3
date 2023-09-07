@@ -12,11 +12,11 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {

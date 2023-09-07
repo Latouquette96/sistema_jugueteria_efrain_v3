@@ -1,9 +1,8 @@
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_jsonizable.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/mixin/mixin_plutonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
 
 ///Clase Distributor: Modela la distribuidora de donde provienen los productos.
-class Distributor with MixinJSONalizable<Distributor>, MixinPlutonizable {
+class Distributor extends JSONalizable<Distributor> {
   //Atributos de instancia
   late int _id;
   late String _cuit; //RN-D1.

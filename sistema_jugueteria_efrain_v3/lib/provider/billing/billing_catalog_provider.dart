@@ -11,7 +11,7 @@ String _url = "127.0.0.1:3000";
 
 ///Proveedor para recuperar TODAS las distribuidoras existentes.
 final billingsByDistributorProvider = FutureProvider<List<DistributorBilling>>((ref) async {
-  final distributor = ref.watch(distributorBillingProvider);
+  final distributor = ref.watch(distributorStateBillingProvider);
   final content = await http.get(Uri.http(_url, '/distributors/billings/distributor/${distributor!.getID()}'));
 
   List<dynamic> map = convert.jsonDecode(content.body);

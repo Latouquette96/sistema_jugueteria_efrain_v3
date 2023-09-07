@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 ///ProductMySQLCatalogWidget: Widget que permite visualizar el catalogo de productos a importar de MySQL.
@@ -30,25 +32,13 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
     _columns.addAll(<PlutoColumn>[
       PlutoColumn(
         cellPadding: EdgeInsets.zero,
-        title: "Opciones", 
+        title: "", 
         field: "p_options", 
-        type: PlutoColumnType.text(),
+        type: PlutoColumnType.text(defaultValue: ""),
         enableRowChecked: true,
-        width: 150,
-        minWidth: 150,
-        renderer: (rendererContext) {
-          return Row(
-            children: [
-              //IconButton para mostrar precios de producto.
-              Expanded(child: 
-                IconButton(
-                  onPressed: (){}, 
-                  icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
-                )
-              ),
-            ],
-          );
-        },
+        width: 65,
+        minWidth: 65,
+        renderer: (rendererContext) => const Text(""),
       ),
       PlutoColumn(
         hide: true,
@@ -112,7 +102,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
     ]);
     //Agrega las filas.
     _rows.addAll(ref.read(importProductMySQLProvider).map((e){
-      return e.getValue1().getPlutoRow();
+      return e.getValue1().getPlutoRow()!;
     }).toList());
   }
 
@@ -143,24 +133,24 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
 
           if (event.isAll){
             if (event.isChecked==true){
-              //ref.read(productSharingProvider.notifier).insertAll();
+              ref.read(catalogImportProvider.notifier).insertAll();
             }
             else{
-              //ref.read(productSharingProvider.notifier).removeAll();
+              ref.read(catalogImportProvider.notifier).removeAll();
             }
           }
           else{
             //Si la fila no es nula.
-            if (event.row!=null){ /*
+            if (event.row!=null){
                 //Se recupera el producto en cuestion.
-                Product product = _getProduct(event.row!);
+                Triple<Product, Distributor, double> triple = _getTripleData(event.row!);
                 //Se notifica al catalogo de acuerdo 
-                if (ref.read(productSharingProvider.notifier).contains(product)){
-                  ref.read(productSharingProvider.notifier).remove(product);
+                if (ref.read(catalogImportProvider.notifier).contains(triple)){
+                  ref.read(catalogImportProvider.notifier).remove(triple);
                 }
                 else{
-                  ref.read(productSharingProvider.notifier).insert(product);
-                } */
+                  ref.read(catalogImportProvider.notifier).insert(triple);
+                }
             } 
           }
         },
@@ -199,5 +189,11 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
         ),
       ),
     );
+  }
+
+  
+  Triple<Product, Distributor, double> _getTripleData(PlutoRow row){
+    int rowID = row.cells[Product.getKeyID()]!.value;
+    return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getID()==rowID);
   }
 }

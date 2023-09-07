@@ -5,7 +5,7 @@ import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/screen_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_billing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/history/screen_historial_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/screen_import_mysql_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';

@@ -29,7 +29,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   @override
   void initState() {
     super.initState();
-    Distributor distributorActual = ref.read(distributorBillingProvider)!;
+    Distributor distributorActual = ref.read(distributorStateBillingProvider)!;
     DistributorBilling distributorBilling = ref.read(billingProvider)!;
 
     _form = FormGroup({

@@ -4,13 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/controller/connection_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_product.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
 
 ///Clase ImportProductMySQLProvider: Modela las operaciones CRUD sobre MySQL.
 class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Distributor, double>>> {
@@ -69,7 +70,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       state = [...list];
       //Notifica al catalogo.
       if (ref.read(stateManagerProductMySQLProvider)!=null){
-        ref.read(stateManagerProductMySQLProvider)!.insertRows(0, state.map((e) => e.getValue1().getPlutoRow()).toList());
+        ref.read(stateManagerProductMySQLProvider)!.insertRows(0, state.map((e) => e.getValue1().getPlutoRow()!).toList());
       }
     }
     // ignore: empty_catches
@@ -118,7 +119,10 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   ///ImportProductMySQLProvider: Refrezca el listado de productos.
   Future<void> refresh() async {
     //Limpia el catalogo de todas las filas.
-    ref.read(stateManagerProductMySQLProvider)!.removeAllRows();
+    if (ref.read(stateManagerProductMySQLProvider)!=null){
+      ref.read(stateManagerProductMySQLProvider)!.removeAllRows();
+    }
+    ref.read(catalogImportProvider.notifier).clear();
     //Limpia el estado actual.
     state = [];
     //Inicializa el catalogo.
