@@ -7,7 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
 class ScreenDistributorCatalog extends ConsumerStatefulWidget {
@@ -62,7 +62,7 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
               //Cierra las pantallas abiertas.
               if (ref.read(distributorStateProvider)!=null) ref.read(distributorStateProvider.notifier).free();
               //Refrezca el catálogo de productos.
-              ref.read(distributorCatalogProvider.notifier).refresh();
+              ref.read(catalogDistributorProvider.notifier).refresh();
               ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
             },
             icon: Icon(MdiIcons.fromString("reload")),

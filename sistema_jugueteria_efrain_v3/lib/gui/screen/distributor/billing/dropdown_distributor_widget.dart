@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 
 ///Clase DropdownDistributorWidget: Modela un Dropdown exclusivo para mostrar las distribuidoras existentes.
 class DropdownDistributorWidget extends ConsumerStatefulWidget {
@@ -27,7 +27,7 @@ class _DropdownDistributorWidgetState extends ConsumerState<DropdownDistributorW
   @override
   Widget build(BuildContext context) {
       //Obtiene todas las distribuidoras existentes.
-      List<Distributor> list = ref.watch(distributorCatalogProvider);
+      List<Distributor> list = ref.watch(catalogDistributorProvider);
 
       return DropdownSearch<Distributor>(
         popupProps: PopupProps.menu(

@@ -5,7 +5,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase abstracta CatalogStateNotifier: Modela un catálogo de elementos con interacción de un StateManagerProvider y PlutoGridStateManager.
 abstract class CatalogStateNotifier<E extends JSONalizable<E>> extends StateNotifier<List<E>> {

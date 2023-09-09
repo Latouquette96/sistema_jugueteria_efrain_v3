@@ -96,7 +96,7 @@ class _ScreenDistributorBillingState extends ConsumerState<ScreenDistributorBill
                             style: StyleForm.getStyleElevatedButtom(),
                             onPressed: (){
                               int distributorID = ref.read(distributorStateBillingProvider)!.getID();
-                              ref.read(billingProvider.notifier).loadBilling(DistributorBilling.newBilling(distributorID: distributorID));
+                              ref.read(billingProvider.notifier).load(DistributorBilling.newBilling(distributorID: distributorID));
                             }, 
                             child: const Text("Agregar nueva factura")
                           )

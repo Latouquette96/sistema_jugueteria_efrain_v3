@@ -8,7 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_in
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_catalog_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 

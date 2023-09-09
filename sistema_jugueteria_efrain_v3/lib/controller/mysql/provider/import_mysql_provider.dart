@@ -9,9 +9,9 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ImportProductMySQLProvider: Modela las operaciones CRUD sobre MySQL.
 class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Distributor, double>>> {
@@ -36,7 +36,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       await MySQLConnection.getConnection().connect(user: "Latouquette96", pass: "39925523");
       //Obtengo el cliente mysql activo.
       MySqlConnection conn = MySQLConnection.getConnection().getClient()!;
-      List<Distributor> distributors = ref.read(distributorCatalogProvider);
+      List<Distributor> distributors = ref.read(catalogDistributorProvider);
       //Ejecuta la consulta SQL.
       var results = await conn.query(_sql);
       List<Triple<Product, Distributor, double>> list = [];

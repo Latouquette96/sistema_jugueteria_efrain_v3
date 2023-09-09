@@ -6,7 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_my
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ScreenImportProductWidget: Modela un catálogo de productos provenientes de MySQL.
 class ScreenImportProductWidget extends ConsumerStatefulWidget {

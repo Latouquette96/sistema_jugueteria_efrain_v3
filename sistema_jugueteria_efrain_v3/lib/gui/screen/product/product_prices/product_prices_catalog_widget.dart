@@ -18,8 +18,8 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {

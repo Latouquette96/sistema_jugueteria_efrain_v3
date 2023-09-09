@@ -9,9 +9,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///DistributorCatalogWidget: Widget que permite visualizar el catalogo de distribuidoras.
@@ -171,7 +171,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
     ]);
 
     //Agrega las filas.
-    _rows.addAll(ref.read(distributorCatalogProvider).map((e){
+    _rows.addAll(ref.read(catalogDistributorProvider).map((e){
       return e.getPlutoRow()!;
     }).toList());
   }
@@ -256,7 +256,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
 
   Distributor _getDistributor(PlutoRow row){
     int rowID = row.cells[Distributor.getKeyID()]!.value;
-    return ref.read(distributorCatalogProvider).firstWhere((element) => element.getID()==rowID);
+    return ref.read(catalogDistributorProvider).firstWhere((element) => element.getID()==rowID);
   }
 
   ///

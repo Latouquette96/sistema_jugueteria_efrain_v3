@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
 ///Proveedor que almacena la ultima fecha de actualización del catálogo.
@@ -23,7 +23,7 @@ final newDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
   );
   
   //Refrezca el listado de distribuidoras.
-  await ref.read(distributorCatalogProvider.notifier).refresh();
+  await ref.read(catalogDistributorProvider.notifier).refresh();
 
   return response;  
 });
@@ -41,7 +41,7 @@ final updateDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
   );
 
   //Refrezca el listado de distribuidoras.
-  await ref.read(distributorCatalogProvider.notifier).refresh();
+  await ref.read(catalogDistributorProvider.notifier).refresh();
 
   return response;  
 });
@@ -58,7 +58,7 @@ final removeDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
   );
   
   //Refrezca el listado de distribuidoras.
-  await ref.read(distributorCatalogProvider.notifier).refresh();
+  await ref.read(catalogDistributorProvider.notifier).refresh();
 
   return response;  
 });

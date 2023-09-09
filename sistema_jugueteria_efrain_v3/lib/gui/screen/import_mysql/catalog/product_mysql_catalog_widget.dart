@@ -7,7 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_my
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/state_manager/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 ///ProductMySQLCatalogWidget: Widget que permite visualizar el catalogo de productos a importar de MySQL.

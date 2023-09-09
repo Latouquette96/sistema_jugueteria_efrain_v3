@@ -5,7 +5,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
@@ -30,7 +30,7 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
       final product = ref.watch(providerSearch);
 
       //Obtiene todas las distribuidoras existentes.
-      List<Distributor> listDistributor = (await ref.read(distributorCatalogProvider));
+      List<Distributor> listDistributor = (await ref.read(catalogDistributorProvider));
 
       //Obtiene todos los precios de producto
       //Peticion GET para obtener los precios de producto.
