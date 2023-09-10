@@ -8,7 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_pri
 
 ///Proveedor para crear un precio de producto en particular.
 final newProductPriceWithAPIProvider = FutureProvider<Response>((ref) async {
-  String url = ref.watch(urlLoginProvider);
+  String url = ref.watch(urlAPIProvider);
 
   //Recupero el producto.
   final productPrice = ref.watch(productPriceProvider);
@@ -27,7 +27,7 @@ final newProductPriceWithAPIProvider = FutureProvider<Response>((ref) async {
 
 ///Proveedor para modificar un precio de producto en particular.
 final updateProductPriceWithAPIProvider = FutureProvider<Response>((ref) async {
-  String url = ref.watch(urlLoginProvider);
+  String url = ref.watch(urlAPIProvider);
 
   //Recupero el producto.
   final productPrice = ref.watch(productPriceProvider);
@@ -46,7 +46,7 @@ final updateProductPriceWithAPIProvider = FutureProvider<Response>((ref) async {
 
 ///Proveedor para remover un precio de producto en particular.
 final removeProductPriceWithAPIProvider = FutureProvider<Response>((ref) async {
-  String url = ref.watch(urlLoginProvider);
+  String url = ref.watch(urlAPIProvider);
 
   //Recupero el producto.
   final productPrice = ref.watch(productPriceRemoveProvider);

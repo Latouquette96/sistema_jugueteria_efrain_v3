@@ -50,8 +50,4 @@ class PlutoGridStateManagerProvider extends StateNotifier<PlutoGridStateManager?
       state!.refRows.setAll(index, [ref.read(elementProvider)!.buildPlutoRow()!]);
     }
   }
-
-  void remove(){
-
-  }
 }

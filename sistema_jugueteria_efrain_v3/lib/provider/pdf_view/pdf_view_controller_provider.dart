@@ -2,25 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-///Clase PDFViewControllerProvider: Proveedor de servicios para almacenar el estado de un producto.
-class PDFViewControllerProvider extends StateNotifier<PdfViewerController> {
-  PDFViewControllerProvider(): super(PdfViewerController());
-
-  ///PDFViewControllerProvider: Refrezca el controlador.
-  void initialize(){
-    state = PdfViewerController();
-  }
-
-  void disposeController(){
-    state.dispose();
-  }
-}
-
 ///pdfViewControllerProvider es un proveedor que sirve para almacenar el estado de un producto que será actualizado o creado.
-final pdfViewControllerProvider = StateNotifierProvider<PDFViewControllerProvider, PdfViewerController>((ref) => PDFViewControllerProvider());
-
+final pdfViewControllerProvider = StateNotifierProvider<ElementStateProvider<PdfViewerController>, PdfViewerController?>((ref) => ElementStateProvider.initialize(PdfViewerController()));
 
 ///Clase PdfTextSearchResultProvider: Proveedor de servicios para almacenar el estado de un producto.
 class PdfTextSearchResultProvider extends StateNotifier<PdfTextSearchResult?> {
@@ -36,25 +22,28 @@ class PdfTextSearchResultProvider extends StateNotifier<PdfTextSearchResult?> {
 
   ///PdfTextSearchResultProvider: Buscar el producto.
   void search(Product p){
-      PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBarcode() ?? p.getInternalCode() ?? "");
+    if ( ref.read(pdfViewControllerProvider)!=null) {
+      PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider)!.searchText(p.getBarcode() ?? p.getInternalCode() ?? "");
       //PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBrand());
       textSearchResult.addListener(() {
         //Si se ha obtenido el resultado.
-        if (textSearchResult.hasResult){
-          //Si se ha realizado la busqueda en todo el archivo.
-          if (textSearchResult.isSearchCompleted){
+        if (textSearchResult.hasResult) {
+          //Si se ha realizado la busqueda en el archivo completo.
+          if (textSearchResult.isSearchCompleted) {
             //Actualizar el estado.
             state = textSearchResult;
             //Si aparece el texto buscado, entonces mostrar el producto.
-            if (textSearchResult.totalInstanceCount>0){
+            if (textSearchResult.totalInstanceCount > 0) {
               ref.read(productPricesPDFByIDProvider.notifier).refresh();
               ref.read(productSearchPDFPriceProvider.notifier).load(p);
             }
           }
         }
       });
+    }
   }
-  
+
+  ///PdfTextSearchResultProvider: Obtiene la próxima instancia del estado.
   void next(){
     state!.nextInstance();
   }

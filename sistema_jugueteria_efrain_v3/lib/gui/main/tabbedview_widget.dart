@@ -6,8 +6,10 @@ import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controll
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
+///Clase TabbedViewWidget: Widget que permite mostrar los tabs de los distintos menus.
 class TabbedViewWidget extends ConsumerStatefulWidget {
   const TabbedViewWidget({super.key});
   
@@ -53,19 +55,22 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
   }
 
   ///TabbedViewWidget: Actualiza el estado (controladores) necesarios para la lectura de pdfs en ProductCatalogPDF.
-  _updateStateCatalogPDF(int? newTabIndex){
+  void _updateStateCatalogPDF(int? newTabIndex){
     if (newTabIndex!=null){
       if (ref.read(tabProductCatalogPDFProvider)!=null)    {
         //Esto soluciona el problema del pdf.
-          if (ref.read(tabbedViewProvider).getTabByIndex(newTabIndex)!=ref.read(tabProductCatalogPDFProvider)){
-            ref.read(productSearchPDFPriceProvider.notifier).free();
-            ref.read(pdfTextSearchResultProvider.notifier).free();
-            ref.read(pdfViewControllerProvider.notifier).disposeController();
+        if (ref.read(tabbedViewProvider).getTabByIndex(newTabIndex)!=ref.read(tabProductCatalogPDFProvider)){
+          ref.read(productSearchPDFPriceProvider.notifier).free();
+          ref.read(pdfTextSearchResultProvider.notifier).free();
+          if (ref.read(pdfViewControllerProvider)!=null){
+            ref.read(pdfViewControllerProvider)!.dispose();
+            ref.read(pdfViewControllerProvider.notifier).free();
           }
-          else{
-            ref.read(pdfViewControllerProvider.notifier).initialize();
-          }
-      }  
+        }
+      }
+      else{
+        ref.read(pdfViewControllerProvider.notifier).load(PdfViewerController());
+      }
     }
   }
 }

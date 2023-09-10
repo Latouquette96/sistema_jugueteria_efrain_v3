@@ -9,21 +9,22 @@ import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distri
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///Clase ProductPriceSearchProvider: Proveedor de servicios para almacenar el estado de un producto.
 class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, ProductPrice>>> {
   //Atributos de clase
   final StateNotifierProviderRef<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> ref;
-  final StateNotifierProvider<ProductProvider, Product?> providerSearch;
+  final StateNotifierProvider<ElementStateProvider<Product>, Product?> providerSearch;
 
 
-  //Constructor de ProductPriceSearchProvider
+  ///Constructor de ProductPriceSearchProvider
   ProductPriceSearchProvider(this.ref, this.providerSearch): super([]);
 
   ///ProductPriceSearchProvider: Inicializa el arreglo de precios del producto.
   Future<void> initialize() async{
     //Obtiene la direccion del servidor.
-    final url = ref.watch(urlLoginProvider);
+    final url = ref.watch(urlAPIProvider);
     //Obtiene la respuesta a la solicitud http.
     try{
       //Producto sobre el cual se busca los precios de producto.

@@ -1,29 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
-///Clase TabDataProvider: Permite almacenar un TabData en el provider.
-class TabDataProvider extends StateNotifier<TabData?>{
-  TabDataProvider() : super(null);
+/*
+  * En este archivo está incluidos los tabs a los distintos screens, haciendo uso de provider Riverpod.
+ */
 
-  ///TabDataProvider: Construye y almacena un TabData.
-  void load(TabData tab){
-    state = tab;
-  }
 
-  ///TabDataProvider: Vacia el estado del provider.
-  void clear(){
-    state = null;
-  }
-}
+final tabProductCatalogProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
-final tabProductCatalogProvider = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
+final tabProductCatalogPDFProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
-final tabProductCatalogPDFProvider = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
+final tabDistributorCatalogProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
-final tabDistributorCatalogProvider = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
+final tabDistributorBillingCatalogProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
-final tabDistributorBillingCatalogProvider = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
+final tabConfigurationProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
-final tabConfigurationProvider = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
-
-final tabImportMySQLCatalog = StateNotifierProvider<TabDataProvider, TabData?>((ref) => TabDataProvider());
+final tabImportMySQLCatalog = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());

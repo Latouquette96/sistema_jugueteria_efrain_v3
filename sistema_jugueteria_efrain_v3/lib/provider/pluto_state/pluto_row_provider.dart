@@ -1,23 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-
-///Clase PlutoRowProvider: Proveedor de servicios para almacenar el estado de un PlutoRow.
-class PlutoRowProvider extends StateNotifier<PlutoRow?> {
-  PlutoRowProvider(): super(null);
-
-  ///PlutoRowProvider: Carga un PlutoRow nuevo.
-  void load(PlutoRow d){
-    state = d; 
-  }
-
-  ///PlutoRowProvider: Libera el PlutoRow actual.
-  void free(){
-    state = null;
-  }  
-}
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///productProvider es un proveedor que sirve para almacenar el estado de un PlutoRow que será actualizado o creado.
-final plutoRowProvider = StateNotifierProvider<PlutoRowProvider, PlutoRow?>((ref) => PlutoRowProvider());
+final plutoRowProvider = StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?>((ref) => ElementStateProvider<PlutoRow>());
 
 ///plutoRowPDFProvider es un proveedor que sirve para almacenar el estado de un PlutoRow que será actualizado o creado.
-final plutoRowPDFProvider = StateNotifierProvider<PlutoRowProvider, PlutoRow?>((ref) => PlutoRowProvider());
+final plutoRowPDFProvider = StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?>((ref) => ElementStateProvider<PlutoRow>());

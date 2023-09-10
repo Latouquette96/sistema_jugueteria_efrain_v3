@@ -4,6 +4,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distri
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 
+///serviceProvider: Provider que permite controlar los servicios.
 final serviceProvider = Provider<ServiceProvider>((ref) => ServiceProvider(ref));
 
 ///Clase ServiceProvider: Modela las service del sistema empleando un SharedPreferences para almacenar los datos.

@@ -8,7 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart'
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///Clase FormGroupProduct: Modela la composicion de todos los controles de formulario de un producto.
 class FormGroupProduct {
@@ -29,7 +29,7 @@ class FormGroupProduct {
   ];
 
   ///FormGroupProduct: Construye el FormGroup para un producto almacenado en un determinado provider de ProductProvider.
-  static buildFormGroupProduct(WidgetRef ref, StateNotifierProvider<ProductProvider, Product?> provider){
+  static buildFormGroupProduct(WidgetRef ref, StateNotifierProvider<ElementStateProvider<Product>, Product?> provider){
     Pair<Category?, SubCategory?> pairCategory = FactoryCategory.getInstance().search(ref.read(provider)!=null ? ref.read(provider)!.getSubcategory() : 0);
     
     return FormGroup({

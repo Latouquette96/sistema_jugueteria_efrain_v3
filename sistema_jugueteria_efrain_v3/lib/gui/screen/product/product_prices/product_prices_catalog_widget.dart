@@ -13,21 +13,20 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_pric
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 
-  final StateNotifierProvider<ProductProvider, Product?> providerProduct;
+  final StateNotifierProvider<ElementStateProvider<Product>, Product?> providerProduct;
   final StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> providerPriceDistributor;
   final StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?> providerStateManager;
-  final StateNotifierProvider<PlutoRowProvider, PlutoRow?> providerPlutoRow;
+  final StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?> providerPlutoRow;
 
   ///Constructor de ProductPricesCatalogWidget
   ///
@@ -42,7 +41,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
     return _ProductPricesCatalogWidgetState();
   }
 
-   StateNotifierProvider<ProductProvider, Product?> getProvider(){
+   StateNotifierProvider<ElementStateProvider<Product>, Product?> getProvider(){
     return providerProduct;
   }
   
@@ -54,7 +53,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
     return providerStateManager;
   }
 
-  StateNotifierProvider<PlutoRowProvider, PlutoRow?> getProviderPlutoRow(){
+  StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?> getProviderPlutoRow(){
     return providerPlutoRow;
   }
 }
@@ -391,7 +390,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                               title:  const Text("Información"),
                               description:  const Text("La información ha sido actualizada con éxito.")
                             ).show(context);
-                            ref.read(productPriceProvider.notifier).free(ref);
+                            ref.read(productPriceProvider.notifier).free();
                             await ref.read(widget.getProviderID().notifier).refresh();
                             setState(() {});
                           }

@@ -11,6 +11,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_w
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 @immutable
 class MainBarWidget extends ConsumerWidget {
@@ -91,7 +92,7 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(pdfViewControllerProvider.notifier).initialize();
+                    ref.read(pdfViewControllerProvider.notifier).load(PdfViewerController());
                     ref.read(pdfTextSearchResultProvider.notifier).free();
                     
                     ref.read(tabbedViewProvider.notifier).insertTab(label:"Visor PDF", widget: const ScreenProductPDFViewerWidget(), icon: MdiIcons.fromString("file-pdf-box"), tabProvider: tabProductCatalogPDFProvider);

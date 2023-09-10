@@ -4,8 +4,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
+///configurationProvider: Provider que permite obtener la configuraciones.
 final configurationProvider = Provider<ConfigurationLocal>((ref) => ConfigurationLocal.getInstance());
 
+///configImagePathProvider: Configuración del directorio de imagen.
 final configImagePathProvider = Provider<String>((ref){
   final config = ref.watch(configurationProvider);
 
@@ -37,10 +39,10 @@ class ConfigurationLocal {
     };
   }
 
+  ///ConfigurationLocal: Devuelve la clave para el directorio donde se almacenarán los catálogos.
   static String getKeyCatalogPath(){
     return _keyCatalogPath;
   }
-
 
   ///ConfigurationLocal: Inicializa las configuraciones del sistema.
   Future<void> initialize() async {

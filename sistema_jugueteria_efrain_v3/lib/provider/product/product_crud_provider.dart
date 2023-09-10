@@ -16,7 +16,7 @@ final lastUpdateProvider = StateProvider<String>((ref) => DatetimeCustom.getDate
 final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
 
   final product = ref.watch(productProvider);
-  final url = ref.watch(urlLoginProvider);
+  final url = ref.watch(urlAPIProvider);
 
   //Realiza la petición POST para insertar el producto.
   final response = await http.post(
@@ -42,7 +42,7 @@ final newProductWithAPIProvider = FutureProvider<Response>((ref) async {
 final updateProductWithAPIProvider = FutureProvider<Response>((ref) async {
 
   final product = ref.watch(productProvider);
-  final url = ref.watch(urlLoginProvider);
+  final url = ref.watch(urlAPIProvider);
 
   final response = await http.put(
     Uri.http(url, '/products/${product!.getID()}'),
@@ -61,7 +61,7 @@ final updateProductWithAPIProvider = FutureProvider<Response>((ref) async {
 
 ///Proveedor para modificar un precio de producto en particular.
 final updatePricePublicWithAPIProvider = FutureProvider<Response>((ref) async {
-  String url = ref.watch(urlLoginProvider);
+  String url = ref.watch(urlAPIProvider);
 
   //Recupero el producto.
   final product = ref.watch(productSearchPriceProvider);
@@ -79,7 +79,7 @@ final updatePricePublicWithAPIProvider = FutureProvider<Response>((ref) async {
 final removeProductWithAPIProvider = FutureProvider<Response>((ref) async {
 
   final product = ref.watch(productRemoveProvider);
-  final url = ref.watch(urlLoginProvider);
+  final url = ref.watch(urlAPIProvider);
 
   final response = await http.delete(
     Uri.http(url, '/products/${product!.getID()}'),
