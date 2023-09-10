@@ -56,7 +56,9 @@ abstract class CatalogPlutonizableStateNotifier<E extends JSONalizable<E>> exten
       state = [...list];
       //Notifica al catalogo.
       if (_stateProvider!=null){
-        _ref.read(_stateProvider!)!.insertRows(0, state.map((e) => e.getPlutoRow()!).toList());
+        if (_ref.read(_stateProvider!)!=null){
+          _ref.read(_stateProvider!)!.insertRows(0, state.map((e) => e.getPlutoRow()!).toList());
+        }
       }
     }
     catch(e){
@@ -66,6 +68,7 @@ abstract class CatalogPlutonizableStateNotifier<E extends JSONalizable<E>> exten
 
   ///CatalogStateNotifier: Recarga los cambios en el catalogo.
   Future<void> refresh() async {
+    state = [];
     //Limpia el catalogo de todas las filas.
     if (_stateProvider!=null) {
       if (_ref.read(_stateProvider!)!=null){

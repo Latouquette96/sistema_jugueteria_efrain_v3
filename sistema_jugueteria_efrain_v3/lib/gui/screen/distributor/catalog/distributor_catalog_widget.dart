@@ -4,8 +4,8 @@ import 'package:http/http.dart';
 import 'package:mailto/mailto.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
@@ -34,8 +34,8 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
   void initState() {
     super.initState();
 
-    _columns.addAll(<PlutoColumn>[
-      PlutoColumn(
+    _columns.addAll(PlutoConfig.getPlutoColumnsDistributor(
+      options: PlutoColumn(
         cellPadding: EdgeInsets.zero,
         title: "Opciones", 
         field: "key_options", 
@@ -112,63 +112,7 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
           );
         },
       ),
-      PlutoColumn(
-        hide: true,
-        title: 'ID',
-        field: Distributor.getKeyID(),
-        width: 75,
-        minWidth: 75,
-        type: PlutoColumnType.number(
-          format: "#"
-        ),
-        readOnly: true
-      ),
-      PlutoColumn(
-        title: 'CUIT',
-        width: 150,
-        minWidth: 150,
-        field: Distributor.getKeyCUIT(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Nombre',
-        width: 200,
-        minWidth: 100,
-        field: Distributor.getKeyName(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Dirección',
-        field: Distributor.getKeyAddress(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Teléfono',
-        field: Distributor.getKeyCel(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Correo electrónico',
-        field: Distributor.getKeyEmail(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: "IVA",
-        field: Distributor.getKeyIVA(),
-        type: PlutoColumnType.number(
-          format: "#.##"
-        ),
-        width: 100,
-        minWidth: 100,
-      ),
-      PlutoColumn(
-        title: "Website",
-        field: Distributor.getKeyWebsite(),
-        type: PlutoColumnType.text(),
-        width: 150,
-        minWidth: 150,
-      )
-    ]);
+    ));
 
     //Agrega las filas.
     _rows.addAll(ref.read(catalogDistributorProvider).map((e){
@@ -192,41 +136,10 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
         onLoaded: (event) {
           if (mounted){
             ref.read(stateManagerDistributorProvider.notifier).load(event.stateManager);
+            ref.read(catalogDistributorProvider.notifier).refresh();
           }
         },
-        configuration: PlutoGridConfiguration(
-            localeText: PlutoConfiguration.getPlutoGridLocaleText(),
-            columnFilter: PlutoGridColumnFilterConfig(
-              filters: const [
-                ... FilterHelper.defaultFilters,
-              ],
-              resolveDefaultColumnFilter: (column, resolver){
-                if (column.field == 'text') {
-                  return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-                } else if (column.field == 'number') {
-                  return resolver<PlutoFilterTypeGreaterThan>()
-                  as PlutoFilterType;
-                } else if (column.field == 'date') {
-                  return resolver<PlutoFilterTypeLessThan>() as PlutoFilterType;
-                }
-                return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-              }
-            ),
-            scrollbar: const PlutoGridScrollbarConfig(
-              isAlwaysShown: true,
-              scrollbarThickness: 8,
-              scrollbarThicknessWhileDragging: 10,
-            ),
-            enterKeyAction: PlutoGridEnterKeyAction.none,
-            style: PlutoGridStyleConfig(
-              rowHeight: 37.5,
-              enableGridBorderShadow: true,
-              evenRowColor: Colors.blueGrey.shade50,
-              oddRowColor: Colors.blueGrey.shade100,
-              activatedColor: Colors.lightBlueAccent.shade100,
-              cellColorInReadOnlyState: Colors.grey.shade300
-            )
-        ),
+        configuration: PlutoConfig.getConfiguration()
       ),
     );
   }

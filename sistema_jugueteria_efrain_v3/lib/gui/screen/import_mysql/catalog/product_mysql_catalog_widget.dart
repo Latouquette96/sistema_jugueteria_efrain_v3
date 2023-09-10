@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
@@ -29,77 +29,18 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
   initState(){
     super.initState();
     //Agrega las columnas
-    _columns.addAll(<PlutoColumn>[
-      PlutoColumn(
+    _columns.addAll(PlutoConfig.getPlutoColumnsProduct(
+      options: PlutoColumn(
         cellPadding: EdgeInsets.zero,
-        title: "", 
-        field: "p_options", 
+        title: "",
+        field: "p_options",
         type: PlutoColumnType.text(defaultValue: ""),
         enableRowChecked: true,
         width: 65,
         minWidth: 65,
         renderer: (rendererContext) => const Text(""),
       ),
-      PlutoColumn(
-        hide: true,
-        title: 'ID',
-        field: Product.getKeyID(),
-        width: 75,
-        minWidth: 75,
-        type: PlutoColumnType.number(
-          format: "#"
-        ),
-        readOnly: true
-      ),
-      PlutoColumn(
-        title: 'Barcode',
-        width: 150,
-        minWidth: 150,
-        field: Product.getKeyBarcode(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Cód. Int.',
-        width: 100,
-        minWidth: 100,
-        field: Product.getKeyInternalCode(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Titulo',
-        field: Product.getKeyTitle(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Marca/Importador',
-        field: Product.getKeyBrand(),
-        type: PlutoColumnType.text(defaultValue: "IMPORT."),
-      ),
-      PlutoColumn(
-        title: 'Categoria > Subcategoria',
-        field: Product.getKeyCategory(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: "Stock",
-        field: Product.getKeyStock(),
-        type: PlutoColumnType.number(
-          format: "#"
-        ),
-        width: 100,
-        minWidth: 100,
-      ),
-      PlutoColumn(
-        title: "Precio Público",
-        field: Product.getKeyPricePublic(),
-        type: PlutoColumnType.number(
-          negative: false,
-          applyFormatOnInit: true,
-        ),
-        width: 150,
-        minWidth: 150,
-      )
-    ]);
+    ));
     //Agrega las filas.
     _rows.addAll(ref.read(importProductMySQLProvider).map((e){
       return e.getValue1().getPlutoRow()!;
@@ -154,39 +95,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
             } 
           }
         },
-        configuration: PlutoGridConfiguration(
-            localeText: PlutoConfiguration.getPlutoGridLocaleText(),
-            columnFilter: PlutoGridColumnFilterConfig(
-              filters: const [
-                ... FilterHelper.defaultFilters,
-              ],
-              resolveDefaultColumnFilter: (column, resolver){
-                if (column.field == 'text') {
-                  return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-                } else if (column.field == 'number') {
-                  return resolver<PlutoFilterTypeGreaterThan>()
-                  as PlutoFilterType;
-                } else if (column.field == 'date') {
-                  return resolver<PlutoFilterTypeLessThan>() as PlutoFilterType;
-                }
-                return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-              }
-            ),
-            scrollbar: const PlutoGridScrollbarConfig(
-              isAlwaysShown: true,
-              scrollbarThickness: 8,
-              scrollbarThicknessWhileDragging: 10,
-            ),
-            enterKeyAction: PlutoGridEnterKeyAction.none,
-            style: PlutoGridStyleConfig(
-              rowHeight: 37.5,
-              enableGridBorderShadow: true,
-              evenRowColor: Colors.blueGrey.shade50,
-              oddRowColor: Colors.blueGrey.shade100,
-              activatedColor: Colors.lightBlueAccent.shade100,
-              cellColorInReadOnlyState: Colors.grey.shade300
-            )
-        ),
+        configuration: PlutoConfig.getConfiguration(),
       ),
     );
   }

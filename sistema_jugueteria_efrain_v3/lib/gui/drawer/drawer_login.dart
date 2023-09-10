@@ -9,17 +9,18 @@ import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.d
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
 ///Clase DrawerLogin: Widget que permite controlar las configuraciones del sistema.
+@immutable
 class DrawerLogin extends ConsumerStatefulWidget{
 
   const DrawerLogin({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget>  createState() {
+  ConsumerState<DrawerLogin>  createState() {
     return _DrawerLoginState();
   }
 }
 
-class _DrawerLoginState extends ConsumerState<ConsumerStatefulWidget> with ContainerParameters {
+class _DrawerLoginState extends ConsumerState<DrawerLogin> with ContainerParameters {
 
   late final FormGroup _form;
   static const String _keyURL = "login_url";
@@ -184,7 +185,7 @@ class _DrawerLoginState extends ConsumerState<ConsumerStatefulWidget> with Conta
               ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString();    
               //Sincronizar
               try{
-                await ref.read(serviceProvider).run();
+                await ref.read(serviceProvider)!.run();
                 if (context.mounted){
                   ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
                 }

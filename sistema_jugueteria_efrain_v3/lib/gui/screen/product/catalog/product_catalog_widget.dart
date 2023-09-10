@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/configuration/pluto_configuration.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -34,12 +33,13 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   @override
   initState(){
     super.initState();
+
     //Agrega las columnas
-    _columns.addAll(<PlutoColumn>[
-      PlutoColumn(
+    _columns.addAll(PlutoConfig.getPlutoColumnsProduct(
+      options: PlutoColumn(
         cellPadding: EdgeInsets.zero,
-        title: "Opciones", 
-        field: "p_options", 
+        title: "Opciones",
+        field: "p_options",
         type: PlutoColumnType.text(),
         enableRowChecked: true,
         width: 150,
@@ -48,8 +48,8 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
           return Row(
             children: [
               //IconButton para mostrar precios de producto.
-              Expanded(child: 
-                IconButton(
+              Expanded(child:
+              IconButton(
                   onPressed: (){
                     if ( ref.read(productSearchPriceProvider)!=null){
                       ref.read(productSearchPriceProvider.notifier).free();
@@ -63,13 +63,13 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                       ref.read(productSearchPriceProvider.notifier).load(product);
                       ref.read(productPricesByIDProvider.notifier).refresh();
                     }
-                  }, 
+                  },
                   icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
-                )
+              )
               ),
               //IconButton para mostrar informacion del producto.
-              Expanded(child: 
-                IconButton(
+              Expanded(child:
+              IconButton(
                   onPressed: (){
                     if (ref.read(productProvider)==null){
                       //Busca el producto de acuerdo a la fila.
@@ -82,90 +82,28 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                       ref.read(plutoRowProvider.notifier).free();
                       ref.read(productProvider.notifier).free();
                     }
-                  }, 
+                  },
                   icon: Icon(MdiIcons.fromString("pencil"), color: Colors.black,)
-                )
+              )
               ),
               //IconButton para eliminar al producto.
-              Expanded(child: 
-                IconButton(
+              Expanded(child:
+              IconButton(
                   onPressed: () async {
                     //Busca el producto de acuerdo a la fila.
                     Product product = _getProductForRendererContext(rendererContext);
                     //Elimina el producto.
                     await _remove(product);
-                  }, 
+                  },
                   icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,)
-                )
+              )
               ),
             ],
           );
         },
       ),
-      PlutoColumn(
-        hide: true,
-        title: 'ID',
-        field: Product.getKeyID(),
-        width: 75,
-        minWidth: 75,
-        type: PlutoColumnType.number(
-          format: "#"
-        ),
-        readOnly: true
-      ),
-      PlutoColumn(
-        title: 'Barcode',
-        width: 150,
-        minWidth: 150,
-        field: Product.getKeyBarcode(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Cód. Int.',
-        width: 100,
-        minWidth: 100,
-        field: Product.getKeyInternalCode(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Titulo',
-        field: Product.getKeyTitle(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: 'Marca/Importador',
-        field: Product.getKeyBrand(),
-        type: PlutoColumnType.select(
-          enableColumnFilter: true,
-          ref.read(filterOfLoadedBrandsWithAPIProvider),
-          defaultValue: "IMPORT."
-        ),
-      ),
-      PlutoColumn(
-        title: 'Categoria > Subcategoria',
-        field: Product.getKeyCategory(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
-        title: "Stock",
-        field: Product.getKeyStock(),
-        type: PlutoColumnType.number(
-          format: "#"
-        ),
-        width: 100,
-        minWidth: 100,
-      ),
-      PlutoColumn(
-        title: "Precio Público",
-        field: Product.getKeyPricePublic(),
-        type: PlutoColumnType.number(
-          negative: false,
-          applyFormatOnInit: true,
-        ),
-        width: 150,
-        minWidth: 150,
-      )
-    ]);
+    ));
+
     //Agrega las filas.
     _rows.addAll(ref.read(productCatalogProvider).map((e){
       return e.getPlutoRow()!;
@@ -220,39 +158,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
             } 
           }
         },
-        configuration: PlutoGridConfiguration(
-            localeText: PlutoConfiguration.getPlutoGridLocaleText(),
-            columnFilter: PlutoGridColumnFilterConfig(
-              filters: const [
-                ... FilterHelper.defaultFilters,
-              ],
-              resolveDefaultColumnFilter: (column, resolver){
-                if (column.field == 'text') {
-                  return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-                } else if (column.field == 'number') {
-                  return resolver<PlutoFilterTypeGreaterThan>()
-                  as PlutoFilterType;
-                } else if (column.field == 'date') {
-                  return resolver<PlutoFilterTypeLessThan>() as PlutoFilterType;
-                }
-                return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-              }
-            ),
-            scrollbar: const PlutoGridScrollbarConfig(
-              isAlwaysShown: true,
-              scrollbarThickness: 8,
-              scrollbarThicknessWhileDragging: 10,
-            ),
-            enterKeyAction: PlutoGridEnterKeyAction.none,
-            style: PlutoGridStyleConfig(
-              rowHeight: 37.5,
-              enableGridBorderShadow: true,
-              evenRowColor: Colors.blueGrey.shade50,
-              oddRowColor: Colors.blueGrey.shade100,
-              activatedColor: Colors.lightBlueAccent.shade100,
-              cellColorInReadOnlyState: Colors.grey.shade300
-            )
-        ),
+        configuration: PlutoConfig.getConfiguration(),
       ),
     );
   }

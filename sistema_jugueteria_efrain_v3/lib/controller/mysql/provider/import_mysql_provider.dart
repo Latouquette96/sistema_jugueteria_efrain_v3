@@ -36,9 +36,11 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       await MySQLConnection.getConnection().connect(user: "Latouquette96", pass: "39925523");
       //Obtengo el cliente mysql activo.
       MySqlConnection conn = MySQLConnection.getConnection().getClient()!;
+
       List<Distributor> distributors = ref.read(catalogDistributorProvider);
       //Ejecuta la consulta SQL.
       var results = await conn.query(_sql);
+
       List<Triple<Product, Distributor, double>> list = [];
       List<Product> listProducts = ref.read(productCatalogProvider);
       //Para cada fila de los resultados obtenidos.
@@ -59,11 +61,15 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
         if (insertTriple){
           //Obtener la distribuidora del producto.
           Distributor distributorRow = distributors.firstWhere(
-            (element) => element.getCUIT()==mapDistributorRow['d_cuit'], 
+            (element) => element.getCUIT()==mapDistributorRow['d_cuit'].toString(), 
             orElse: () => distributors.first
           );
           //Triple es una tripla de valores: (producto, distribuidora, precio_base)
-          list.add(Triple<Product, Distributor, double>(v1: productRow, v2: distributorRow, v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString())));
+          list.add(Triple<Product, Distributor, double>(
+            v1: productRow, 
+            v2: distributorRow, 
+            v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString()))
+          );
         }
       }
       //Actualiza el estado.
