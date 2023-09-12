@@ -66,7 +66,13 @@ const deleteDistributor = (request, response) => {
     if (error) {
       throw error
     }
-    response.status(200).send(`Distributor deleted with ID: ${d_id}`)
+    pool.query('DELETE FROM public.products_prices ' +
+      'WHERE pp_distributor=$1' [d_id], (error, results) =>{
+      if (error) {
+        throw error
+      }
+      response.status(200).send(`Distributor deleted with ID: ${d_id}`)
+    })
   })
 }
 

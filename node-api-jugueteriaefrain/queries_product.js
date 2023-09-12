@@ -97,8 +97,6 @@ const deleteProduct = (request, response) => {
       response.status(200).send(`Product deleted with ID: ${p_id}`)
     })
   })
-  
-  
 }
 
 module.exports = {
