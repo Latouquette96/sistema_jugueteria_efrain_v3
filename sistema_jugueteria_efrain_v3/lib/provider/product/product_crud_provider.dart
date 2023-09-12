@@ -111,6 +111,7 @@ final removeSelectedProductWithAPIProvider = FutureProvider<void>((ref) async {
       Uri.http(url, '/products/${product.getID()}'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
+
     product.setBarcode("-1");
     //Remueve el producto de la lista
     ref.read(productCatalogProvider.notifier).remove(product);
