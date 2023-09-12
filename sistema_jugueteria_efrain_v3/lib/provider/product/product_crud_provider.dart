@@ -8,6 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provi
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 
 ///Proveedor que almacena la ultima fecha de actualización del catálogo.
 final lastUpdateProvider = StateProvider<String>((ref) => DatetimeCustom.getDatetimeStringNow());
@@ -97,4 +98,26 @@ final removeProductWithAPIProvider = FutureProvider<Response>((ref) async {
   ref.read(productCatalogProvider.notifier).remove(product);
 
   return response;  
+});
+
+///Proveedor para eliminar un producto en particular.
+final removeSelectedProductWithAPIProvider = FutureProvider<void>((ref) async {
+
+  final url = ref.watch(urlAPIProvider);
+  final List<Product> products = ref.watch(productSharingProvider);
+
+  for (Product product in products){
+    await http.delete(
+      Uri.http(url, '/products/${product.getID()}'),
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+    );
+    product.setBarcode("-1");
+    //Remueve el producto de la lista
+    ref.read(productCatalogProvider.notifier).remove(product);
+  }
+
+  //Refrezca las marcas cargadas.
+  await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+  //Refrezca el catalogo de productos.
+  await ref.read(productCatalogProvider.notifier).refresh();
 });

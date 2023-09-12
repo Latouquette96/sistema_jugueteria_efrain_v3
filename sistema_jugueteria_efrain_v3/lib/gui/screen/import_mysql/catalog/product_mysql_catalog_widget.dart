@@ -73,11 +73,18 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
           }
 
           if (event.isAll){
-            if (event.isChecked==true){
-              ref.read(catalogImportProvider.notifier).insertAll();
-            }
-            else{
-              ref.read(catalogImportProvider.notifier).removeAll();
+            //Obtengo las filas filtradas.
+            List<PlutoRow> listRow = ref.read(stateManagerProductMySQLProvider)?.refRows.filteredList ?? [];
+
+            for (PlutoRow row in listRow){
+              //Se recupera el producto en cuestion.
+              Triple<Product, Distributor, double> triple = _getTripleData(row);
+              if (event.isChecked==true){
+                ref.read(catalogImportProvider.notifier).insert(triple);
+              }
+              else{
+                ref.read(catalogImportProvider.notifier).remove(triple);
+              }
             }
           }
           else{

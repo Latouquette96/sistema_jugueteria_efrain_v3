@@ -81,6 +81,16 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
             visible: ref.watch(productSharingProvider).isNotEmpty,
             child: IconButton(
               onPressed: (){
+                ref.read(removeSelectedProductWithAPIProvider.future);
+              },
+              icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
+              tooltip: "Eliminar productos seleccionados.",
+            ),
+          ),
+          Visibility(
+            visible: ref.watch(productSharingProvider).isNotEmpty,
+            child: IconButton(
+              onPressed: (){
                 _scaffoldKey.currentState!.openEndDrawer();
               },
               icon: Icon(MdiIcons.fromString("share-variant")),
