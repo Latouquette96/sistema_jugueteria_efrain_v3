@@ -23,7 +23,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
                   " 'p_sizeproduct', p_sizeproduct, 'p_category', p_category, 'p_subcategory', p_subcategory, "
                   " 'p_stock', p_stock, 'p_iva', p_iva, 'p_pricepublic', p_pricepublic, 'p_linkimage', p_linkimage,"
                   " 'p_datecreated', p_datecreated, 'p_dateupdated', p_dateupdated, 'p_minimumage', p_minimumage, 'p_internal_code', p_internal_code) as product, "
-        "json_object('d_cuit', d_cuit) as distributor, "
+        "d_cuit, "
         "json_object('p_dateupdated', p_dateupdated, 'p_pricebase', p_pricebase) as price_product "
        "FROM db_jugueteria_efrain.products, db_jugueteria_efrain.distributors WHERE p_distributor=d_id;";
 
@@ -47,7 +47,6 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       for (ResultRow row in results){
         //Recupera las tres coluumnas principales de la consulta.
         Map<String, dynamic> mapProductRow = jsonDecode(row['product']);
-        Map<String, dynamic> mapDistributorRow = jsonDecode(row['distributor']);
         Map<String, dynamic> mapProductPriceRow = jsonDecode(row['price_product']);
         //Construye el producto de acuerdo al producto de MySQL.
         Product productRow = ConvertProduct.getProductFromMySQL(mapProductRow);
@@ -61,7 +60,8 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
         if (insertTriple){
           //Obtener la distribuidora del producto.
           Distributor distributorRow = distributors.firstWhere(
-            (element) => element.getCUIT()==mapDistributorRow['d_cuit'].toString(), 
+            (element){
+              return element.getCUIT().replaceAll('-', '').compareTo(row['d_cuit'].toString().replaceAll('-', ''))==0;},
             orElse: () => distributors.first
           );
           //Triple es una tripla de valores: (producto, distribuidora, precio_base)

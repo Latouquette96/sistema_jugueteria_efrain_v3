@@ -242,9 +242,7 @@ class Product extends JSONalizable<Product> {
 
   ///Product: Establece el ID del producto (solo si id del producto es 0). 
   void setID(int value) {
-    if (_id==0){
-      _id=value;
-    }
+    _id=value;
   }
 
   //------------------CODIGO DE BARRAS---------------------------------------------

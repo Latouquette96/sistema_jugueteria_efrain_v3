@@ -31,7 +31,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _id = id;
     _priceBase = price;
     _productID = p;
-    _distributor = 0;
+    _distributor = d;
     _dateLastUpdated = date;
   }
 
