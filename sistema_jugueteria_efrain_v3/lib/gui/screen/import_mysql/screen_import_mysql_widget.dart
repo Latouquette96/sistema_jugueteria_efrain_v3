@@ -44,23 +44,22 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
             visible: ref.watch(catalogImportProvider).isNotEmpty,
             child: IconButton(
               onPressed: () async{
+                bool success = true;
                 try{
-                  bool success = await ref.read(importProductWithAPIProvider.future);
-                  if (success){
-                    if (context.mounted){
-                      ElegantNotificationCustom.showNotificationSuccess(context);
-                    }
-                  }
-                  else{
-                    if (context.mounted){
-                      ElegantNotificationCustom.showNotificationError(context);
-                    }
-                  }
+                  success = await ref.read(importProductWithAPIProvider.future);
                 }
                 catch(e){
-                  if (context.mounted){
-                    ElegantNotificationCustom.showNotificationError(context);
-                  }
+                  success = false;
+                }
+
+                if (context.mounted){
+                  (success)
+                      ? ElegantNotificationCustom.showNotificationSuccess(context)
+                      : ElegantNotificationCustom.showNotificationError(context);
+                }
+
+                if (success){
+                  ref.read(notifyImportsProvider.future);
                 }
               },
               icon: Icon(MdiIcons.fromString("import")),

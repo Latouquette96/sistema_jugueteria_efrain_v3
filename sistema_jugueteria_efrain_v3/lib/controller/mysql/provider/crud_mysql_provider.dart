@@ -9,7 +9,6 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
 
@@ -51,17 +50,29 @@ final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
       );
     }
 
-    if (ref.read(stateManagerProductMySQLProvider)!=null){
-      ref.read(stateManagerProductMySQLProvider)!.removeRows(
-        listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
-      );
-    }
 
-    ref.read(productCatalogProvider.notifier).refresh();
   }
   catch(e){
     toReturn = false;
   }
 
   return toReturn;  
+});
+
+///notifyImportsProvider: Provider que se utiliza para notificar las importaciones realizadas.
+final notifyImportsProvider = FutureProvider((ref) async{
+  await Future.delayed(const Duration(seconds: 1));
+  final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogImportProvider);
+
+  if (ref.read(stateManagerProductMySQLProvider)!=null){
+    ref.read(stateManagerProductMySQLProvider)!.removeRows(
+        listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
+    );
+
+    for (Triple<Product, Distributor, double> triple in ref.read(catalogImportProvider)){
+      ref.read(importProductMySQLProvider.notifier).remove(triple);
+    }
+
+    ref.read(catalogImportProvider.notifier).removeAll();
+  }
 });
