@@ -65,7 +65,7 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
 }
 
 ///productPricesByIDProvider es un proveedor que almacena la lista de productos.
-final productPricesByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productSearchPriceProvider));
+final productPricesByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productProvider));
 
 ///productPricesPDFByIDProvider es un proveedor que almacena la lista de productos.
 final productPricesPDFByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productSearchPDFPriceProvider));

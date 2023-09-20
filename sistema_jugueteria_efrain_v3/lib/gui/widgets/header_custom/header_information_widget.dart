@@ -6,9 +6,10 @@ class HeaderInformationWidget extends StatelessWidget {
   //Atributos de instancia
   late final String _titleHeader, _tooltipClose;
   late final Function _onClose;
+  final Function? onSave;
 
   ///Constructor del HeaderInformationWidget.
-  HeaderInformationWidget({super.key, required String titleHeader, required String tooltipClose, required Function onClose}){
+  HeaderInformationWidget({super.key, required String titleHeader, required String tooltipClose, required Function onClose, this.onSave}){
     _titleHeader = titleHeader;
     _tooltipClose = tooltipClose;
     _onClose = onClose;
@@ -17,6 +18,37 @@ class HeaderInformationWidget extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    List<Widget> listButtons = [];
+    listButtons.add(
+        Positioned(
+          left: 0,
+          top: 0,
+          child: IconButton(
+            tooltip: _tooltipClose,
+            icon: const Icon(Icons.close_rounded, color: Colors.redAccent,),
+            onPressed: (){
+              _onClose.call();
+            }
+          )
+        )
+    );
+    //Si se define el boton de guardado.
+    if (onSave!=null){
+      listButtons.add(
+          Positioned(
+              right: 0,
+              top: 0,
+              child: IconButton(
+                  tooltip: "Guardar información.",
+                  icon: const Icon(Icons.save, color: Colors.yellow,),
+                  onPressed: (){
+                    onSave!.call();
+                  }
+              )
+          )
+      );
+    }
+
     return Stack(
       children: [
         Row(
@@ -32,16 +64,7 @@ class HeaderInformationWidget extends StatelessWidget {
             ))
           ],
         ),
-        Positioned(
-          left: 0,
-          top: 0,
-          child: IconButton(
-            tooltip: _tooltipClose,
-            icon: const Icon(Icons.close_rounded, color: Colors.redAccent,), 
-            onPressed: (){ 
-              _onClose.call();
-            })
-          )
+        ...listButtons
       ],
     );
   }

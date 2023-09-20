@@ -11,8 +11,5 @@ final productRemoveProvider = StateNotifierProvider<ElementStateProvider<Product
 ///productBillingProvider es un proveedor que sirve para almacenar el estado de un producto que será utilizada para recuperar facturas.
 final productBillingProvider = StateNotifierProvider<ElementStateProvider<Product>, Product?>((ref) => ElementStateProvider<Product>());
 
-///productSearchPriceProvider es un proveedor que sirve para almacenar el estado de un producto que será utilizada para recuperar facturas.
-final productSearchPriceProvider = StateNotifierProvider<ElementStateProvider<Product>, Product?>((ref) => ElementStateProvider<Product>());
-
 ///productSearchPDFPriceProvider es un proveedor que sirve para almacenar el estado de un producto que será utilizada para recuperar facturas.
 final productSearchPDFPriceProvider = StateNotifierProvider<ElementStateProvider<Product>, Product?>((ref) => ElementStateProvider<Product>());

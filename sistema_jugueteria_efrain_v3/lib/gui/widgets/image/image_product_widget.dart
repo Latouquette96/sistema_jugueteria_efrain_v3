@@ -18,9 +18,10 @@ class ImageProductWidget extends ConsumerStatefulWidget {
   final int index;
   final Function onRemoved;
   final Function onSelected;
+  final Function? onReplace;
 
   ///Constructor de ImageProductWidget
-  const ImageProductWidget({super.key, this.product, required this.index, required this.onRemoved, required this.onSelected, this.isTemporal = false, this.linkTemporal});
+  const ImageProductWidget({super.key, this.product, required this.index, required this.onRemoved, required this.onSelected, this.onReplace, this.isTemporal = false, this.linkTemporal});
   
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -70,10 +71,10 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
           }
           else{
             if (snap.hasError){
-              return const CircularProgressIndicator(color: Colors.red,);
+              return buildWidgetError(context);
             }
             else{
-              return const CircularProgressIndicator(color: Colors.blue,);
+              return buildCircularProgressIndicatorLoading(context);
             }
           }
         }
@@ -89,7 +90,7 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
       height: 200,
       child: Stack(
       children: [
-        Image.file(file, width: 200, height: 200,),
+        Image.file(file, width: 175, height: 175,),
         //Remover
         //Remover
         Positioned(
@@ -121,6 +122,73 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
     ));
   }
 
+  ///ImageProductWidget: Construye un Widget de error.
+  Widget buildWidgetError(BuildContext context){
+    return Stack(
+      children: [
+        Container(
+          height: 200,
+          width:  200,
+          padding: const EdgeInsets.all(10),
+          child: Center(child:
+          Column(
+            children: [
+              Icon(MdiIcons.fromString("image-broken-variant")),
+              const Text("Error: Imagen no recuperada", style: TextStyle(color: Colors.redAccent, fontSize: 14, fontStyle: FontStyle.italic),)
+            ],
+          )),
+        ),
+        Positioned(
+            top: 165,
+            left: 50,
+            child: Container(
+              decoration: StyleForm.getDecorationControlImage(),
+              width: 100,
+              height: 35,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      tooltip: "Eliminar imagen",
+                      onPressed: (){
+                        widget.onRemoved.call();
+                      },
+                      icon: Icon(
+                        MdiIcons.fromString("close-circle"),
+                        color: Colors.redAccent,
+                      )
+                  ),
+                  Visibility(
+                    visible: widget.onReplace!=null,
+                    child: IconButton(
+                      tooltip: "Reemplazar imagen",
+                      onPressed: () {
+                        widget.onReplace!.call();
+                      },
+                      icon: Icon(
+                        MdiIcons.fromString("image-refresh"),
+                        color: Colors.blue,
+                      )
+                    )
+                  )
+                ],
+              ),
+            )
+        )
+      ],
+    );
+  }
+
+  ///ImageProductWidget: Construye un CircularProgressIndicator de error.
+  Widget buildCircularProgressIndicatorLoading(BuildContext context){
+    return Container(
+      height: 200,
+      width:  200,
+      padding: const EdgeInsets.all(10),
+      child: const CircularProgressIndicator(color: Colors.blue,),
+    );
+  }
+
   ///ImageProductWidget: Construye el widget de imagen en base al link de imagen.
   Widget buildImageNetwork(BuildContext context){
     if (!_descargada){
@@ -128,8 +196,6 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
       return FutureBuilder(
         future: Dio().get<Uint8List>(link, options: Options(responseType: ResponseType.bytes)),
         builder: (context, snap){
-          Widget widgetImage;
-
           if (snap.hasData){
 
             Response<Uint8List>? rs = snap.data;
@@ -144,29 +210,15 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
               );
             }
             else{
-              return const SizedBox(
-                height: 200, 
-                width: 200, 
-                child: CircularProgressIndicator(color: Colors.redAccent,)
-              );
+              return buildWidgetError(context);
             }
           }
           else{
             if (snap.hasError){
-              widgetImage = const CircularProgressIndicator(color: Colors.red,);
-              return SizedBox(
-                height: 200,
-                width:  200,
-                child: widgetImage,
-              );
+              return buildWidgetError(context);
             }
             else{
-              widgetImage = const CircularProgressIndicator(color: Colors.blue,);
-              return SizedBox(
-              height: 200,
-              width:  200,
-              child: widgetImage,
-          );
+              return buildCircularProgressIndicatorLoading(context);
             }
           }
 
@@ -186,7 +238,7 @@ class _ImageProductWidgetState extends ConsumerState<ImageProductWidget> {
   Widget buildImageUint8List(){
     return Stack(
       children: [
-        Image.memory(_image, width: 200, height: 200,),
+        Image.memory(_image, width: 175, height: 175,),
         //Remover
         Positioned(
           top: 165,

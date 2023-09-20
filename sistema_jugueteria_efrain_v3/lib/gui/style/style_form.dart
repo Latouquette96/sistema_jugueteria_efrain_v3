@@ -12,7 +12,7 @@ class StyleForm {
         border: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.black, width: 5),
           borderRadius: BorderRadius.circular(5)),
-        contentPadding: const EdgeInsets.all(8)
+        contentPadding: const EdgeInsets.all(8),
       );
   }
 
@@ -31,7 +31,7 @@ class StyleForm {
 
   ///StyleForm: Devuelve el estilo para el texto.
   static TextStyle getStyleTextField(){
-    return const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13);
+    return const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13, overflow: TextOverflow.ellipsis);
   }
 
   ///StyleForm: Devuelve el estilo para el texto.

@@ -65,7 +65,7 @@ final updatePricePublicWithAPIProvider = FutureProvider<Response>((ref) async {
   String url = ref.watch(urlAPIProvider);
 
   //Recupero el producto.
-  final product = ref.watch(productSearchPriceProvider);
+  final product = ref.watch(productProvider);
   //Envio la solicitud POST para cargar
   final response = await http.put(
     Uri.http(url, '/products/price_public/${product!.getID()}'),

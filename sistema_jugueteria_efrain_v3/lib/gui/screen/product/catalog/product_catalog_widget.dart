@@ -42,34 +42,14 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
         field: "p_options",
         type: PlutoColumnType.text(),
         enableRowChecked: true,
-        width: 150,
-        minWidth: 150,
+        width: 100,
+        minWidth: 100,
         renderer: (rendererContext) {
           return Row(
             children: [
-              //IconButton para mostrar precios de producto.
-              Expanded(child:
-              IconButton(
-                  onPressed: (){
-                    if ( ref.read(productSearchPriceProvider)!=null){
-                      ref.read(productSearchPriceProvider.notifier).free();
-                    }
-                    else{
-                      //Busca el producto de acuerdo a la fila.
-                      Product product = _getProductForRendererContext(rendererContext);
-                      ///Carga un producto al proveedor para que pueda ser editado.
-                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
-                      ///Carga un producto para que pueda ser desplegado el catalogo de precios.
-                      ref.read(productSearchPriceProvider.notifier).load(product);
-                      ref.read(productPricesByIDProvider.notifier).refresh();
-                    }
-                  },
-                  icon: Icon(MdiIcons.fromString("cash"), color: Colors.green)
-              )
-              ),
               //IconButton para mostrar informacion del producto.
               Expanded(child:
-              IconButton(
+                IconButton(
                   onPressed: (){
                     if (ref.read(productProvider)==null){
                       //Busca el producto de acuerdo a la fila.
@@ -77,6 +57,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
                       ///Carga un producto al proveedor para que pueda ser editado.
                       ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                       ref.read(productProvider.notifier).load(product);
+                      ref.read(productPricesByIDProvider.notifier).refresh();
                     }
                     else{
                       ref.read(plutoRowProvider.notifier).free();
