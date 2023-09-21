@@ -14,23 +14,7 @@ class ResourceLink {
   ResourceLink(String link, {ResourceLinkMode mode = ResourceLinkMode.imageJPG}) {
     //Modo de analisis del archivo.
     _mode = mode;
-    //Si es un link de Google Drive.
-    if (link.contains("https://drive.google.com/") || link.contains("https://www.drive.google.com/")) {
-      _link = _convertLinkToGoogleDrive(link);
-    } else {
-      if (link.contains("https://dropbox.com/") || link.contains("https://www.dropbox.com")) {
-        _link = _convertLinkToDropbox(link);
-      } else {
-        //Si es un link de internet (https, http o ftp)
-        if (link.contains("https://") || link.contains("http://") || link.contains("ftp://")){
-          _link = link;
-        }
-        //Si está mal escrito, entonces cargar otra cosa.
-        else{
-          _link = _getLinkDefect();
-        }
-      }
-    }
+    updateLink(link);
   }
 
   ///ResourceLink: Convertir a link valido de Google Drive.
@@ -74,5 +58,26 @@ class ResourceLink {
   ///ResourceLink: Devuelve el link de imagen.
   String getLink() {
     return _link;
+  }
+
+  ///ResourceLink: Actualiza el link.
+  void updateLink(String link){
+    //Si es un link de Google Drive.
+    if (link.contains("https://drive.google.com/") || link.contains("https://www.drive.google.com/")) {
+      _link = _convertLinkToGoogleDrive(link);
+    } else {
+      if (link.contains("https://dropbox.com/") || link.contains("https://www.dropbox.com")) {
+        _link = _convertLinkToDropbox(link);
+      } else {
+        //Si es un link de internet (https, http o ftp)
+        if (link.contains("https://") || link.contains("http://") || link.contains("ftp://")){
+          _link = link;
+        }
+        //Si está mal escrito, entonces cargar otra cosa.
+        else{
+          _link = _getLinkDefect();
+        }
+      }
+    }
   }
 }

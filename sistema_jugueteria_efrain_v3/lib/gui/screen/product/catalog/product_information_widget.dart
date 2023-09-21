@@ -15,7 +15,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_product_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product_price.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
@@ -50,7 +50,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   //Atributos de instancia.
   late final FormGroup _form, _formNewPP;
   final TreeController _controller = TreeController(allNodesExpanded: false);
-  late List<ResourceLink> listLink;
   late bool _brandManual;
   
   final Widget _separadorHeight = const SizedBox(height: 5,);
@@ -66,8 +65,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     _form = FormGroupProduct.buildFormGroupProduct(ref, productProvider);
     //Inicializa el formulario para el nuevo precio de producto.
     _formNewPP = FormGroupProductPrices.buildFormGroupProductPrices(ref, productProvider);
-
-    listLink = _form.control(Product.getKeyImages()).value as List<ResourceLink>;
     _brandManual = false;
   }
 
@@ -94,76 +91,74 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               },
             ),
             Expanded(
+              child: SingleChildScrollView(
                 child: ReactiveForm(
                   formGroup: _form,
-                  child: SingleChildScrollView(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: 300,
-                          child: Expanded(
-                              child: Column(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildWidgetImages(context, product),
+                            _separadorHeight,
+                            _buildWidgetDescription(context, product),
+                            _separadorHeight,
+                            _buildWidgetSize(context, product)
+                          ],
+                        ),
+                      ),
+                      _separadorWidth,
+                      Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildWidgetCategory(context, product),
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  _buildWidgetImages(context, product),
-                                  _separadorHeight,
-                                  _buildWidgetDescription(context, product),
-                                  _separadorHeight,
-                                  _buildWidgetSize(context, product)
+                                  Expanded(child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _separadorHeight,
+                                      _buildWidgetTitle(context, product),
+                                      _separadorHeight,
+                                      _buildWidgetProductCode(context, product),
+                                      _separadorHeight,
+                                      _buildWidgetBrand(context, product),
+                                      _separadorHeight,
+                                      _buildWidgetMinimumAge(context, product)
+                                    ],
+                                  )),
+                                  _separadorWidth,
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          _separadorHeight,
+                                          _buildWidgetPricePublic(context, product),
+                                          _separadorHeight,
+                                          _buildReactiveFormProductPrices(context, product, distributorFree)
+                                        ],
+                                      )
+                                  )
                                 ],
                               )
-                          ),
-                        ),
-                        _separadorWidth,
-                        Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildWidgetCategory(context, product),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        _separadorHeight,
-                                        _buildWidgetTitle(context, product),
-                                        _separadorHeight,
-                                        _buildWidgetProductCode(context, product),
-                                        _separadorHeight,
-                                        _buildWidgetBrand(context, product),
-                                        _separadorHeight,
-                                        _buildWidgetMinimumAge(context, product)
-                                      ],
-                                    )),
-                                    _separadorWidth,
-                                    Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            _separadorHeight,
-                                            _buildWidgetPricePublic(context, product),
-                                            _separadorHeight,
-                                            _buildReactiveFormProductPrices(context, product, distributorFree)
-                                          ],
-                                        )
-                                    )
-                                  ],
-                                )
-                              ],
-                            )
-                        ),
+                            ],
+                          )
+                      ),
 
-                      ],
-                    ),
+                    ],
                   ),
-                )
+                ),
+              ),
             )
           ],
         ),
@@ -175,52 +170,34 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   ///ProductPriceWidget: Construye el Widget de Imagenes.
   Widget _buildWidgetImages(BuildContext context, Product product){
     //Recupera todos los enlaces
-    List<Widget> listImage = [];
     bool isNewProduct = product.getID()==0;
-
-    if (listLink.isNotEmpty){
-      for (int i=0; i<listLink.length; i++){
-        listImage.add(
-            ImageProductWidget(
-                product: isNewProduct ? null : product,
-                index: i,
-                isTemporal: isNewProduct,
-                linkTemporal: isNewProduct ? listLink[i] : null,
-                onRemoved: (){
-                  (_form.control(Product.getKeyImages()).value as List<ResourceLink>).removeAt(i);
-                  listLink.removeAt(i);
-                  setState(() {});
-                },
-                onReplace: () async{
-                  ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-
-                  if (cdata!=null) {
-                    String textData = cdata.text!;
-                    (_form.control(Product.getKeyImages()).value as List<ResourceLink>).replaceRange(i, i+1, [ResourceLink(textData)]);
-                    listLink.replaceRange(i, i+1, [ResourceLink(textData)]);
-                  }
-                  setState(() {});
-                },
-                onSelected: (){}
-            )
-        );
-      }
-    }
+    int index = -1;
 
     return ExpansionTileContainerWidget(
       title: "Imágenes del producto",
       subtitle: "[Obligatorio] Administre las imagenes del producto (debe haber al menos una imagen). ",
       children: [
         Visibility(
-          visible: listImage.isNotEmpty,
+          visible: (_form.control(Product.getKeyImages()).value as List<ResourceLink>).isNotEmpty,
           child: Container(
             margin: const EdgeInsets.all(5),
             height: 200,
-            child: SingleChildScrollView(
+            width: 300,
+            child: ListView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: listImage,
-              ),
+              children: (_form.control(Product.getKeyImages()).value as List<ResourceLink>).map((e){
+                index++;
+                return ImageCustom(
+                  fileName: product.getFileName(index),
+                  resourceLink: e,
+                  isReplaceable: true,
+                  isDownloaded: !isNewProduct,
+                  onRemoved: (){
+                    (_form.control(Product.getKeyImages()).value as List<ResourceLink>).removeAt(index);
+                    setState((){});
+                  }
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -240,14 +217,12 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       if (textData.contains(',')){
                         for (String textLink in textData.split(',')){
                           if (textLink.isNotEmpty){
-                            _form.control(Product.getKeyImages()).value.add(ResourceLink(textLink));
-                            listLink.add(ResourceLink(textLink));
+                            (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(textLink));
                           }
                         }
                       }
                       else{
-                        _form.control(Product.getKeyImages()).value.add(ResourceLink(cdata.text!));
-                        listLink.add(ResourceLink(cdata.text!));
+                        (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(cdata.text!));
                       }
                       setState(() {});
                     }
@@ -260,7 +235,91 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
       ],
     );
   }
-  
+
+  ///ProductPriceWidget: Construye el Widget de .
+  Widget _buildWidgetSize(BuildContext context, Product product){
+    return ExpansionTileContainerWidget(
+        title: "Medidas del producto",
+        subtitle: "[Opcional] Brindar medidas del producto es útil para poder tenerlas a mano para cualquier ocasión.",
+        children: [
+          Container(
+              height: 200,
+              color: Colors.black26,
+              padding: const EdgeInsets.all(5),
+              child: ListView(
+                children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
+                  return Container(
+                      decoration: StyleForm.getDecorationListTileItem(),
+                      child: ListTile(
+                        titleTextStyle: StyleForm.getStyleDropdownField(),
+                        title: Text(e),
+                        trailing: IconButton(
+                          tooltip: "Remover",
+                          color: Colors.black,
+                          onPressed: (){
+                            (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
+                            setState(() { });
+                          },
+                          icon: Icon(MdiIcons.fromString("delete")),
+                        ),
+                      )
+                  );
+                }).toList(),
+              )
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ReactiveDropdownField<String>(
+            isExpanded: true,
+            iconSize: 50,
+            icon: const Icon(Icons.arrow_drop_down, size: 25,),
+            formControlName: FormGroupProduct.getKeyTemplateSize(),
+            style: StyleForm.getStyleDropdownField(),
+            decoration: StyleForm.getDecorationTextField("Selección de plantilla"),
+            items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
+              value: e,
+              child: Container(
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                width: 300,
+                child: Text(e),
+              ),
+            )).toList(),
+            onChanged: (control) {
+              _form.control(FormGroupProduct.getKeySizeAux()).value = _form.control(FormGroupProduct.getKeyTemplateSize()).value;
+              setState(() {});
+              _form.focus(FormGroupProduct.getKeySizeAux());
+            },
+            validationMessages: {
+              ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+            },
+          ),
+          const SizedBox(height: 10,),
+          ReactiveTextField(
+            maxLines: 5,
+            minLines: 1,
+            style: StyleForm.getStyleTextArea(),
+            decoration: StyleForm.getDecorationTextField("Insertar medida"),
+            formControlName: FormGroupProduct.getKeySizeAux(),
+            textInputAction: TextInputAction.next,
+            onSubmitted: (_){
+              List<String> list = _form.control(Product.getKeySizes()).value;
+              list.add(_form.control(FormGroupProduct.getKeySizeAux()).value);
+
+              _form.control(FormGroupProduct.getKeySizeAux()).value = "";
+              _form.focus(FormGroupProduct.getKeySizeAux());
+
+              setState(() { });
+            },
+            validationMessages: {
+              ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
+            },
+          ),
+        ]
+    );
+  }
+
   ///ProductPriceWidget: Construye el Widget de .
   Widget _buildWidgetCategory(BuildContext context, Product product){
     return ExpansionTileContainerWidget(
@@ -538,90 +597,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     );
   }
 
-  ///ProductPriceWidget: Construye el Widget de .
-  Widget _buildWidgetSize(BuildContext context, Product product){
-    return ExpansionTileContainerWidget(
-        title: "Medidas del producto",
-        subtitle: "[Opcional] Brindar medidas del producto es útil para poder tenerlas a mano para cualquier ocasión.",
-        children: [
-          Container(
-              height: 200,
-              color: Colors.black26,
-              padding: const EdgeInsets.all(5),
-              child: ListView(
-                children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
-                  return Container(
-                      decoration: StyleForm.getDecorationListTileItem(),
-                      child: ListTile(
-                        titleTextStyle: StyleForm.getStyleDropdownField(),
-                        title: Text(e),
-                        trailing: IconButton(
-                          tooltip: "Remover",
-                          color: Colors.black,
-                          onPressed: (){
-                            (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
-                            setState(() { });
-                          },
-                          icon: Icon(MdiIcons.fromString("delete")),
-                        ),
-                      )
-                  );
-                }).toList(),
-              )
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          ReactiveDropdownField<String>(
-            isExpanded: true,
-            iconSize: 50,
-            icon: const Icon(Icons.arrow_drop_down, size: 25,),
-            formControlName: FormGroupProduct.getKeyTemplateSize(),
-            style: StyleForm.getStyleDropdownField(),
-            decoration: StyleForm.getDecorationTextField("Selección de plantilla"),
-            items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
-              value: e,
-              child: Container(
-                margin: EdgeInsets.zero,
-                padding: EdgeInsets.zero,
-                width: 300,
-                child: Text(e),
-              ),
-            )).toList(),
-            onChanged: (control) {
-              _form.control(FormGroupProduct.getKeySizeAux()).value = _form.control(FormGroupProduct.getKeyTemplateSize()).value;
-              setState(() {});
-              _form.focus(FormGroupProduct.getKeySizeAux());
-            },
-            validationMessages: {
-              ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
-            },
-          ),
-          const SizedBox(height: 10,),
-          ReactiveTextField(
-            maxLines: 5,
-            minLines: 1,
-            style: StyleForm.getStyleTextArea(),
-            decoration: StyleForm.getDecorationTextField("Insertar medida"),
-            formControlName: FormGroupProduct.getKeySizeAux(),
-            textInputAction: TextInputAction.next,
-            onSubmitted: (_){
-              List<String> list = _form.control(Product.getKeySizes()).value;
-              list.add(_form.control(FormGroupProduct.getKeySizeAux()).value);
-
-              _form.control(FormGroupProduct.getKeySizeAux()).value = "";
-              _form.focus(FormGroupProduct.getKeySizeAux());
-
-              setState(() { });
-            },
-            validationMessages: {
-              ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
-            },
-          ),
-        ]
-    );
-  }
-
   //--------------------CONSTRUIR GUI (PRECIOS DE PRODUCTOS)-------------------
 
   ///ProductPriceWidget: Construye un formulario reactivo de precios de producto.
@@ -671,7 +646,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             decoration: StyleForm.getDecorationControlImage(),
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                             margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                            width: 310,
+                            width: 240,
                             child: Row(
                               children: [
                                 Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
@@ -707,7 +682,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   color: Colors.grey.shade300,
                                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                                   height: 60,
-                                  width: 290,
+                                  width: 225,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: TextField(
                                     decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
@@ -726,7 +701,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   color: Colors.grey.shade300,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 40,
-                                  width: 290,
+                                  width: 225,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )
@@ -735,8 +710,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                 content: Container(
                                   color: Colors.grey.shade300,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                  height: 40,
-                                  width: 290,
+                                  height: 60,
+                                  width: 225,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )
@@ -809,7 +784,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             icon: Row(
                               children: [
                                 Icon(MdiIcons.fromString("content-save")),
-                                Text("\tGuardar registro", style: StyleForm.getTextStyleListTileSubtitle(),),
+                                Text("\tGuardar", style: StyleForm.getTextStyleListTileSubtitle(),),
                               ],
                             ),
                             onPressed: () async{
@@ -842,7 +817,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             icon: Row(
                               children: [
                                 Icon(MdiIcons.fromString("eraser")),
-                                Text("\tLimpiar formulario", style: StyleForm.getTextStyleListTileSubtitle(),),
+                                Expanded(child: Text("\tLimpiar", style: StyleForm.getTextStyleListTileSubtitle(),)),
                               ],
                             ),
                             onPressed: (){

@@ -132,7 +132,7 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
               visible: ref.watch(productProvider) != null,
               child: const SizedBox(
                 width: 1000,
-                child: Expanded(child: ProductInformationWidget()),
+                child: ProductInformationWidget(),
               )
           ),
         ],

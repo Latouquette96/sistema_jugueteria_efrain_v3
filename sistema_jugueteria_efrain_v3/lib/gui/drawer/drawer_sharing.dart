@@ -5,7 +5,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_product_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 
@@ -57,12 +57,18 @@ class _DrawerSharingState extends ConsumerState<DrawerSharing> with ContainerPar
     //Para cada producto seleccionado...
     for (Product product in ref.watch(productSharingProvider)){
       for (int i=0; i<product.getLinkImages().length; i++){
-        list.add(ImageProductWidget(index: i, product: product, onRemoved: (){}, onSelected: (){}));
+        list.add(ImageCustom(
+          fileName: product.getFileName(i),
+          resourceLink: product.getLinkImages()[i],
+          isDownloaded: true,
+          isRemoved: false,
+          isReplaceable: false,
+        ));
       }
     }
 
     return Container(
-      height: 250,
+      height: 300,
       margin: getMarginInformationForms(),
       padding: getPaddingInformationForms(),
       decoration: StyleForm.getDecorationFormControl(),
@@ -73,13 +79,13 @@ class _DrawerSharingState extends ConsumerState<DrawerSharing> with ContainerPar
           Visibility(
             visible: list.isNotEmpty,
             child: SizedBox(
-              height: 200,
-              child: SingleChildScrollView(
+              height: 240,
+              child: ListView(
                 controller: ScrollController(),
                 scrollDirection: Axis.horizontal,
-                child: Row(children: list,))
+                children: list,
             ),
-          ),
+          ),)
         ],
       )
     );
