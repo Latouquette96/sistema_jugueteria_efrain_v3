@@ -43,6 +43,18 @@ const createBilling = (request, response) => {
     }
     response.status(201).send(`Billing added with ID: ${results.insertId}`)
   })
+
+}
+
+const deleteBilling = (request, response) => {
+  const db_id = parseInt(request.params.id)
+
+  pool.query('DELETE FROM public.billings WHERE db_id=$1', [db_id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).send(`Billing deleted with ID: ${db_id}`)
+  })
 }
 
 
@@ -50,4 +62,5 @@ module.exports = {
     getAllBillings,
     createBilling,
     getBillingsByDistributor,
+    deleteBilling
 }

@@ -12,11 +12,16 @@ String _url = "127.0.0.1:3000";
 ///Proveedor para recuperar TODAS las distribuidoras existentes.
 final billingsByDistributorProvider = FutureProvider<List<DistributorBilling>>((ref) async {
   final distributor = ref.watch(distributorStateBillingProvider);
-  final content = await http.get(Uri.http(_url, '/distributors/billings/distributor/${distributor!.getID()}'));
+  if (distributor!=null){
+    final content = await http.get(Uri.http(_url, '/distributors/billings/distributor/${distributor.getID()}'));
 
-  List<dynamic> map = convert.jsonDecode(content.body);
-  List<DistributorBilling> list = map.map((e) => DistributorBilling.fromJSON(e)).toList();
-  return list;
+    List<dynamic> map = convert.jsonDecode(content.body);
+    List<DistributorBilling> list = map.map((e) => DistributorBilling.fromJSON(e)).toList();
+    return list;
+  }
+  else{
+    return [];
+  }
 });
 
 
@@ -35,7 +40,7 @@ final downloadBillingsProvider = FutureProvider<Response>((ref) async {
 ///Proveedor para crear una distribuidora en particular.
 final newBillingWithAPIProvider = FutureProvider<Response>((ref) async {
   //Recupero la factura que fue creada desde el formulario.
-  final billing = ref.watch(billingProvider);
+  final billing = ref.watch(billingInformationProvider);
   //Envio la solicitud POST para cargar
   final response = await http.post(
     Uri.http(_url, '/distributors/billings'),

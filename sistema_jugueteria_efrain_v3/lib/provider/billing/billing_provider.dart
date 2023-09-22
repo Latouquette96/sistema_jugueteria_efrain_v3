@@ -7,3 +7,6 @@ final billingProvider = StateNotifierProvider<ElementStateProvider<DistributorBi
 
 ///billingProvider es un proveedor que sirve para almacenar el estado de una factura de distribuidora que será buscado.
 final billingSearchProvider = StateNotifierProvider<ElementStateProvider<DistributorBilling>, DistributorBilling?>((ref) => ElementStateProvider<DistributorBilling>());
+
+///billingInformationProvider es un proveedor que sirve para almacenar el estado de una factura de distribuidora que será actualizado o creado.
+final billingInformationProvider = StateNotifierProvider<ElementStateProvider<DistributorBilling>, DistributorBilling?>((ref) => ElementStateProvider<DistributorBilling>());

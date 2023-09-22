@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
@@ -162,7 +163,7 @@ class _DrawerSharingState extends ConsumerState<DrawerSharing> with ContainerPar
               Container(
                   margin: const EdgeInsets.all(2.5),
                   child: ElevatedButton(
-                    style: StyleForm.getStyleElevatedButtom(),
+                    style: StyleElevatedButton.getStyleLogin(),
                     onPressed: () async{
                       //Pega en el portapapeles el contenido.
                       await Clipboard.setData(ClipboardData(text: ref.read(descriptionProductSharingProvider)));
@@ -178,7 +179,7 @@ class _DrawerSharingState extends ConsumerState<DrawerSharing> with ContainerPar
               Container(
                   margin: const EdgeInsets.all(2.5),
                   child: ElevatedButton(
-                    style: StyleForm.getStyleElevatedButtom(),
+                    style: StyleElevatedButton.getStyleLoginCancel(),
                     onPressed: (){
                       Navigator.of(context).pop();
                     },

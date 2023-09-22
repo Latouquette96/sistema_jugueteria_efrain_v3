@@ -79,7 +79,7 @@ class FormGroupProduct {
       ),
       Product.getKeyPricePublic(): FormControl<double>(
         value: ref.read(provider)?.getPricePublic(),
-        validators: [Validators.required, Validators.number]
+        validators: [Validators.required]
       ),
       Product.getKeyImages(): FormControl<List<ResourceLink>>(
         value: ref.read(provider)?.getLinkImages(),

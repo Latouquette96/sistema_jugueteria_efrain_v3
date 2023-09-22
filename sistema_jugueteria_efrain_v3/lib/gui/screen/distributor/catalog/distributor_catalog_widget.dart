@@ -40,24 +40,31 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
         title: "Opciones", 
         field: "key_options", 
         type: PlutoColumnType.text(),
-        enableRowChecked: true,
         width: 200,
         minWidth: 200,
         renderer: (rendererContext) {
           return Row(
             children: [
+              //Editar distribuidora.
               Expanded(child: 
                 IconButton(
                   onPressed: (){
-                    //Busca el distribuidor de acuerdo a la fila.
-                    Distributor distributor = _getDistributorForRendererContext(rendererContext);
-                    ///Carga un distribuidor al proveedor para que pueda ser editado.
-                    ref.read(plutoRowProvider.notifier).load(rendererContext.row);
-                    ref.read(distributorStateProvider.notifier).load(distributor);
+                    if (ref.read(distributorStateProvider)!=null){
+                      ref.read(distributorStateProvider.notifier).free();
+                      ref.read(plutoRowProvider.notifier).free();
+                    }
+                    else{
+                      //Busca el distribuidor de acuerdo a la fila.
+                      Distributor distributor = _getDistributorForRendererContext(rendererContext);
+                      ///Carga un distribuidor al proveedor para que pueda ser editado.
+                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
+                      ref.read(distributorStateProvider.notifier).load(distributor);
+                    }
                   }, 
                   icon: Icon(MdiIcons.fromString("pencil"), color: Colors.black,)
                 )
               ),
+              //Eliminar distribuidora.
               Expanded(child: 
                 IconButton(
                   onPressed: () async {
@@ -108,6 +115,23 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
                   icon: Icon(MdiIcons.fromString("email"), color: Colors.brown)
                 )
               ),
+              //Abrir pdfs
+              Expanded(child:
+                IconButton(
+                  onPressed: (){
+                    if (ref.read(distributorStateBillingProvider)!=null){
+                      ref.read(distributorStateBillingProvider.notifier).free();
+                    }
+                    else{
+                      //Busca el distribuidor de acuerdo a la fila.
+                      Distributor distributor = _getDistributorForRendererContext(rendererContext);
+                      ///Carga un distribuidor
+                      ref.read(distributorStateBillingProvider.notifier).load(distributor);
+                    }
+                  },
+                  icon: Icon(MdiIcons.fromString("file-pdf-box"), color: Colors.black,)
+                )
+              )
             ],
           );
         },

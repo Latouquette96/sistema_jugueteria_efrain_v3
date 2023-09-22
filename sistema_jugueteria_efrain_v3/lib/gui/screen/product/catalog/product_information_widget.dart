@@ -1,5 +1,4 @@
 import 'package:elegant_notification/elegant_notification.dart';
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +11,7 @@ import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.da
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
@@ -53,10 +53,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   late bool _brandManual;
   
   final Widget _separadorHeight = const SizedBox(height: 5,);
+  final Widget _separadorHeightBlock = const SizedBox(height: 15,);
   final Widget _separadorWidth = const SizedBox(width: 5,);
-
-  final GlobalKey<ExpansionTileCardState> cardA = GlobalKey();
-  final GlobalKey<ExpansionTileCardState> cardB = GlobalKey();
 
   @override
   void initState() {
@@ -208,7 +206,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                  style: StyleForm.getStyleElevatedButtom(),
+                  style: StyleElevatedButton.getStyleElevatedButtom(),
                   onPressed: () async {
                     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
@@ -224,7 +222,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       else{
                         (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(cdata.text!));
                       }
-                      setState(() {});
+                      if (mounted){
+                        setState(() {});
+                      }
                     }
                   },
                   child: const Text("Insertar link")
@@ -346,7 +346,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               },
             ),
           ),
-          _separadorHeight,
+          _separadorWidth,
           Expanded(child: Visibility(
             visible: _form.control(Product.getKeyCategory()).value.getCategoryID()!=0,
             child: ReactiveDropdownField<SubCategory>(
@@ -421,7 +421,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 ]
             ),
           ),
-          _separadorHeight,
+          _separadorHeightBlock,
           Visibility(
               visible: !_brandManual,
               child: ReactiveTypeAhead<String, String>(
@@ -489,7 +489,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               ValidationMessage.number: (error) => "(Error) Inserte un número mayor o igual a 0.",
             },
           ),
-          _separadorHeight,
+          _separadorHeightBlock,
           ReactiveTextField<int>(
             style: StyleForm.getStyleTextField(),
             decoration: StyleForm.getDecorationTextField("Stock"),
@@ -606,13 +606,23 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         formGroup: _formNewPP,
         child: ExpansionTileContainerWidget(
           title: "Precios en distribuidoras",
-          subtitle: "Permite definir los distintos precios del producto en distintas distribuidoras.",
+          subtitle: "Permite definir los distintos precios del producto en distintas distribuidoras.\n\n"
+              "${ ref.read(productProvider)!.getID()==0
+                ? "Importante: Solo puede ser ingresados precio de distribuidoras sobre productos previamente guardados, "
+                  "por tal motivo, debe presionar sobre el botón de guardado y luego se"
+                  "habilitará el ingreso de precios."
+                : "Importante: Los precios son actualizados de manera inmediata, por tal motivo, solo alcanza con presionar el boton 'insertar' (caso de nuevo precio)"
+                  " o el icono de guardar para un precio existente."
+          }",
           children: [
             //Construye el ListView
-            _buildWidgetListView(context, product),
+            Visibility(
+              visible: ref.read(productProvider)!.getID()!=0,
+              child: _buildWidgetListView(context, product)
+            ),
             //LISTTILE para crear un nuevo registro.
             Visibility(
-                visible: distributorFree.isNotEmpty,
+                visible: distributorFree.isNotEmpty && ref.read(productProvider)!.getID()!=0,
                 child: _buildWidgetNewProductPrice(context)
             )
           ],
@@ -627,7 +637,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     return Container(
         height: 300,
         padding: const EdgeInsets.all(5),
-        margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        margin: const EdgeInsets.all(0),
         decoration: StyleForm.getDecorationFormControl(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -646,7 +656,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             decoration: StyleForm.getDecorationControlImage(),
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                             margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                            width: 240,
+                            width: 265,
                             child: Row(
                               children: [
                                 Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
@@ -679,10 +689,10 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             //Nodo de precio.
                             TreeNode(
                                 content: Container(
-                                  color: Colors.grey.shade300,
+                                  color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                                   height: 60,
-                                  width: 225,
+                                  width: 250,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: TextField(
                                     decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
@@ -698,20 +708,20 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             ),
                             TreeNode(
                                 content: Container(
-                                  color: Colors.grey.shade300,
+                                  color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 40,
-                                  width: 225,
+                                  width: 250,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )
                             ),
                             TreeNode(
                                 content: Container(
-                                  color: Colors.grey.shade300,
+                                  color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 60,
-                                  width: 225,
+                                  width: 250,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )

@@ -45,6 +45,7 @@ app.delete('/distributors/:id', db_distributor.deleteDistributor)
 app.get('/distributors/billings', db_billing.getAllBillings)
 app.get('/distributors/billings/distributor/:id', db_billing.getBillingsByDistributor)
 app.post('/distributors/billings', db_billing.createBilling)
+app.delete('/distributors/billings/:id', db_billing.deleteBilling)
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)

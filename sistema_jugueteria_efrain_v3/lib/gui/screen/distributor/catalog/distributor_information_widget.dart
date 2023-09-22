@@ -43,143 +43,149 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
         end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
         bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
       )),
-      child: ReactiveForm(
-        formGroup: _form,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //Encabezado principal.
-            HeaderInformationWidget(
-              titleHeader: "Información Distribuidora",
-              tooltipClose: "Cerrar información de la distribuidora.",
-              onClose: (){
-                ref.read(distributorStateProvider.notifier).free();
-              },
-            ),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [   
-                    ReactiveTextField(
-                      maxLength: 13,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("CUIT"),
-                      formControlName: Distributor.getKeyCUIT(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(Distributor.getKeyName());
-                      },
-                      validationMessages: {
-                        ValidationMessage.maxLength: (error) => "Máxima longitud de CUIT de 13 caracteres.",
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese el CUIT de la distribuidora."
-                      },
-                    ),
-                    ReactiveTextField(
-                      maxLength: 50,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Nombre"),
-                      formControlName: Distributor.getKeyName(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(Distributor.getKeyAddress());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese el nombre de la distribuidora."
-                      },
-                    ),
-                    ReactiveTextField(
-                      maxLength: 75,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Dirección"),
-                      formControlName: Distributor.getKeyAddress(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(Distributor.getKeyCel());
-                      },
-                    ),
-                    ReactiveTextField(
-                      maxLength: 15,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Teléfono (celular o fijo)"),
-                      formControlName: Distributor.getKeyCel(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(Distributor.getKeyEmail());
-                      },
-                    ),
-                    ReactiveTextField(
-                      maxLength: 150,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Correo electrónico"),
-                      formControlName: Distributor.getKeyEmail(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(Distributor.getKeyIVA());
-                      },
-                      validationMessages: {
-                        ValidationMessage.email: (error) => '(Opcional) Ingrese un correo electrónico válido.',
-                      },
-                    ),
-                    ReactiveDropdownField<double>(
-                      formControlName: Distributor.getKeyIVA(),
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("IVA aplicado a los productos."),
-                      items: const [
-                        DropdownMenuItem<double>(value: 1.00,child: Text("1.00 (sin IVA)"),),
-                        DropdownMenuItem<double>(value: 1.21,child: Text("1.21 (con IVA)"),),
-                      ],
-                      onChanged: (control) {
-                        setState(() {});
-                        _form.focus(Distributor.getKeyWebsite());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Seleccione el impuesto que aplica la distribuidora."
-                      },
-                    ),
-                    const SizedBox(height: 15,),
-                    ReactiveTextField(
-                      maxLength: 150,
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Sitio web"),
-                      formControlName: Distributor.getKeyWebsite(),
-                      textInputAction: TextInputAction.none,
-                      onSubmitted: (_){
-                        setState(() {});
-                      },
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //Encabezado principal.
+          HeaderInformationWidget(
+            titleHeader: "Información Distribuidora",
+            tooltipClose: "Cerrar información de la distribuidora.",
+            onClose: (){
+              ref.read(distributorStateProvider.notifier).free();
+            },
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: const EdgeInsets.all(5),
+                  child: ReactiveForm(
+                    formGroup: _form,
+                    child: Column(
                       children: [
-                        Expanded(child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: _form.valid ? Colors.blue : Colors.grey),
-                          onPressed: () async{
-                            ref.read(distributorStateProvider)?.fromJSON(_form.value);
-                            bool isNew = ref.read(distributorStateProvider)!.getID()==0;
-                            if (isNew) {await _insert(context);}
-                            else  {await _update(context);}
+                        ReactiveTextField(
+                          maxLength: 13,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("CUIT"),
+                          formControlName: Distributor.getKeyCUIT(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(Distributor.getKeyName());
                           },
-                          child: const Text('Guardar cambios'),
-                        )),
+                          validationMessages: {
+                            ValidationMessage.maxLength: (error) => "Máxima longitud de CUIT de 13 caracteres.",
+                            ValidationMessage.required: (error) => "(Requerido) Ingrese el CUIT de la distribuidora."
+                          },
+                        ),
+                        ReactiveTextField(
+                          maxLength: 50,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Nombre"),
+                          formControlName: Distributor.getKeyName(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(Distributor.getKeyAddress());
+                          },
+                          validationMessages: {
+                            ValidationMessage.required: (error) => "(Requerido) Ingrese el nombre de la distribuidora."
+                          },
+                        ),
+                        ReactiveTextField(
+                          maxLength: 75,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Dirección"),
+                          formControlName: Distributor.getKeyAddress(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(Distributor.getKeyCel());
+                          },
+                        ),
+                        ReactiveTextField(
+                          maxLength: 15,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Teléfono (celular o fijo)"),
+                          formControlName: Distributor.getKeyCel(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(Distributor.getKeyEmail());
+                          },
+                        ),
+                        ReactiveTextField(
+                          maxLength: 150,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Correo electrónico"),
+                          formControlName: Distributor.getKeyEmail(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(Distributor.getKeyIVA());
+                          },
+                          validationMessages: {
+                            ValidationMessage.email: (error) => '(Opcional) Ingrese un correo electrónico válido.',
+                          },
+                        ),
+                        ReactiveDropdownField<double>(
+                          formControlName: Distributor.getKeyIVA(),
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("IVA aplicado a los productos."),
+                          items: const [
+                            DropdownMenuItem<double>(value: 1.00,child: Text("1.00 (sin IVA)"),),
+                            DropdownMenuItem<double>(value: 1.21,child: Text("1.21 (con IVA)"),),
+                          ],
+                          onChanged: (control) {
+                            setState(() {});
+                            _form.focus(Distributor.getKeyWebsite());
+                          },
+                          validationMessages: {
+                            ValidationMessage.required: (error) => "(Requerido) Seleccione el impuesto que aplica la distribuidora."
+                          },
+                        ),
+                        const SizedBox(height: 15,),
+                        ReactiveTextField(
+                          maxLength: 150,
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Sitio web"),
+                          formControlName: Distributor.getKeyWebsite(),
+                          textInputAction: TextInputAction.none,
+                          onSubmitted: (_){
+                            setState(() {});
+                          },
+                        ),
+                        const SizedBox(height: 15,),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: _form.valid ? Colors.white54 : Colors.grey.shade300,
+                                  foregroundColor: _form.valid ? Colors.blue.shade600 : Colors.black26
+                              ),
+                              onPressed: () async{
+                                ref.read(distributorStateProvider)?.fromJSON(_form.value);
+                                bool isNew = ref.read(distributorStateProvider)!.getID()==0;
+                                if (isNew) {await _insert(context);}
+                                else  {await _update(context);}
+                              },
+                              child: const Text('Guardar cambios'),
+                            )),
+                          ],
+                        )
                       ],
-                    )
-                  ]
+                    ),
+                  ),
                 ),
-              )
-            ),
-            const SizedBox(
-              height: 25,
-            )
+              ),
+          ),
+          const SizedBox(
+            height: 25,
+          )
         ],
       )
-    ));
+    );
   }
 
   

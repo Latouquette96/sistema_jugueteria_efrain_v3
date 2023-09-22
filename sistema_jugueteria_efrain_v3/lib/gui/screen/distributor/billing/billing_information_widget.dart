@@ -24,13 +24,14 @@ class BillingInformationWidget extends ConsumerStatefulWidget {
 
 class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
+  final SizedBox _sizedBoxHeight = const SizedBox(height: 15,);
   late final FormGroup _form;
 
   @override
   void initState() {
     super.initState();
     Distributor distributorActual = ref.read(distributorStateBillingProvider)!;
-    DistributorBilling distributorBilling = ref.read(billingProvider)!;
+    DistributorBilling distributorBilling = ref.read(billingInformationProvider)!;
 
     _form = FormGroup({
       DistributorBilling.getKeyID(): FormControl<int>(
@@ -65,7 +66,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     return Container(
       width: 400,
-      margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
+      margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
       decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
         start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
         top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
@@ -77,131 +78,104 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-             //Encabezado principal.
+            //Encabezado principal.
             HeaderInformationWidget(
-              titleHeader: "Información Factura-Distribuidora",
-              tooltipClose: "Cancelar creación factura-distribuidora.",
+              titleHeader: (ref.watch(billingInformationProvider)!.getID()!=0) ? "Factura ${ref.watch(billingInformationProvider)!.getDatetime()}" : "Nueva Factura",
+              tooltipClose: "Cerrar información factura.",
               onClose: (){
-                ref.read(billingProvider.notifier).free();
+                ref.read(billingInformationProvider.notifier).free();
+              },
+              onSave: (ref.watch(billingInformationProvider)!.getID()!=0) ? null : () async{
+                if(_form.valid){
+                  //Control para verificar si se produjo error o no.
+                  bool isError = false;
+                  //Carga los nuevos valores en el billingInformationProvider.
+                  ref.read(billingInformationProvider)?.fromJSONtoForm(_form.value);
+
+                  try{
+                    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
+                    Response response = await ref.watch(newBillingWithAPIProvider.future);
+                    isError = response.statusCode!=201;
+                  }
+                  catch(e){
+                    isError = true;
+                  }
+
+                  if (mounted){
+                    //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
+                    if (isError==false){
+                      ElegantNotification.success(
+                          title:  const Text("Información"),
+                          description:  const Text("La información ha sido actualizada con éxito.")
+                      ).show(context);
+
+                      ref.read(billingInformationProvider.notifier).free();
+                    }
+                    else{
+                      //Caso contrario, mostrar notificación de error.
+                      ElegantNotification.error(
+                          title:  const Text("Error"),
+                          description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                      ).show(context);
+                    }
+                  }
+                }
               },
             ),
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Distribuidora"),
-                      formControlName: DistributorBilling.getKeyDistributorName(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(DistributorBilling.getKeyDatetime());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese la fecha y hora de la factura.",
-                        ValidationMessage.pattern: (error)=> "(Error) El formato válido es 'YYYY-MM-DD hh:mm:ss"
-                      },
-                    ),   
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Fecha/Hora"),
-                      formControlName: DistributorBilling.getKeyDatetime(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(DistributorBilling.getKeyTotal());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese la fecha y hora de la factura.",
-                        ValidationMessage.pattern: (error)=> "(Error) El formato válido es 'YYYY-MM-DD hh:mm:ss"
-                      },
-                    ),
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Monto Total (sin IVA)"),
-                      formControlName: DistributorBilling.getKeyTotal(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                        _form.focus(DistributorBilling.getKeyUrlFile());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese el monto de la factura.",
-                      },
-                    ),
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("URL del archivo"),
-                      formControlName: DistributorBilling.getKeyUrlFile(),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_){
-                        setState(() {});
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese el link del archivo.",
-                      },
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
+                child: SingleChildScrollView(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: ElevatedButton(
-                          style: StyleForm.getStyleElevatedButtom(),
-                          onPressed: () {
-                            if(_form.valid){
-                              //Control para verificar si se produjo error o no.
-                              bool isError = false;
-                              //Carga los nuevos valores en el billingProvider.
-                              ref.read(billingProvider)?.fromJSONtoForm(_form.value);
-
-                              //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-                              AsyncValue<Response> response = ref.watch(newBillingWithAPIProvider);
-                              
-                              //Realiza la peticion de modificacion y analiza la respuesta obtenida.
-                              response.when(
-                                data: (data){
-                                  isError = false;
-                                }, 
-                                error: (err, stack){
-                                  isError = true;
-                                }, 
-                                loading: (){null;}
-                              );
-
-                              //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                              if (isError==false){
-                                ElegantNotification.success(
-                                  title:  const Text("Información"),
-                                  description:  const Text("La información ha sido actualizada con éxito.")
-                                ).show(context);
-
-                                ref.read(billingProvider.notifier).free();
-                              }
-                              else{
-                                //Caso contrario, mostrar notificación de error.
-                                ElegantNotification.error(
-                                  title:  const Text("Error"),
-                                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                                ).show(context);
-                              }
-                            }
-                          } ,
-                          child: const Text('Guardar cambios'),
-                        )),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    )
-                  ]
+                        _sizedBoxHeight,
+                        ReactiveTextField(
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Fecha/Hora"),
+                          formControlName: DistributorBilling.getKeyDatetime(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(DistributorBilling.getKeyTotal());
+                          },
+                          validationMessages: {
+                            ValidationMessage.required: (error) => "(Requerido) Ingrese la fecha y hora de la factura.",
+                            ValidationMessage.pattern: (error)=> "(Error) El formato válido es 'YYYY-MM-DD hh:mm:ss"
+                          },
+                        ),
+                        _sizedBoxHeight,
+                        ReactiveTextField(
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("Monto Total (sin IVA)"),
+                          formControlName: DistributorBilling.getKeyTotal(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                            _form.focus(DistributorBilling.getKeyUrlFile());
+                          },
+                          validationMessages: {
+                            ValidationMessage.required: (error) => "(Requerido) Ingrese el monto de la factura.",
+                          },
+                        ),
+                        _sizedBoxHeight,
+                        ReactiveTextField(
+                          style: StyleForm.getStyleTextField(),
+                          decoration: StyleForm.getDecorationTextField("URL del archivo"),
+                          formControlName: DistributorBilling.getKeyUrlFile(),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_){
+                            setState(() {});
+                          },
+                          validationMessages: {
+                            ValidationMessage.required: (error) => "(Requerido) Ingrese el link del archivo.",
+                          },
+                        ),
+                        _sizedBoxHeight,
+                      ]
+                  ),
                 ),
               )
-            ),
-            const SizedBox(
-              height: 25,
             )
         ],
       )

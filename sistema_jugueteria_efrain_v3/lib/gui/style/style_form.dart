@@ -49,14 +49,6 @@ class StyleForm {
     return const TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 13);
   }
 
-  ///StyleForm: Devuelve el estilo para el boton.
-  static ButtonStyle getStyleElevatedButtom(){
-    return ElevatedButton.styleFrom(
-      backgroundColor: Colors.blueGrey,
-      disabledBackgroundColor: Colors.grey
-    );
-  }
-
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
   static BoxDecoration getDecorationPanel(){
     return BoxDecoration(
@@ -109,10 +101,10 @@ class StyleForm {
 
   ///StyleForm: Devuelve el BoxDecoration para aplicar a los bordes de un contenedor de información o catálogo.
   static BoxDecoration getDecorationFormControl(){
-    const border =  BorderSide(color: Color.fromARGB(255, 219, 207, 207), width: 1);
+    const border =  BorderSide(color: Colors.black26, width: 2);
 
     return BoxDecoration(
-        gradient: LinearGradient(colors: [Colors.grey.shade100, Colors.white, Colors.grey.shade100]),
+        gradient: LinearGradient(colors: [Colors.blueGrey.shade50, Colors.grey.shade50, Colors.blueGrey.shade50]),
         border: const BorderDirectional(
           start: border,
           top: border,

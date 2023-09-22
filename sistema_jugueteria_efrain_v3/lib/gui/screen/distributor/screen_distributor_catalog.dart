@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/billing/billing_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
@@ -8,6 +9,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
 class ScreenDistributorCatalog extends ConsumerStatefulWidget {
@@ -50,7 +52,13 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(distributorStateProvider.notifier).load(Distributor());
+              if (ref.read(distributorStateProvider)!=null){
+                ref.read(distributorStateProvider.notifier).free();
+                ref.read(plutoRowProvider.notifier).free();
+              }
+              else{
+                ref.read(distributorStateProvider.notifier).load(Distributor());
+              }
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar una nueva distribuidora.",
@@ -92,7 +100,18 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
                   Expanded(child: DistributorInformationWidget())
                 ],
               ))
-            )
+          ),
+          Visibility(
+              visible: ref.watch(distributorStateBillingProvider) != null,
+              child: const SizedBox(
+                  width: 1000,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(child: BillingWidget())
+                    ],
+                  ))
+          )
         ],
       ),
     );

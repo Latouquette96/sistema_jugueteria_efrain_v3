@@ -4,6 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
@@ -169,7 +170,7 @@ class _DrawerLoginState extends ConsumerState<DrawerLogin> with ContainerParamet
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: ElevatedButton(
-            style: StyleForm.getStyleElevatedButtom(),
+            style: StyleElevatedButton.getStyleLoginCancel(),
             onPressed: (){
               Navigator.pop(context);
             },
@@ -177,7 +178,7 @@ class _DrawerLoginState extends ConsumerState<DrawerLogin> with ContainerParamet
           )),
           const SizedBox(width: 5,),
           Expanded(child: ElevatedButton(
-            style: StyleForm.getStyleElevatedButtom(),
+            style: StyleElevatedButton.getStyleLogin(),
             onPressed: () async {
               //Si los datos son validados, entonces conectar al servidor.
               ref.read(userLoginProvider.notifier).state = _form.control(_keyUser).value.toString(); 
