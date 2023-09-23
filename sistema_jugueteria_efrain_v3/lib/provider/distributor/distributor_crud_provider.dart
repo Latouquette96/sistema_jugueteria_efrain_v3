@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
@@ -11,7 +11,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart'
 final lastUpdateProvider = StateProvider<String>((ref) => DatetimeCustom.getDatetimeStringNow());
 
 ///Proveedor para crear una distribuidora en particular.
-final newDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
+final newDistributorWithAPIProvider = FutureProvider<ResponseStatusCode>((ref) async {
 
   final distributor = ref.watch(distributorStateProvider);
   final url = ref.watch(urlAPIProvider);
@@ -21,15 +21,21 @@ final newDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
     body: jsonEncode(distributor!.getJSON()), 
   );
-  
-  //Refrezca el listado de distribuidoras.
-  await ref.read(catalogDistributorProvider.notifier).refresh();
 
-  return response;  
+  ResponseStatusCode result = response.statusCode==201
+      ? ResponseStatusCode.statusCodeOK
+      : ResponseStatusCode.statusCodeFailded;
+
+  if (result == ResponseStatusCode.statusCodeOK){
+    //Refrezca el listado de distribuidoras.
+    await ref.read(catalogDistributorProvider.notifier).refresh();
+  }
+
+  return result;
 });
 
 ///Proveedor para actualizar una distribuidora en particular.
-final updateDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
+final updateDistributorWithAPIProvider = FutureProvider<ResponseStatusCode>((ref) async {
 
   final distributor = ref.watch(distributorStateProvider);
   final url = ref.watch(urlAPIProvider);
@@ -40,14 +46,20 @@ final updateDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
     body: jsonEncode(distributor.getJSON()), 
   );
 
-  //Refrezca el listado de distribuidoras.
-  await ref.read(catalogDistributorProvider.notifier).refresh();
+  ResponseStatusCode result = response.statusCode==200
+      ? ResponseStatusCode.statusCodeOK
+      : ResponseStatusCode.statusCodeFailded;
 
-  return response;  
+  if (result == ResponseStatusCode.statusCodeOK){
+    //Refrezca el listado de distribuidoras.
+    await ref.read(catalogDistributorProvider.notifier).refresh();
+  }
+
+  return result;
 });
 
 ///Proveedor para eliminar una distribuidora en particular.
-final removeDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
+final removeDistributorWithAPIProvider = FutureProvider<ResponseStatusCode>((ref) async {
 
   final distributor = ref.watch(distributorStateRemoveProvider);
   final url = ref.watch(urlAPIProvider);
@@ -56,9 +68,15 @@ final removeDistributorWithAPIProvider = FutureProvider<Response>((ref) async {
     Uri.http(url, '/distributors/${distributor!.getID()}'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
-  
-  //Refrezca el listado de distribuidoras.
-  await ref.read(catalogDistributorProvider.notifier).refresh();
 
-  return response;  
+  ResponseStatusCode result = response.statusCode==200
+      ? ResponseStatusCode.statusCodeOK
+      : ResponseStatusCode.statusCodeFailded;
+
+  if (result == ResponseStatusCode.statusCodeOK){
+    //Refrezca el listado de distribuidoras.
+    await ref.read(catalogDistributorProvider.notifier).refresh();
+  }
+
+  return result;
 });

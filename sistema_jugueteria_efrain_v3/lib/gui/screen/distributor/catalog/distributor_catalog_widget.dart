@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:mailto/mailto.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
@@ -168,35 +168,31 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
     );
   }
 
-  
+  ///DistributorCatalogWidget: Remueve la distribuidora de la grilla y del servidor.
   Future<void> _remove(Distributor distributor) async{
-    bool isError = false;
     ref.read(distributorStateRemoveProvider.notifier).load(distributor);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = await ref.read(removeDistributorWithAPIProvider.future);
-    //Consulta el estado de la respuesta.
-    isError = response.statusCode!=200;
+    ResponseStatusCode response = await ref.read(removeDistributorWithAPIProvider.future);
     //Si ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-    if (isError==false){
-      if (context.mounted){
+    if (context.mounted){
+      if (response==ResponseStatusCode.statusCodeOK){
         ElegantNotificationCustom.showNotificationSuccess(context);
+        ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorStateRemoveProvider)!.getPlutoRow()!]);
+        ref.read(distributorStateRemoveProvider.notifier).free();
       }
-      ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorStateRemoveProvider)!.getPlutoRow()!]);
-      ref.read(distributorStateRemoveProvider.notifier).free();
-    }
-    else{
-      if (context.mounted){
+      else{
         ElegantNotificationCustom.showNotificationError(context);
       }
     }
   }
 
+  ///DistributorCatalogWidget: Devuelve la distribuidora de una fila.
   Distributor _getDistributor(PlutoRow row){
     int rowID = row.cells[Distributor.getKeyID()]!.value;
     return ref.read(catalogDistributorProvider).firstWhere((element) => element.getID()==rowID);
   }
 
-  ///
+  ///DistributorCatalogWidget: Devuelve la distribuidora del contexto.
   Distributor _getDistributorForRendererContext(PlutoColumnRendererContext rendererContext){
     PlutoRow row = rendererContext.row;
     return _getDistributor(row);

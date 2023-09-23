@@ -7,6 +7,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
@@ -167,10 +168,10 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
               //Escribe el nuevo valor al público del producto.
               ref.read(widget.getProvider())!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
               //Realiza la peticion de escritura en el servidor.
-              final response = await ref.read(updatePricePublicWithAPIProvider.future);
+              ResponseStatusCode response = await ref.read(updatePricePublicWithAPIProvider.future);
+
               //Comprueba si resultó exitosa la operacion (cod. 200), en caso contrario, es error.
-              bool error = response.statusCode!=200;
-              if (error==false){
+              if (response==ResponseStatusCode.statusCodeOK){
                 if (context.mounted){
                   ElegantNotification.success(
                     title:  const Text("Información"),
@@ -383,24 +384,24 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                         onPressed: () async{
                           ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
                           final response = await ref.read(newProductPriceWithAPIProvider.future);
-                          bool error = response.statusCode!=201;
-                          if (error==false){
-                            // ignore: use_build_context_synchronously
-                            ElegantNotification.success(
-                              title:  const Text("Información"),
-                              description:  const Text("La información ha sido actualizada con éxito.")
-                            ).show(context);
-                            ref.read(productPriceProvider.notifier).free();
-                            await ref.read(widget.getProviderID().notifier).refresh();
-                            setState(() {});
-                          }
-                          else{
-                            //Caso contrario, mostrar notificación de error.
-                            // ignore: use_build_context_synchronously
-                            ElegantNotification.error(
-                              title:  const Text("Error"),
-                              description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                            ).show(context);
+                          if (mounted){
+                            if (response==ResponseStatusCode.statusCodeOK){
+                              ElegantNotification.success(
+                                  title:  const Text("Información"),
+                                  description:  const Text("La información ha sido actualizada con éxito.")
+                              ).show(context);
+                              ref.read(productPriceProvider.notifier).free();
+                              await ref.read(widget.getProviderID().notifier).refresh();
+                              setState(() {});
+                            }
+                            else{
+                              //Caso contrario, mostrar notificación de error.
+                              // ignore: use_build_context_synchronously
+                              ElegantNotification.error(
+                                  title:  const Text("Error"),
+                                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                              ).show(context);
+                            }
                           }
                         },
                       )),

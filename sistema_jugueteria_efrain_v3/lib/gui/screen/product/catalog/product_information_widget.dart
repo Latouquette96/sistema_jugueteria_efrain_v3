@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
-import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -17,6 +16,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product_price.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
@@ -805,24 +805,24 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             onPressed: () async{
                               ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
                               final response = await ref.read(newProductPriceWithAPIProvider.future);
-                              bool error = response.statusCode!=201;
-                              if (error==false){
-                                // ignore: use_build_context_synchronously
-                                ElegantNotification.success(
-                                    title:  const Text("Información"),
-                                    description:  const Text("La información ha sido actualizada con éxito.")
-                                ).show(context);
-                                ref.read(productPriceProvider.notifier).free();
-                                await ref.read(productPricesByIDProvider.notifier).refresh();
-                                setState(() {});
-                              }
-                              else{
-                                //Caso contrario, mostrar notificación de error.
-                                // ignore: use_build_context_synchronously
-                                ElegantNotification.error(
-                                    title:  const Text("Error"),
-                                    description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                                ).show(context);
+
+                              if (mounted){
+                                if (response==ResponseStatusCode.statusCodeOK){
+                                  ElegantNotification.success(
+                                      title:  const Text("Información"),
+                                      description:  const Text("La información ha sido actualizada con éxito.")
+                                  ).show(context);
+                                  ref.read(productPriceProvider.notifier).free();
+                                  await ref.read(productPricesByIDProvider.notifier).refresh();
+                                  setState(() {});
+                                }
+                                else{
+                                  //Caso contrario, mostrar notificación de error.
+                                  ElegantNotification.error(
+                                      title:  const Text("Error"),
+                                      description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
+                                  ).show(context);
+                                }
                               }
                             },
                           )),
@@ -866,15 +866,12 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
   ///ProductInformationWidget: Realiza la inserción del producto.
   Future<void> _insert(BuildContext context) async{
-    bool isError = false;
     //Carga los datos del formulario en el producto.
     ref.read(productProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = await ref.watch(newProductWithAPIProvider.future);
+    ResponseStatusCode response = await ref.read(newProductWithAPIProvider.future);
 
-    //Ocurre error si no es el código 201.
-    isError = response.statusCode!=201;
-    if (!isError){
+    if (response==ResponseStatusCode.statusCodeOK){
       //Inserta el nuevo registro por el actualizado.
       ref.read(stateManagerProductProvider.notifier).insert(productProvider);
       //Actualizar datos de ultima actualizacion
@@ -893,15 +890,12 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
   ///ProductInformationWidget: Actualiza el producto.
   Future<void> _update(BuildContext context) async{
-    bool isError = false;
     //Carga los datos del formulario en el producto.
     ref.read(productProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = await ref.watch(updateProductWithAPIProvider.future);
-    
-    //Ocurre error si no es el código 200.
-    isError = response.statusCode!=200;
-    if (!isError){
+    ResponseStatusCode response = await ref.watch(updateProductWithAPIProvider.future);
+
+    if (response==ResponseStatusCode.statusCodeOK){
       ref.read(stateManagerProductProvider.notifier).update(productProvider);
       //Actualizar datos de ultima actualizacion
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();

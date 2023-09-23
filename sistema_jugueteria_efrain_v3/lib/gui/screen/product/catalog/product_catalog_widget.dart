@@ -1,10 +1,10 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
@@ -13,7 +13,6 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_pr
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-//import 'package:url_launcher/url_launcher.dart';
 
 ///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
 class ProductCatalogWidget extends ConsumerStatefulWidget {
@@ -144,48 +143,40 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     );
   }
 
+  ///ProductCatalogWidget: Remueve el producto.
   Future<void> _remove(Product product) async{
-    bool isError = false;
     ref.read(productRemoveProvider.notifier).load(product);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    AsyncValue<Response> response = ref.watch(
-      removeProductWithAPIProvider,
-    );
-    //Realiza la peticion de eliminacion y analiza la respuesta obtenida.
-    response.when(
-      data: (data){
-        isError = false;
-      },
-      error: (err, stack){
-        isError = true;
-      },
-      loading: (){null;}
-    );
-    //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-    if (isError==false){
-      ElegantNotification.success(
-        title:  const Text("Información"),
-        description:  const Text("La información de la producto fue eliminada con éxito.")
-      ).show(context);
+    ResponseStatusCode statusCode = await ref.read(removeProductWithAPIProvider.future);
 
-      ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()!]);
-      ref.read(productRemoveProvider.notifier).free();
-    }
-    else{
-      //Caso contrario, mostrar notificación de error.
-      ElegantNotification.error(
-        title:  const Text("Error"),
-        description:  const Text("Ocurrió un error y no fue posible eliminar la información del producto.")
-      ).show(context);
+    if (mounted){
+      //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
+      if (statusCode==ResponseStatusCode.statusCodeOK){
+        ElegantNotification.success(
+            title:  const Text("Información"),
+            description:  const Text("La información de la producto fue eliminada con éxito.")
+        ).show(context);
+
+        ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()!]);
+        ref.read(productRemoveProvider.notifier).free();
+      }
+      else{
+        //Caso contrario, mostrar notificación de error.
+        ElegantNotification.error(
+            title:  const Text("Error"),
+            description:  const Text("Ocurrió un error y no fue posible eliminar la información del producto.")
+        ).show(context);
+      }
     }
   }
 
+  ///ProductCatalogWidget: Devuelve el producto almacenado en la fila.
   Product _getProduct(PlutoRow row){
     int rowID = row.cells[Product.getKeyID()]!.value;
     return ref.read(productCatalogProvider).firstWhere((element) => element.getID()==rowID);
   }
 
-  ///
+  ///ProductCatalogWidget: Devuelve el producto renderizado.
   Product _getProductForRendererContext(PlutoColumnRendererContext rendererContext){
     PlutoRow row = rendererContext.row;
     return _getProduct(row);

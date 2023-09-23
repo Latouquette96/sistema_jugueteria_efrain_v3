@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
@@ -170,15 +170,12 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
     );
   }
 
-  
+  ///DistributorInformationWidget: Inserta una nueva distribuidora.
   Future<void> _insert(BuildContext context) async{
-    bool isError = false;
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = await ref.watch(newDistributorWithAPIProvider.future);
+    ResponseStatusCode response = await ref.watch(newDistributorWithAPIProvider.future);
 
-    //Ocurre error si no es el código 201.
-    isError = response.statusCode!=201;
-    if (!isError){
+    if (response==ResponseStatusCode.statusCodeOK){
       //Inserta el nuevo registro por el actualizado.
       ref.read(stateManagerDistributorProvider.notifier).insert(distributorStateProvider);
       //Actualizar datos de ultima actualizacion
@@ -195,16 +192,14 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
     }
   }
 
+  ///DistributorInformationWidget: Actualiza una distribuidora existente.
   Future<void> _update(BuildContext context) async{
-    bool isError = false;
     //Carga los datos del formulario en la distribuidora.
     ref.read(distributorStateProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    Response response = await ref.watch(updateDistributorWithAPIProvider.future);
-    
-    //Ocurre error si no es el código 200.
-    isError = response.statusCode!=200;
-    if (!isError){
+    ResponseStatusCode response = await ref.watch(updateDistributorWithAPIProvider.future);
+
+    if (response==ResponseStatusCode.statusCodeOK){
       ref.read(stateManagerDistributorProvider.notifier).update(distributorStateProvider);
       //Actualizar datos de ultima actualizacion
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();

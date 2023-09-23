@@ -1,12 +1,12 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
@@ -83,9 +83,9 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 ref.read(billingInformationProvider.notifier).free();
               },
               onDelete: (ref.watch(billingInformationProvider)!.getID()!=0) ? () async{
-                Response respose = await ref.read(removeBillingsProvider.future);
+                ResponseStatusCode respose = await ref.read(removeBillingsProvider.future);
                 if (context.mounted){
-                  if (respose.statusCode==200){
+                  if (respose==ResponseStatusCode.statusCodeOK){
                     ElegantNotificationCustom.showNotificationSuccess(context);
                     // ignore: unused_result
                     ref.refresh(billingsByDistributorProvider.future);
@@ -98,23 +98,13 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               } : null,
               onSave: (ref.watch(billingInformationProvider)!.getID()!=0) ? null : () async{
                 if(_form.valid){
-                  //Control para verificar si se produjo error o no.
-                  bool isError = false;
                   //Carga los nuevos valores en el billingInformationProvider.
                   ref.read(billingInformationProvider)?.fromJSONtoForm(_form.value);
-
-                  try{
-                    //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-                    Response response = await ref.watch(newBillingWithAPIProvider.future);
-                    isError = response.statusCode!=201;
-                  }
-                  catch(e){
-                    isError = true;
-                  }
+                  ResponseStatusCode response = await ref.watch(newBillingWithAPIProvider.future);
 
                   if (mounted){
                     //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                    if (isError==false){
+                    if (response==ResponseStatusCode.statusCodeOK){
                       ElegantNotification.success(
                           title:  const Text("Información"),
                           description:  const Text("La información ha sido actualizada con éxito.")
