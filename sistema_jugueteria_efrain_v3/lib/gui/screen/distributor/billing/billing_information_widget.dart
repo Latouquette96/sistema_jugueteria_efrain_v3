@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
@@ -67,12 +69,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     return Container(
       width: 400,
       margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-      decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-      )),
+      decoration: ContainerStyle.getContainerChild(),
       child: ReactiveForm(
         formGroup: _form,
         child: Column(
@@ -85,6 +82,20 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               onClose: (){
                 ref.read(billingInformationProvider.notifier).free();
               },
+              onDelete: (ref.watch(billingInformationProvider)!.getID()!=0) ? () async{
+                Response respose = await ref.read(removeBillingsProvider.future);
+                if (context.mounted){
+                  if (respose.statusCode==200){
+                    ElegantNotificationCustom.showNotificationSuccess(context);
+                    // ignore: unused_result
+                    ref.refresh(billingsByDistributorProvider.future);
+                    ref.read(billingInformationProvider.notifier).free();
+                  }
+                  else{
+                    ElegantNotificationCustom.showNotificationError(context);
+                  }
+                }
+              } : null,
               onSave: (ref.watch(billingInformationProvider)!.getID()!=0) ? null : () async{
                 if(_form.valid){
                   //Control para verificar si se produjo error o no.
@@ -108,7 +119,8 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                           title:  const Text("Información"),
                           description:  const Text("La información ha sido actualizada con éxito.")
                       ).show(context);
-
+                      // ignore: unused_result
+                      ref.refresh(billingsByDistributorProvider.future);
                       ref.read(billingInformationProvider.notifier).free();
                     }
                     else{

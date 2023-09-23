@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_distributor.dart';
@@ -37,12 +38,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
     return Container(
       width: 400,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-      )),
+      decoration: ContainerStyle.getContainerRoot(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -53,10 +49,18 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
             onClose: (){
               ref.read(distributorStateProvider.notifier).free();
             },
+            onSave: () async{
+              ref.read(distributorStateProvider)?.fromJSON(_form.value);
+              bool isNew = ref.read(distributorStateProvider)!.getID()==0;
+              if (isNew) {await _insert(context);}
+              else  {await _update(context);}
+            },
           ),
           Expanded(
               child: SingleChildScrollView(
                 child: Container(
+                  decoration: ContainerStyle.getContainerChild(),
+                  padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(5),
                   child: ReactiveForm(
                     formGroup: _form,
@@ -155,33 +159,11 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                           },
                         ),
                         const SizedBox(height: 15,),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: _form.valid ? Colors.white54 : Colors.grey.shade300,
-                                  foregroundColor: _form.valid ? Colors.blue.shade600 : Colors.black26
-                              ),
-                              onPressed: () async{
-                                ref.read(distributorStateProvider)?.fromJSON(_form.value);
-                                bool isNew = ref.read(distributorStateProvider)!.getID()==0;
-                                if (isNew) {await _insert(context);}
-                                else  {await _update(context);}
-                              },
-                              child: const Text('Guardar cambios'),
-                            )),
-                          ],
-                        )
                       ],
                     ),
                   ),
                 ),
               ),
-          ),
-          const SizedBox(
-            height: 25,
           )
         ],
       )
@@ -204,7 +186,6 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
       //Notifica con exito en la operacion
       if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
 
-      //Libera el producto del proveedor.
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
       ref.read(distributorStateProvider.notifier).free();
       setState(() {});
@@ -216,7 +197,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
 
   Future<void> _update(BuildContext context) async{
     bool isError = false;
-    //Carga los datos del formulario en el producto.
+    //Carga los datos del formulario en la distribuidora.
     ref.read(distributorStateProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
     Response response = await ref.watch(updateDistributorWithAPIProvider.future);
@@ -229,7 +210,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
       if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
 
-      //Libera el producto del proveedor.
+      //Libera el distribuidor del proveedor.
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
       ref.read(distributorStateProvider.notifier).free();
       setState(() {});

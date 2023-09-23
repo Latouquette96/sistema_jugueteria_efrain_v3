@@ -41,7 +41,12 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected){
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Configuraciones", widget: const ScreenConfiguration(), icon: MdiIcons.fromString("cog"), tabProvider: tabConfigurationProvider);
+                    ref.read(tabbedViewProvider.notifier).insertTab(
+                        label: "Configuraciones",
+                        widget: const ScreenConfiguration(),
+                        icon: MdiIcons.fromString("cog"),
+                        tabProvider: tabConfigurationProvider
+                    );
                   }
                   else{
                     ref.read(tabbedViewProvider.notifier).removeTab(tabConfigurationProvider);
@@ -76,7 +81,12 @@ class MainBarWidget extends ConsumerWidget {
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(label:"Catalogo productos", widget: const ScreenProductCatalog(), icon: MdiIcons.fromString("domain"), tabProvider: tabProductCatalogProvider);
+                    ref.read(tabbedViewProvider.notifier).insertTab(
+                        label:"Catalogo productos",
+                        widget: const ScreenProductCatalog(),
+                        icon: MdiIcons.fromString("domain"),
+                        tabProvider: tabProductCatalogProvider
+                    );
                   }
                   else{
                     ref.read(tabbedViewProvider.notifier).removeTab(tabProductCatalogProvider);
@@ -94,7 +104,12 @@ class MainBarWidget extends ConsumerWidget {
                     ref.read(pdfViewControllerProvider.notifier).load(PdfViewerController());
                     ref.read(pdfTextSearchResultProvider.notifier).free();
                     
-                    ref.read(tabbedViewProvider.notifier).insertTab(label:"Visor PDF", widget: const ScreenProductPDFViewerWidget(), icon: MdiIcons.fromString("file-pdf-box"), tabProvider: tabProductCatalogPDFProvider);
+                    ref.read(tabbedViewProvider.notifier).insertTab(
+                        label:"Visor PDF",
+                        widget: const ScreenProductPDFViewerWidget(),
+                        icon: MdiIcons.fromString("file-pdf-box"),
+                        tabProvider: tabProductCatalogPDFProvider
+                    );
                   }
                   else{
                     ref.read(tabbedViewProvider.notifier).removeTab(tabProductCatalogPDFProvider);
@@ -110,11 +125,15 @@ class MainBarWidget extends ConsumerWidget {
             PlutoMenuItem.checkbox(
               title: "Catálogo de distribuidoras",
               initialCheckValue: ref.watch(tabDistributorCatalogProvider)!=null,
-              enable: ref.watch(tabDistributorBillingCatalogProvider)!=null,
+              enable: ref.watch(tabDistributorCatalogProvider)!=null,
               onChanged: (bool? isSelected) {
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Catalogo distribuidoras", widget: const ScreenDistributorCatalog(), icon: MdiIcons.fromString("domain"), tabProvider: tabDistributorCatalogProvider);
+                    ref.read(tabbedViewProvider.notifier).insertTab(
+                        label: "Catalogo distribuidoras",
+                        widget: const ScreenDistributorCatalog(),
+                        icon: MdiIcons.fromString("domain"),
+                        tabProvider: tabDistributorCatalogProvider);
                   }
                   else{
                     ref.read(tabbedViewProvider.notifier).removeTab(tabDistributorCatalogProvider);

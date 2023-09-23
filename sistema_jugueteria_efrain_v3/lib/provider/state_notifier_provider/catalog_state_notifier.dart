@@ -12,13 +12,9 @@ abstract class CatalogStateNotifier<E> extends StateNotifier<List<E>> {
   ///Constructor CatalogStateNotifier.
   ///
   ///[ref] Referencia al provider que notifica el estado.
-  ///
   ///[path] Directorio donde está ubicado el catalogo en la API.
-  ///
   ///[buildElement] Function que permite recuperar una lista de elementos de tipo [E] a partir de un mapeo.
-  ///
   ///[stateProvider] Provider que controla la grilla donde se mostrará los elementos.
-  ///
   ///[sharingProvider] Provider para controlar los elementos seleccionados.
   CatalogStateNotifier(
     super.state, 

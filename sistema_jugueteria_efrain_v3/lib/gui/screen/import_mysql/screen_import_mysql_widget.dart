@@ -5,6 +5,7 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysq
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
@@ -31,6 +32,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.grey.shade700,
       appBar: AppBar(
         title: Row(
           children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Importación de Productos de MySQL"))],
@@ -80,15 +82,10 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
         children: [
           Expanded(child: 
             Container(
-            margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-              start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-            )),
-            child: const ProductMySQLCatalogWidget(),
-          )
+              margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+              decoration: ContainerStyle.getContainerRoot(),
+              child: const ProductMySQLCatalogWidget(),
+            )
           )
         ],
       ),

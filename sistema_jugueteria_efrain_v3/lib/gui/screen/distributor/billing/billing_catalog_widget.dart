@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 
 ///Clase BillingCatalogWidget: Modela un catalogo de facturas para la distribuidora seleccionada.
 class BillingCatalogWidget extends ConsumerWidget {
@@ -20,13 +22,8 @@ class BillingCatalogWidget extends ConsumerWidget {
           if (snap.hasData){
             return Container(
                 margin: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-                decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-                  start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-                  top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-                  end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-                  bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-                )),
-                child: _getBillingsDistributor(ref, snap.data!)
+                decoration: ContainerStyle.getContainerChild(),
+                child: _getBillingsDistributor(context, ref, snap.data!)
             );
           }
           else{
@@ -37,14 +34,22 @@ class BillingCatalogWidget extends ConsumerWidget {
   }
 
   ///BillingCatalogWidget: Devuelve un widget con el listado de las facturas para una determinada distribuidora.
-  Widget _getBillingsDistributor(WidgetRef ref, List<DistributorBilling> list){
+  Widget _getBillingsDistributor(BuildContext context, WidgetRef ref, List<DistributorBilling> list){
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //Encabezado principal.
-        const HeaderInformationWidget(
+        HeaderInformationWidget(
           titleHeader: "Facturas cargadas",
           tooltipClose: "Cerrar información factura.",
+          onNew: (){
+            if (ref.watch(billingInformationProvider)==null){
+              ref.read(billingInformationProvider.notifier).load(DistributorBilling.newBilling(distributorID: ref.watch(distributorStateBillingProvider)!.getID()));
+            }
+            else{
+              ref.read(billingInformationProvider.notifier).free();
+            }
+          },
         ),
         Expanded(
             child: Container(
@@ -68,7 +73,7 @@ class BillingCatalogWidget extends ConsumerWidget {
                           ),
                           subtitle: Text("Total: \$${e.getTotal().toStringAsFixed(2)}", style: StyleForm.getStyleTextField(),),
                           trailing: SizedBox(
-                            width: 50,
+                            width: 75,
                             child: Row(
                               children: [
                                 Expanded(child: IconButton(

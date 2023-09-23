@@ -10,6 +10,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
@@ -73,7 +74,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     final distributorFree = ref.watch(distributorFreeProductPriceProvider);
 
     return Container(
-        padding: const EdgeInsets.all(5),
+        margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+        decoration: ContainerStyle.getContainerRoot(),
         child: Column(
           children: [
             HeaderInformationWidget(
@@ -90,70 +92,73 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             ),
             Expanded(
               child: SingleChildScrollView(
-                child: ReactiveForm(
-                  formGroup: _form,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildWidgetImages(context, product),
-                            _separadorHeight,
-                            _buildWidgetDescription(context, product),
-                            _separadorHeight,
-                            _buildWidgetSize(context, product)
-                          ],
-                        ),
-                      ),
-                      _separadorWidth,
-                      Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: ReactiveForm(
+                    formGroup: _form,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: 300,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              _buildWidgetCategory(context, product),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _separadorHeight,
-                                      _buildWidgetTitle(context, product),
-                                      _separadorHeight,
-                                      _buildWidgetProductCode(context, product),
-                                      _separadorHeight,
-                                      _buildWidgetBrand(context, product),
-                                      _separadorHeight,
-                                      _buildWidgetMinimumAge(context, product)
-                                    ],
-                                  )),
-                                  _separadorWidth,
-                                  Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          _separadorHeight,
-                                          _buildWidgetPricePublic(context, product),
-                                          _separadorHeight,
-                                          _buildReactiveFormProductPrices(context, product, distributorFree)
-                                        ],
-                                      )
-                                  )
-                                ],
-                              )
+                              _buildWidgetImages(context, product),
+                              _separadorHeight,
+                              _buildWidgetDescription(context, product),
+                              _separadorHeight,
+                              _buildWidgetMinimumAge(context, product),
+                              _separadorHeight,
+                              _buildWidgetSize(context, product)
                             ],
-                          )
-                      ),
+                          ),
+                        ),
+                        _separadorWidth,
+                        Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildWidgetCategory(context, product),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _separadorHeight,
+                                        _buildWidgetTitle(context, product),
+                                        _separadorHeight,
+                                        _buildWidgetProductCode(context, product),
+                                        _separadorHeight,
+                                        _buildWidgetBrand(context, product),
+                                      ],
+                                    )),
+                                    _separadorWidth,
+                                    Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            _separadorHeight,
+                                            _buildWidgetPricePublic(context, product),
+                                            _separadorHeight,
+                                            _buildReactiveFormProductPrices(context, product, distributorFree)
+                                          ],
+                                        )
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                        ),
 
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -656,7 +661,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             decoration: StyleForm.getDecorationControlImage(),
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                             margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                            width: 265,
+                            width: 250,
                             child: Row(
                               children: [
                                 Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
@@ -692,7 +697,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                                   height: 60,
-                                  width: 250,
+                                  width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: TextField(
                                     decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
@@ -711,7 +716,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 40,
-                                  width: 250,
+                                  width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )
@@ -721,7 +726,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   color: Colors.lightBlue.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 60,
-                                  width: 250,
+                                  width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
                                 )
@@ -743,7 +748,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     return Container(
         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
         decoration: StyleForm.getDecorationFormControl(),
         height: 200,
         child: ReactiveForm(

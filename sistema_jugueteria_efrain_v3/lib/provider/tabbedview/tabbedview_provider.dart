@@ -46,16 +46,11 @@ class TabbedViewProvider extends StateNotifier<TabbedViewController> {
             tabProvider = tabDistributorCatalogProvider;
           }
           else{
-            if (ref.read(tabDistributorBillingCatalogProvider)==tab){
-              tabProvider = tabDistributorBillingCatalogProvider;
+            if (ref.read(tabConfigurationProvider)==tab){
+              tabProvider = tabConfigurationProvider;
             }
             else{
-              if (ref.read(tabConfigurationProvider)==tab){
-                tabProvider = tabConfigurationProvider;
-              }
-              else{
-                tabProvider = tabImportMySQLCatalog;
-              }
+              tabProvider = tabImportMySQLCatalog;
             }
           }
         }

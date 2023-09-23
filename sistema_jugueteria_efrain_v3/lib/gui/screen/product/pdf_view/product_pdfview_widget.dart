@@ -1,14 +1,13 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -27,7 +26,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
   late final PdfViewerController? _pdfViewerController;
   late File? _file;
   late bool _isFileWeb;
-  late ResourceLink _linkPDF = ResourceLink("https://www.dropbox.com/scl/fi/8uv4aenxfinq0wqlgtfsn/20230828-171203.pdf?rlkey=ef63k9622j10zy4xencr4limq&dl=1", mode: ResourceLinkMode.documentPDF);
+  late ResourceLink _linkPDF = ResourceLink("https://www.argentina.gob.ar/sites/default/files/informe_litio_-_octubre_2021.pdf", mode: ResourceLinkMode.documentPDF);
 
   @override
   void initState() {
@@ -54,26 +53,19 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
     return Container(
       width: 600,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-        start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-        bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-      )),
+      decoration: ContainerStyle.getContainerRoot(),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             //Encabezado principal.
             Stack(
               children: [
-                HeaderInformationWidget(
+                const HeaderInformationWidget(
                   titleHeader: "Visor PDF",
                   tooltipClose: "Cerrar visor PDF.",
-                  onClose: (){
-                    ref.read(billingSearchProvider.notifier).free();
-                  },
                 ),
                 Positioned(
+                  right: 0,
                   child: IconButton(
                     tooltip: "Abrir PDF almacenado en el sistema.",
                     icon: Icon(MdiIcons.fromString("folder"), color: Colors.white, size: 24,),
@@ -97,7 +89,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                   )
                 ),
                 Positioned(
-                  left: 30,
+                  right: 30,
                   child: IconButton(
                     tooltip: "Abrir PDF por enlace de archivo en internet",
                     icon: Icon(MdiIcons.fromString("web")), color: Colors.white,

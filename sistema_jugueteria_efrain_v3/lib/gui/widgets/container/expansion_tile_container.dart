@@ -35,8 +35,8 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
   Widget build(BuildContext context) {
     return ExpansionTileCard(
       expandedTextColor: Colors.black,
-      expandedColor: Colors.blueGrey.shade100,
-      baseColor: Colors.blue.shade100,
+      expandedColor: Colors.blueGrey.shade50,
+      baseColor: Colors.blueGrey.shade100,
       initiallyExpanded: true,
       contentPadding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       title: Center(child: Text(widget.title, style: StyleForm.getTextStyleTitle())),

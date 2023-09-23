@@ -4,6 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_pdfview_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_price_pdfview_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
@@ -26,6 +27,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade700,
       appBar: AppBar(
         title: Row(
           children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos - Lector PDF"))],
@@ -35,13 +37,6 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
-          IconButton(
-            onPressed: (){
-              
-            },
-            icon: Icon(MdiIcons.fromString("plus-circle")),
-            tooltip: "Insertar un nuevo producto.",
-          ),
           IconButton(
             onPressed: () async{
               //Cierra las pantallas abiertas.
@@ -58,12 +53,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
         children: [
           Expanded(child: Container(
             margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-              start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-              bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
-            )),
+            decoration: ContainerStyle.getContainerRoot(),
             child: const ProductPricePDFViewCatalogWidget(),
           )),
           const Visibility(

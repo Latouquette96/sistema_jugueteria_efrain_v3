@@ -33,8 +33,10 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
       onTabSelection: (newTabIndex) {
         _updateStateCatalogPDF(newTabIndex);
       },
-      onTabClose: (_, TabData? tab){
-        ref.read(tabbedViewProvider.notifier).closeTab(tab);
+      onTabClose: (int index, TabData? tab){
+        if (index>-1){
+          ref.read(tabbedViewProvider.notifier).closeTab(tab);
+        }
       },
     );
     Widget w = TabbedViewTheme(
