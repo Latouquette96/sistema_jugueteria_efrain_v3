@@ -10,6 +10,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
@@ -33,7 +34,11 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   ///ImportProductMySQLProvider: Inicializa el arreglo de producto.
   Future<void> initialize() async{
     try{
-      await MySQLConnection.getConnection().connect(user: "Latouquette96", pass: "39925523");
+      await MySQLConnection.getConnection().connect(
+          server: ref.read(urlLoginMySQLProvider),
+          user: ref.read(userLoginMySQLProvider),
+          pass: ref.read(passwordLoginMySQLProvider)
+      );
       //Obtengo el cliente mysql activo.
       MySqlConnection conn = MySQLConnection.getConnection().getClient()!;
 

@@ -24,7 +24,7 @@ class MySQLConnection {
 
     try{
       var settings = ConnectionSettings(
-          host: "127.0.0.1",
+          host: server,
           port: 3306,
           user: user,
           password: pass,

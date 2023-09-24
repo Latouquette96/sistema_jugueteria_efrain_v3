@@ -25,8 +25,10 @@ class TabbedViewProvider extends StateNotifier<TabbedViewController> {
   ///TabbedViewProvider: Remueve el tab de clave 'key'.
   void removeTab(StateNotifierProvider<ElementStateProvider<TabData>, TabData?> tabProvider){
     int index = state.tabs.indexOf(ref.read(tabProvider));
-    state.removeTab(index);
-    ref.read(tabProvider.notifier).free();
+    if (index>-1){
+      state.removeTab(index);
+      ref.read(tabProvider.notifier).free();
+    }
   }
 
   ///TabbedViewProvider: Remueve el tab dado.

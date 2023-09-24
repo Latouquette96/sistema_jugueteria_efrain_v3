@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -26,8 +25,6 @@ class ServiceProvider {
       await ref.read(productCatalogProvider.notifier).initialize();
       await ref.read(productCatalogPDFProvider.notifier).initialize();
       await ref.read(catalogDistributorProvider.notifier).initialize();
-      await ref.read(catalogDistributorProvider.notifier).refresh();
-      await ref.read(importProductMySQLProvider.notifier).initialize();
     }
     catch(e){}
   }

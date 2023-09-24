@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
@@ -76,7 +77,17 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",
           ),
+          IconButton(
+            onPressed: () {
+              _scaffoldKey.currentState!.openEndDrawer();
+            },
+            icon: const Icon(Icons.login),
+            tooltip: "Login.",
+          ),
         ],
+      ),
+      endDrawer: const Drawer(
+        child: DrawerLoginMySQL(),
       ),
       body: Column(
         children: [

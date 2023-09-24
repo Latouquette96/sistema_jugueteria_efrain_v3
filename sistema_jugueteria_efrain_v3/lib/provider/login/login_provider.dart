@@ -1,5 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/*
+ * Providers para la conexion a la REST API.
+ */
+
 ///Proveedor para almacenar la url (o ip) del servidor.
 final urlLoginProvider = StateProvider<String>((ref) => "127.0.0.1");
 
