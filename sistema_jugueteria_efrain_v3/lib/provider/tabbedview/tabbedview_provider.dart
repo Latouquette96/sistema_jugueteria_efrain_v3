@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/main/home_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
@@ -8,7 +9,13 @@ import 'package:tabbed_view/tabbed_view.dart';
 class TabbedViewProvider extends StateNotifier<TabbedViewController> {
   final StateNotifierProviderRef<TabbedViewProvider, TabbedViewController> ref;
   
-  TabbedViewProvider(this.ref) : super(TabbedViewController([]));
+  TabbedViewProvider(this.ref) : super(TabbedViewController([
+    TabData(
+      text: "Home",
+      closable: false,
+      content: const HomeWidget()
+    )
+  ]));
 
   ///TabbedViewProvider: Inserta un nuevo tab al inicio de la lista.
   void insertTab({required String label, required Widget widget, IconData? icon, required StateNotifierProvider<ElementStateProvider<TabData>, TabData?> tabProvider}){
