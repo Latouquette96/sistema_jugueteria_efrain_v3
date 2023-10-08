@@ -10,6 +10,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
@@ -33,9 +34,13 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
     super.didChangeDependencies();
   }
 
+  dependOnInheritedWidgetOfExactType(){
+    ref.read(passwordLoginMySQLProvider.notifier);
+  }
+
   @override
   void dispose() {
-    
+
     super.dispose();
   }
 

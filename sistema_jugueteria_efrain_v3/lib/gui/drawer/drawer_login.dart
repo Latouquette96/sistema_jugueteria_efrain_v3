@@ -70,7 +70,7 @@ class _DrawerLoginState extends ConsumerState<DrawerLogin> with ContainerParamet
   ///DrawerLogin: Devuelve el widget de encabezado
   Widget _getWidgetHeader(BuildContext context){
     return DrawerHeaderCustom(
-      title: "Login/Logout",
+      title: "Login al Servidor",
       description: 'Debe loguearse para acceder a funciones vinculadas con el servidor tales como'
           'la actualización de la base de datos, el carrito de ventas, etc.',
       width: 400,

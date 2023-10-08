@@ -21,6 +21,8 @@ class TabbedViewWidget extends ConsumerStatefulWidget {
 
 class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -44,10 +46,19 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
       child: tabbedView
     );
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.black,
         toolbarHeight: 45,
         title: MainBarWidget(key: GlobalKey()),
+        actions: [
+          IconButton(
+              onPressed: (){
+                _scaffoldKey.currentState!.openEndDrawer();
+              },
+              icon: const Icon(Icons.login)
+          )
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(5),

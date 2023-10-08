@@ -26,6 +26,7 @@ class ServiceProvider {
       await ref.read(productCatalogPDFProvider.notifier).initialize();
       await ref.read(catalogDistributorProvider.notifier).initialize();
     }
+    // ignore: empty_catches
     catch(e){}
   }
 

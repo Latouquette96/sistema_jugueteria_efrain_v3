@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Clase HomeWidget: Modela la clase de inicio con la información relevante de cada sección.
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
 
@@ -17,7 +18,7 @@ class _HomeWidgetState extends State<HomeWidget>{
 
     //Info: Login
     list.add(const ListTile(
-          title: Text("Menú Login", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+          title: Text("Login", style: TextStyle(color: Colors.yellow, fontSize: 16),),
           subtitle: Text("El login es necesario para poder recuperar toda la información (productos, distribuidoras, etc) almacenada en el servidor.", style: TextStyle(color: Colors.white),),
           leading: Icon(Icons.login, color: Colors.yellow, size: 16,),
         ));
