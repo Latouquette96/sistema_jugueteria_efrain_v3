@@ -3,21 +3,37 @@
 
 // *Cargamos el fichero app.js con la configuración de Express
 var app = require('./src/app');
-
 const bodyParser = require('body-parser')
-const port = 3000
+const express = require('express')
 
-app.use(bodyParser.json())
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
+const cors = require("cors");
+
+const db = require("./src/models/index");
+
+//Establece el puerto por el cual se escuchará.
+const PORT = process.env.PORT || 3000;
+
+var corsOptions = {
+  origin: "http://localhost:5432"
+};
+
+app.use(cors(corsOptions));
+
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+//Sincroniza la base de datos (puede eliminarla).
+db.sequelize.sync({alter: true })
+  .then(() => {
+    console.log("Base de datos sincronizada.");
   })
-)
+  .catch((err) => {
+    console.log("Error: Fallo al sincronizar la base de datos: " + err.message);
+  });
 
-app.get('/', (request, response) => {
-  response.json({ info: 'Node.js, Express, and Postgres API' })
-})
-
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`)
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}.`)
 })

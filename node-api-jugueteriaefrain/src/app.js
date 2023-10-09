@@ -20,6 +20,10 @@ var billing_routes = require('./routes/billing_route');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
+app.get('/', (request, response) => {
+    response.json({ info: '¡¡Bienvenido al servidor de Juguetería Efraín!!' })
+  })
+
 // Cargamos las rutas
 app.use('/', products_routes);
 app.use('/', distributor_routes);
