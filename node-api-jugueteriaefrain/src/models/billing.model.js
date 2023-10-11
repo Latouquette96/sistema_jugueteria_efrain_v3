@@ -11,21 +11,21 @@ module.exports = (sequelize, Sequelize) => {
             },
             db_distributor: {
                 type: Sequelize.SMALLINT,
-                allowNull: true,
+                allowNull: false,
             },
             db_total: {
                 type: Sequelize.NUMERIC(12,3),
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0
             },
             db_datetime: {
                 type: Sequelize.BIGINT,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0
             },
             db_url_file: {
                 type: Sequelize.STRING(200),
-                allowNull: true
+                allowNull: false
             },
         },
         {

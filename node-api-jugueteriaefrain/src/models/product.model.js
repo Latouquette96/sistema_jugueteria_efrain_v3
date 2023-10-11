@@ -30,22 +30,22 @@ module.exports = (sequelize, Sequelize) => {
             },
             p_brand: {
                 type: Sequelize.STRING(100),
-                allowNull: true,
+                allowNull: false,
                 defaultValue: "IMPORT."
             },
             p_price_public: {
                 type: Sequelize.NUMERIC(8,2),
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0.00
             },
             p_stock: {
                 type: Sequelize.INTEGER,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0
             },
             p_subcategory: {
                 type: Sequelize.INTEGER,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0
             },
             p_images: {
@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             p_sizes: {
                 type: Sequelize.STRING(500),
-                allowNull: false,
+                allowNull: true,
             },
             p_date_updated: {
                 type: Sequelize.BIGINT,

@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 //Crear y guardar un nuevo precio del producto.
 exports.create = (req, res) => {
     //Validacion de datos.
-    if (!req.body.title) {
+    if (!req.body) {
       res.status(400).send({
         message: "Error: El contenido del formulario no puede estar vacío."
       });
@@ -25,7 +25,7 @@ exports.create = (req, res) => {
     //Guarda el precio del producto en la base de datos.
     ProductsPrices.create(price_product)
       .then(data => {
-        res.send(data);
+        res.status(201).send(data);
       })
       .catch(err => {
         res.status(500).send({
@@ -42,7 +42,7 @@ exports.findOne = (req, res) => {
     ProductsPrices.findByPk(id)
       .then(data => {
         if (data) {
-          res.send(data);
+          res.status(200).send(data);
         } else {
           res.status(404).send({
             message: `Error: No se pudo hallar precio del producto con id=${id}.`
@@ -79,12 +79,12 @@ exports.update = (req, res) => {
     ProductsPrices.update(req.body, { where: { pp_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Precio del producto actualizado con éxito."
                 });
             } 
             else {
-                res.send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar el precio del producto con id=" + id + ". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -103,12 +103,12 @@ exports.delete = (req, res) => {
     ProductsPrices.destroy({ where: { db_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Precio del producto eliminado con éxito!"
                 });
             } 
             else {
-                res.send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar el precio del producto con id="+id+". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -124,7 +124,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     ProductsPrices.destroy({ where: {}, truncate: false})
         .then(nums => {
-          res.send({ message: `${nums} precio del productos eliminados con éxito!` });
+          res.status(200).send({ message: `${nums} precio del productos eliminados con éxito!` });
         })
         .catch(err => {
           res.status(500).send({

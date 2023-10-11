@@ -11,20 +11,20 @@ module.exports = (sequelize, Sequelize) => {
             },
             pp_product: {
                 type: Sequelize.INTEGER,
-                allowNull: true,
+                allowNull: false,
             },
             pp_distributor: {
                 type: Sequelize.INTEGER,
-                allowNull: true
+                allowNull: false
             },
             pp_price_base: {
                 type: Sequelize.NUMERIC(10,2),
-                allowNull: true,
+                allowNull: false,
                 defaultValue: 0
             },
             pp_date_update: {
                 type: Sequelize.BIGINT,
-                allowNull: true
+                allowNull: false
             },
         },
         {

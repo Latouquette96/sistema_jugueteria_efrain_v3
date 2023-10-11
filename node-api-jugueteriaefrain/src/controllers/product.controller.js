@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 //Crear y guardar un nuevo producto.
 exports.create = (req, res) => {
     //Validacion de datos.
-    if (!req.body.title) {
+    if (!req.body) {
       res.status(400).send({
         message: "Error: El contenido del formulario no puede estar vacío."
       });
@@ -32,7 +32,7 @@ exports.create = (req, res) => {
     //Guarda el producto en la base de datos.
     Products.create(producto)
       .then(data => {
-        res.send(data);
+        res.send(201).send(data.p_id);
       })
       .catch(err => {
         res.status(500).send({
@@ -49,7 +49,7 @@ exports.findOne = (req, res) => {
     Products.findByPk(id)
       .then(data => {
         if (data) {
-          res.send(data);
+          res.send(200).send(data);
         } else {
           res.status(404).send({
             message: `Error: No se pudo hallar producto con id=${id}.`
@@ -68,7 +68,7 @@ exports.findAll = (req, res) => {
 
   Products.findAll({ where: {} })
     .then(data => {
-      res.send(data);
+      res.send(200).send(data);
     })
     .catch(err => {
       res.status(500).send({
@@ -78,7 +78,6 @@ exports.findAll = (req, res) => {
     });
 };
 
-
 //Actualiza los datos de un producto con identificador id.
 exports.update = (req, res) => {
     const id = req.params.id;
@@ -86,12 +85,12 @@ exports.update = (req, res) => {
     Products.update(req.body, { where: { p_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.send(200).send({
                     message: "Producto actualizado con éxito."
                 });
             } 
             else {
-                res.send({
+                res.send(501).send({
                     message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -103,6 +102,31 @@ exports.update = (req, res) => {
         });
 };
 
+//Actualiza los datos de un producto con identificador id.
+exports.updatePricePublic = (req, res) => {
+  const id = req.params.id;
+  const {p_price_public} = request.body;
+
+  Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
+      .then(num => {
+          if (num == 1) {
+              res.send(200).send({
+                  message: "Producto actualizado con éxito."
+              });
+          } 
+          else {
+              res.send(501).send({
+                  message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
+              });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: "Error: Ocurrió un error al actualizar el producto con id=" + id
+          });
+      });
+};
+
 //Elimina un producto con un determinado id.
 exports.delete = (req, res) => {
     const id = req.params.id;
@@ -110,12 +134,12 @@ exports.delete = (req, res) => {
     Products.destroy({ where: { p_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.send(200).send({
                     message: "Producto eliminado con éxito!"
                 });
             } 
             else {
-                res.send({
+                res.send(501).send({
                     message: "Error: No se puede actualizar el producto con id="+id+". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -131,7 +155,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Products.destroy({ where: {}, truncate: false})
         .then(nums => {
-          res.send({ message: `${nums} productos eliminados con éxito!` });
+          res.send(501).send({ message: `${nums} productos eliminados con éxito!` });
         })
         .catch(err => {
           res.status(500).send({

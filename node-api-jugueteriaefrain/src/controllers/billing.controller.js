@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 //Crear y guardar una nueva factura.
 exports.create = (req, res) => {
     //Validacion de datos.
-    if (!req.body.title) {
+    if (!req.body) {
       res.status(400).send({
         message: "Error: El contenido del formulario no puede estar vacío."
       });
@@ -25,7 +25,7 @@ exports.create = (req, res) => {
     //Guarda el factura en la base de datos.
     Billings.create(factura)
       .then(data => {
-        res.send(data);
+        res.status(201).send(data);
       })
       .catch(err => {
         res.status(500).send({
@@ -42,7 +42,7 @@ exports.findOne = (req, res) => {
     Billings.findByPk(id)
       .then(data => {
         if (data) {
-          res.send(data);
+          res.status(200).send(data);
         } else {
           res.status(404).send({
             message: `Error: No se pudo hallar factura con id=${id}.`
@@ -62,7 +62,7 @@ exports.findAll = (req, res) => {
 
     Billings.findAll({ where: { db_distributor: id} })
         .then(data => {
-        res.send(data);
+        res.status(200).send(data);
         })
         .catch(err => {
         res.status(500).send({
@@ -79,12 +79,12 @@ exports.update = (req, res) => {
     Billings.update(req.body, { where: { db_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Factura actualizada con éxito."
                 });
             } 
             else {
-                res.send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar la factura con id=" + id + ". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -103,12 +103,12 @@ exports.delete = (req, res) => {
     Billings.destroy({ where: { db_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Factura eliminada con éxito!"
                 });
             } 
             else {
-                res.send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar la factura con id="+id+". Comprueba los datos e intente nuevamente."
                 });
             }
