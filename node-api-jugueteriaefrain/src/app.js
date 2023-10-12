@@ -9,11 +9,12 @@ var bodyParser = require('body-parser');
 var app = express();
 
 //Realiza la importación las rutas
-var products_routes = require('./routes/product_route'); 
-var distributor_routes = require('./routes/distributor_route'); 
-var price_products_routes = require('./routes/prices_products_route'); 
-var billing_routes = require('./routes/billing_route'); 
+var products_routes = require('./routes/postgresql/product_route'); 
+var distributor_routes = require('./routes/postgresql/distributor_route'); 
+var price_products_routes = require('./routes/postgresql/prices_products_route'); 
+var billing_routes = require('./routes/postgresql/billing_route'); 
 var function_routes = require('./routes/function_route'); 
+var mysql_routes = require('./routes/mysql/mysql.routes'); 
 
 //cargar middlewares: un metodo que se ejecuta antes que llegue a un controlador
 //Se configura bodyParser para que convierta el body de nuestras peticiones a JSON
@@ -30,6 +31,7 @@ app.use('/', distributor_routes);
 app.use('/', price_products_routes);
 app.use('/', billing_routes);
 app.use('/', function_routes);
+app.use('/', mysql_routes);
 
 //Se exporta este módulo para poder usar la variable app fuera de este archivo
 module.exports = app;

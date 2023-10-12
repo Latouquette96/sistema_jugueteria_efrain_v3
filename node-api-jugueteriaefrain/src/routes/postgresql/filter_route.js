@@ -3,14 +3,14 @@
 var express = require('express');
 
 //Carga el controlador
-var FunctionController = require('../controllers/functions/function_java.controller');
+var FilterController = require('../../controllers/crud/crud_filter');
 
 //Se llama al router
 var app = express.Router();
 //var md_auth = require('../middlewares/authenticated');
 
 //-- Creación de rutas para los métodos del controlador --
-app.get('/services/extract_text_pdf',  /*md_auth.ensureAuth, */ FunctionController.extractTextFromPDF)
+app.get('/filter/brands', /*md_auth.ensureAuth, */ FilterController.getLoadedBrands)
 
 //Exportación de la configuración
 module.exports = app;
