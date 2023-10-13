@@ -1,6 +1,6 @@
-import 'dart:io';
+//TODO: import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
+//TODO: import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
@@ -49,14 +49,14 @@ class ConfigurationLocal {
     //Recupera la instancia de SharedPreferences.
     _sharedPreferences = await SharedPreferences.getInstance();
 
-    //Obtengo el directorio por defecto para Android o cualquier otra plataforma.
-    String dir = (Platform.isAndroid)
+    //TODO: Obtengo el directorio por defecto para Android o cualquier otra plataforma.
+    /*String dir =  (Platform.isAndroid)
       ? (await getApplicationDocumentsDirectory()).path
       : (await getDownloadsDirectory())!.path;
 
     for (String key in _map.keys){
       _map[key]!.setValue2(_sharedPreferences.getString(_keyImagePath) ?? dir);
-    }
+    }*/
   }
 
   ///ConfigurationLocal: Establece el valor para una clave dada.

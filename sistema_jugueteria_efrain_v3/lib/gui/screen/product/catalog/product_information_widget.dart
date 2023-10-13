@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
@@ -429,29 +428,23 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
           _separadorHeightBlock,
           Visibility(
               visible: !_brandManual,
-              child: ReactiveTypeAhead<String, String>(
+              child: ReactiveDropdownField<String>(
                 formControlName: FormGroupProduct.getKeyBrandAux(),
-                stringify: (_) => _,
-                textFieldConfiguration: TextFieldConfiguration(
-                  autofocus: false,
-                  style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
-                  decoration: StyleForm.getDecorationTextField("Buscar marca/importador"),
-                ),
-                suggestionsCallback: (pattern) async {
-                  return ref.watch(filterOfLoadedBrandsWithAPIProvider).where((element) => element.contains(pattern.toUpperCase()));
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    leading: Icon(MdiIcons.fromString("arrow-right-bold")),
-                    title: Text(suggestion),
-                  );
-                },
-                onSuggestionSelected:(suggestion) {
-                  _form.control(Product.getKeyBrand()).value = suggestion;
+                style: StyleForm.getStyleTextField(),
+                decoration: StyleForm.getDecorationTextField("Buscar marca/importador"),
+                items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
+                  value: e,
+                child: Text(e),
+                  )).toList(),
+                onChanged: (control) {
+                  _form.control(Product.getKeyBrand()).value = control.value;
                   setState(() {});
                   _form.focus(Product.getKeyBrand());
+                  },
+                validationMessages: {
+                  ValidationMessage.required: (error) => "(Requerido) Seleccione la marca del producto."
                 },
-              )
+              ),
           ),
           Visibility(
               visible: _brandManual,

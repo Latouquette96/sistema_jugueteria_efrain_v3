@@ -23,6 +23,10 @@ final stateManagerProductMySQLProvider = StateNotifierProvider<PlutoGridStateMan
     (ref) => PlutoGridStateManagerProvider(ref)
 );
 
+final stateManagerDistributorMySQLProvider = StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?>(
+        (ref) => PlutoGridStateManagerProvider(ref)
+);
+
 ///Clase PlutoGridStateManagerProvider: Proveedor de estado de PlutoGridStateManager.
 class PlutoGridStateManagerProvider extends StateNotifier<PlutoGridStateManager?> {
   final StateNotifierProviderRef<PlutoGridStateManagerProvider, PlutoGridStateManager?> ref;

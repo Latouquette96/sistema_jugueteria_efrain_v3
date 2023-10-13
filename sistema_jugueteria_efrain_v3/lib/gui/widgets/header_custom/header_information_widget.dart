@@ -10,14 +10,30 @@ class HeaderInformationWidget extends StatelessWidget {
   final Function? onNew;
   final Function? onSave;
   final Function? onDelete;
+  final Function? onCustom;
+  final IconData? iconCustom;
+  final String? tooltipCustom;
 
   ///Constructor del HeaderInformationWidget.
-  const HeaderInformationWidget({super.key, required this.titleHeader, this.tooltipClose, this.onClose, this.onSave, this.onNew, this.onDelete});
+  const HeaderInformationWidget(
+      {
+        super.key,
+        required this.titleHeader,
+        this.tooltipClose,
+        this.onClose,
+        this.onSave,
+        this.onNew,
+        this.onDelete,
+        this.onCustom,
+        this.iconCustom,
+        this.tooltipCustom
+      }
+  );
 
   
   @override
   Widget build(BuildContext context) {
-    double right = 0;
+    double right = -30;
 
     List<Widget> listButtons = [];
     listButtons.add(
@@ -91,6 +107,26 @@ class HeaderInformationWidget extends StatelessWidget {
             )
         )
     );
+
+    if (onCustom!=null && iconCustom!=null) right = right + 30;
+
+    listButtons.add(
+        Visibility(
+            visible: onCustom!=null,
+            child: Positioned(
+                right: right,
+                top: 0,
+                child: IconButton(
+                    tooltip: tooltipCustom,
+                    icon: Icon(iconCustom, color: Colors.greenAccent,),
+                    onPressed: (){
+                      onCustom!.call();
+                    }
+                )
+            )
+        )
+    );
+
 
     return Stack(
       children: [

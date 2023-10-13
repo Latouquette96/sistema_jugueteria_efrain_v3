@@ -3,14 +3,15 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_ca
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/factory/factory_category_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/category_mysql_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/subcategory_mysql_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
 
-///Clase ConvertProduct
-class ConvertProduct {
+///Clase ConvertFromMySQL
+class ConvertFromMySQL {
 
-  ///ConvertProduct: Devuelve el producto almacenado en el resultrow.
+  ///ConvertFromMySQL: Devuelve el producto almacenado en el mapeo.
   static Product getProductFromMySQL(Map<String, dynamic> data){
     try{
     //Buscar categoria y subcategoria
@@ -70,4 +71,29 @@ class ConvertProduct {
   }
   }
 
+  ///ConvertFromMySQL: Devuelve la distribuidora almacenada en el mapeo.
+  static Distributor getDitributorFromMySQL(Map<String, dynamic> data){
+    try{
+      //Crea un producto limpio.
+      Distributor distributor = Distributor();
+      //Construcción del mapeo.
+      Map<String, dynamic> map = {
+        Distributor.getKeyID():       data['d_id'],
+        Distributor.getKeyName():     data['d_name'],
+        Distributor.getKeyAddress():  data['d_direction'],
+        Distributor.getKeyCUIT():     data['d_cuit'],
+        Distributor.getKeyIVA():      1.00,
+        Distributor.getKeyCel():      data['d_phone'],
+        Distributor.getKeyEmail():    data['d_email'],
+        Distributor.getKeyWebsite():  null,
+      };
+
+      //Carga el mapeo en el producto y lo retorna.
+      distributor.fromJSON(map);
+      return distributor;
+    }
+    catch(e){
+      return Distributor();
+    }
+  }
 }

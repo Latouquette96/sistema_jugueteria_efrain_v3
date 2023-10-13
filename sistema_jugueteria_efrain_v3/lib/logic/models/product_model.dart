@@ -130,7 +130,7 @@ class Product extends JSONalizable<Product> {
     return _maxCharsBrand;
   }
 
-  ///Product: Devuelve la marca por defecto de todo producto.
+  ///Product: Devuelve la marca por defecto de un producto.
   static String getBrandDefect(){
     return _brandDefect;
   }

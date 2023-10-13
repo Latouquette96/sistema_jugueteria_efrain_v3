@@ -232,11 +232,11 @@ class Distributor extends JSONalizable<Distributor> {
           Distributor.getKeyID(): PlutoCell(value: _id),
           Distributor.getKeyCUIT(): PlutoCell(value: _cuit),
           Distributor.getKeyName(): PlutoCell(value: _name),
-          Distributor.getKeyAddress(): PlutoCell(value: _address),
-          Distributor.getKeyCel(): PlutoCell(value: _cel),
-          Distributor.getKeyEmail(): PlutoCell(value: _email),
+          Distributor.getKeyAddress(): PlutoCell(value: _address ?? "-"),
+          Distributor.getKeyCel(): PlutoCell(value: _cel ?? "-"),
+          Distributor.getKeyEmail(): PlutoCell(value: _email ?? "-"),
           Distributor.getKeyIVA(): PlutoCell(value: _iva),
-          Distributor.getKeyWebsite(): PlutoCell(value: _website),
+          Distributor.getKeyWebsite(): PlutoCell(value: _website ?? "-"),
        },
     );
 

@@ -55,13 +55,13 @@ class MainBarWidget extends ConsumerWidget {
               }
             ),
             PlutoMenuItem.checkbox(
-              title: "Importar desde MySQL",
+              title: "Importar datos (Sistema v2)",
               initialCheckValue: ref.watch(tabImportMySQLCatalog)!=null,
               enable: ref.watch(tabImportMySQLCatalog)!=null,
               onChanged: (bool? isSelected){
                 if (isSelected!=null){
                   if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Importar desde MySQL", widget: const ScreenImportProductWidget(), icon: MdiIcons.fromString("download"), tabProvider: tabImportMySQLCatalog);
+                    ref.read(tabbedViewProvider.notifier).insertTab(label: "Importar datos (Sistema v2)", widget: const ScreenImportProductWidget(), icon: MdiIcons.fromString("download"), tabProvider: tabImportMySQLCatalog);
                   }
                   else{
                     ref.read(tabbedViewProvider.notifier).removeTab(tabImportMySQLCatalog);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
@@ -11,9 +11,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart'
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
-
-final catalogImportProvider = StateNotifierProvider<SelectedItemsProvider<Triple<Product, Distributor, double>>, List<Triple<Product, Distributor, double>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
-
+final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Triple<Product, Distributor, double>>, List<Triple<Product, Distributor, double>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
 
 ///Proveedor para crear un producto en particular.
 final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
@@ -21,7 +19,7 @@ final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
 
   try{
     final url = ref.watch(urlAPIProvider);
-    final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogImportProvider);
+    final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogProductsImportProvider);
 
     for (Triple<Product, Distributor, double> triple in listImport){
       //Realiza la petición POST para insertar el producto.
@@ -62,17 +60,17 @@ final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
 ///notifyImportsProvider: Provider que se utiliza para notificar las importaciones realizadas.
 final notifyImportsProvider = FutureProvider((ref) async{
   await Future.delayed(const Duration(seconds: 1));
-  final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogImportProvider);
+  final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogProductsImportProvider);
 
   if (ref.read(stateManagerProductMySQLProvider)!=null){
     ref.read(stateManagerProductMySQLProvider)!.removeRows(
         listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
     );
 
-    for (Triple<Product, Distributor, double> triple in ref.read(catalogImportProvider)){
+    for (Triple<Product, Distributor, double> triple in ref.read(catalogProductsImportProvider)){
       ref.read(importProductMySQLProvider.notifier).remove(triple);
     }
 
-    ref.read(catalogImportProvider.notifier).removeAll();
+    ref.read(catalogProductsImportProvider.notifier).removeAll();
   }
 });

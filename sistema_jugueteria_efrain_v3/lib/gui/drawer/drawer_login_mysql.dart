@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
@@ -172,8 +173,20 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
         children: [
           Expanded(child: ElevatedButton(
             style: StyleElevatedButton.getStyleLoginCancel(),
-            onPressed: (){
-              Navigator.pop(context);
+            onPressed: () async{
+              ResponseStatusCode statusCode = await ref.read(closeConnectionMySQLProvider.future);
+              if (context.mounted){
+                if(statusCode==ResponseStatusCode.statusCodeOK){
+                  ElegantNotificationCustom.showNotificationSuccess(context, title: "Conexión finalizada", description: "La conexion a la base de datos ha finalizado con éxito.");
+                }
+                else{
+                  ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al cerrar conexión.");
+                }
+              }
+
+              if (context.mounted){
+                Navigator.pop(context);
+              }
             },
             child: const Text("Cancelar"),
           )),
@@ -186,12 +199,11 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
               ref.read(passwordLoginMySQLProvider.notifier).state = _form.control(_keyPassword).value.toString();
               ref.read(urlLoginMySQLProvider.notifier).state = _form.control(_keyURL).value.toString();
               //Sincronizar
-
               ResponseStatusCode statusCode = await ref.read(connectionMySQLProvider.future);
               if (context.mounted){
                 if(statusCode==ResponseStatusCode.statusCodeOK){
                   ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
-                  ref.read(importProductMySQLProvider.notifier).initialize();
+                  await ref.read(importDistributorMySQLProvider.notifier).initialize();
                 }
                 else{
                   ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión.");
