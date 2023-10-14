@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
@@ -19,7 +17,7 @@ final userLoginMySQLProvider = StateProvider<String>(((ref) => "user"));
 final passwordLoginMySQLProvider = StateProvider<String>(((ref) => "password"));
 
 ///Provider para realizar la conexion a la base de datos MySQL.
-final connectionMySQLProvider = FutureProvider<ResponseStatusCode>((ref) async{
+final connectionMySQLProvider = FutureProvider<Map<String,dynamic>>((ref) async{
 
   Map<String, String> connectionMySQL = {
     "db_host": ref.watch(urlLoginMySQLProvider),
@@ -36,15 +34,11 @@ final connectionMySQLProvider = FutureProvider<ResponseStatusCode>((ref) async{
     body: jsonEncode(connectionMySQL),
   );
 
-  ResponseStatusCode result = response.statusCode==200
-      ? ResponseStatusCode.statusCodeOK
-      : ResponseStatusCode.statusCodeFailded;
-
-  return result;
+  return jsonDecode(response.body);
 });
 
 ///Provider para cerrar la conexion a la base de datos MySQL.
-final closeConnectionMySQLProvider = FutureProvider<ResponseStatusCode>((ref) async{
+final closeConnectionMySQLProvider = FutureProvider<Map<String,dynamic>>((ref) async{
   final url = ref.watch(urlAPIProvider);
 
   //Realiza la petición POST para insertar el producto.
@@ -53,9 +47,5 @@ final closeConnectionMySQLProvider = FutureProvider<ResponseStatusCode>((ref) as
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
 
-  ResponseStatusCode result = response.statusCode==200
-      ? ResponseStatusCode.statusCodeOK
-      : ResponseStatusCode.statusCodeFailded;
-
-  return result;
+  return jsonDecode(response.body);
 });

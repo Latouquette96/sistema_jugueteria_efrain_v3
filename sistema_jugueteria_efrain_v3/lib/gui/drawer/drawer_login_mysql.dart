@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
 
 ///Clase DrawerLoginMySQL: Widget que permite controlar las configuraciones del sistema.
@@ -174,14 +171,9 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
           Expanded(child: ElevatedButton(
             style: StyleElevatedButton.getStyleLoginCancel(),
             onPressed: () async{
-              ResponseStatusCode statusCode = await ref.read(closeConnectionMySQLProvider.future);
+              Map<String,dynamic> response = await ref.read(closeConnectionMySQLProvider.future);
               if (context.mounted){
-                if(statusCode==ResponseStatusCode.statusCodeOK){
-                  ElegantNotificationCustom.showNotificationSuccess(context, title: "Conexión finalizada", description: "La conexion a la base de datos ha finalizado con éxito.");
-                }
-                else{
-                  ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al cerrar conexión.");
-                }
+                ElegantNotificationCustom.showNotificationAPI(context, response);
               }
 
               if (context.mounted){
@@ -199,15 +191,9 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
               ref.read(passwordLoginMySQLProvider.notifier).state = _form.control(_keyPassword).value.toString();
               ref.read(urlLoginMySQLProvider.notifier).state = _form.control(_keyURL).value.toString();
               //Sincronizar
-              ResponseStatusCode statusCode = await ref.read(connectionMySQLProvider.future);
+              Map<String, dynamic> response = await ref.read(connectionMySQLProvider.future);
               if (context.mounted){
-                if(statusCode==ResponseStatusCode.statusCodeOK){
-                  ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
-                  await ref.read(importDistributorMySQLProvider.notifier).initialize();
-                }
-                else{
-                  ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión.");
-                }
+                ElegantNotificationCustom.showNotificationAPI(context, response);
               }
 
               if (context.mounted){

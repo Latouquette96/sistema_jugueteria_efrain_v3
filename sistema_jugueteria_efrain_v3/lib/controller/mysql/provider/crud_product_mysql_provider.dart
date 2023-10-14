@@ -7,8 +7,10 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
 final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Triple<Product, Distributor, double>>, List<Triple<Product, Distributor, double>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
@@ -28,27 +30,28 @@ final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(triple.getValue1().getJSON()), 
       );
-
-      List<dynamic> json = jsonDecode(response.body);
-      triple.getValue1().setID(json[0]['p_id']);
+      Map<String, dynamic> json = jsonDecode(response.body);
+      triple.getValue1().setID(json['p_id']);
 
       final productPrice = ProductPrice(
-        id: 0, 
-        p: triple.getValue1().getID(), 
-        d: triple.getValue2()!.getID(), 
-        price: triple.getValue3() ?? 0, 
+        id: 0,
+        p: triple.getValue1().getID(),
+        d: triple.getValue2()!.getID(),
+        price: triple.getValue3() ?? 0,
         date: DatetimeCustom.parseStringDatetime(triple.getValue1().getDateUpdate())
       );
 
       //Envio la solicitud POST para cargar
       await http.post(
-        Uri.http(url, '/products/prices_products/'),
+        Uri.http(url, '/products/prices_products'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(productPrice.getJSON()), 
+        body: jsonEncode(productPrice.getJSON()),
       );
     }
 
-
+    await ref.read(productCatalogProvider.notifier).refresh();
+    ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+    await ref.read(importProductMySQLProvider.notifier).refresh();
   }
   catch(e){
     toReturn = false;

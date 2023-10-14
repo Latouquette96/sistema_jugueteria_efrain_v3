@@ -26,15 +26,16 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
     final url = ref.watch(urlAPIProvider);
 
     try{
-      List<Distributor> distributors = ref.read(catalogDistributorProvider);
+      List<Distributor> distributors = ref.watch(catalogDistributorProvider);
 
       final content = await http.get(Uri.http(url, "/mysql/products"));
-      List<dynamic> map = jsonDecode(content.body);
+      print(content.body);
+      Map<String, dynamic> map = jsonDecode(content.body);
 
       List<Triple<Product, Distributor, double>> list = [];
-      List<Product> listProducts = ref.read(productCatalogProvider);
+      List<Product> listProducts = ref.watch(productCatalogProvider);
       //Para cada fila de los resultados obtenidos.
-      for (Map<String, dynamic> row in map){
+      for (Map<String, dynamic> row in map['value']){
         //Recupera las tres coluumnas principales de la consulta.
         Map<String, dynamic> mapProductRow = jsonDecode(row['product']);
         Map<String, dynamic> mapProductPriceRow = jsonDecode(row['price_product']);

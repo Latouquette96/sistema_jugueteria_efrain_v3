@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_from_mysql.dart';
@@ -16,18 +17,19 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   ImportDistributorMySQLProvider(this.ref): super([]);
 
   ///ImportDistributorMySQLProvider: Inicializa el arreglo de distribuidora.
-  Future<void> initialize() async{
+  Future<void> initialize({BuildContext? context}) async{
     //Obtiene la direccion del servidor.
     final url = ref.watch(urlAPIProvider);
 
     try{
       final content = await http.get(Uri.http(url, "/mysql/distributors"));
-      List<dynamic> map = jsonDecode(content.body);
+      print(content.body);
+      Map<String, dynamic> map = jsonDecode(content.body);
       List<Distributor> list = [];
       List<Distributor> listDistributors = ref.read(catalogDistributorProvider);
 
       //Para cada fila de los resultados obtenidos.
-      for (var row in map){
+      for (var row in map['value']){
         //Construye la distribuidora de acuerdo al distribuidora de MySQL.
         Distributor distributorRow = ConvertFromMySQL.getDitributorFromMySQL(row);
 
@@ -100,7 +102,7 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   }
 
   ///ImportDistributorMySQLProvider: Refrezca el listado de distribuidoras.
-  Future<void> refresh() async {
+  Future<void> refresh({BuildContext? context}) async {
     //Limpia el catalogo de todas las filas.
     if (ref.read(stateManagerDistributorMySQLProvider)!=null){
       ref.read(stateManagerDistributorMySQLProvider)!.removeAllRows();
