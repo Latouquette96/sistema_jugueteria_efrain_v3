@@ -84,7 +84,7 @@ class StyleForm {
   }
 
   static TextStyle getTextStyleListTileSubtitle(){
-    return const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400);
+    return TextStyle(color: Colors.grey.shade700, fontSize: 14, fontWeight: FontWeight.w500);
   }
 
   static BoxDecoration getDecorationContainer(){

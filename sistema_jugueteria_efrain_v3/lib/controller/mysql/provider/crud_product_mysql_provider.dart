@@ -8,6 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_pric
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -52,6 +53,7 @@ final importProductWithAPIProvider = FutureProvider<bool>((ref) async {
     await ref.read(productCatalogProvider.notifier).refresh();
     ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
     await ref.read(importProductMySQLProvider.notifier).refresh();
+    await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
   }
   catch(e){
     toReturn = false;

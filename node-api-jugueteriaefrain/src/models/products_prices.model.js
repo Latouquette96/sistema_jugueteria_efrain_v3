@@ -26,6 +26,10 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.BIGINT,
                 allowNull: false
             },
+            pp_website: {
+                type: Sequelize.STRING(150),
+                allowNull: true,
+            },
         },
         {
             createdAt: false,

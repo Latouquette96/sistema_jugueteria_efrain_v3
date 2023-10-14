@@ -435,8 +435,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 decoration: StyleForm.getDecorationTextField("Buscar marca/importador"),
                 items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
                   value: e,
-                child: Text(e),
-                  )).toList(),
+                  child: Text(e),
+                )).toList(),
                 onChanged: (control) {
                   _form.control(Product.getKeyBrand()).value = control.value;
                   setState(() {});
@@ -659,6 +659,18 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             child: Row(
                               children: [
                                 Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
+                                Visibility(
+                                  visible: e.getValue2()!.getWebsite()!=null,
+                                  child: IconButton(
+                                        onPressed: () async {
+                                          Uri url = Uri.parse(e.getValue2()?.getWebsite() ?? "");
+                                          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                            throw Exception('Could not launch $url');
+                                          }
+                                        },
+                                        icon: Icon(MdiIcons.fromString("web"), color: Colors.blue)
+                                    ),
+                                ),
                                 IconButton(
                                   tooltip: "Guarda los cambios realizados.",
                                   padding: EdgeInsets.zero,
@@ -688,7 +700,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             //Nodo de precio.
                             TreeNode(
                                 content: Container(
-                                  color: Colors.lightBlue.shade50,
+                                  color: Colors.grey.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                                   height: 60,
                                   width: 235,
@@ -707,8 +719,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             ),
                             TreeNode(
                                 content: Container(
-                                  color: Colors.lightBlue.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  color: Colors.grey.shade50,
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
                                   height: 40,
                                   width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -717,9 +729,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                             ),
                             TreeNode(
                                 content: Container(
-                                  color: Colors.lightBlue.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-                                  height: 60,
+                                  color: Colors.grey.shade50,
+                                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                                  height: 50,
                                   width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: Row(
@@ -734,22 +746,13 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                           setState(() {});
                                         },
                                       )),
-                                      IconButton(
-                                          onPressed: () async {
-                                            Uri url = Uri.parse(e.getValue2()?.getWebsite() ?? "");
-                                            if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                                              throw Exception('Could not launch $url');
-                                            }
-                                          },
-                                          icon: Icon(MdiIcons.fromString("web"), color: Colors.blue)
-                                      )
                                     ],
                                   ),
                                 )
                             ),
                             TreeNode(
                                 content: Container(
-                                  color: Colors.lightBlue.shade50,
+                                  color: Colors.grey.shade50,
                                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                   height: 60,
                                   width: 235,
