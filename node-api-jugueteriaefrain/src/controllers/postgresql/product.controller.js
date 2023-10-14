@@ -32,7 +32,7 @@ exports.create = (req, res) => {
     //Guarda el producto en la base de datos.
     Products.create(producto)
       .then(data => {
-        res.send(201).send(data.p_id);
+        res.status(201).json({p_id: data.p_id});
       })
       .catch(err => {
         res.status(500).send({
@@ -49,7 +49,7 @@ exports.findOne = (req, res) => {
     Products.findByPk(id)
       .then(data => {
         if (data) {
-          res.send(200).send(data);
+          res.status(200).send(data);
         } else {
           res.status(404).send({
             message: `Error: No se pudo hallar producto con id=${id}.`
@@ -85,12 +85,12 @@ exports.update = (req, res) => {
     Products.update(req.body, { where: { p_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send(200).send({
+                res.status(200).send({
                     message: "Producto actualizado con éxito."
                 });
             } 
             else {
-                res.send(501).send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -105,17 +105,17 @@ exports.update = (req, res) => {
 //Actualiza los datos de un producto con identificador id.
 exports.updatePricePublic = (req, res) => {
   const id = req.params.id;
-  const {p_price_public} = request.body;
+  const {p_price_public} = req.body;
 
   Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
       .then(num => {
           if (num == 1) {
-              res.send(200).send({
+              res.status(200).send({
                   message: "Producto actualizado con éxito."
               });
           } 
           else {
-              res.send(501).send({
+              res.status(501).send({
                   message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
               });
           }
@@ -134,12 +134,12 @@ exports.delete = (req, res) => {
     Products.destroy({ where: { p_id: id } })
         .then(num => {
             if (num == 1) {
-                res.send(200).send({
+                res.status(200).send({
                     message: "Producto eliminado con éxito!"
                 });
             } 
             else {
-                res.send(501).send({
+                res.status(501).send({
                     message: "Error: No se puede actualizar el producto con id="+id+". Comprueba los datos e intente nuevamente."
                 });
             }
@@ -155,7 +155,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Products.destroy({ where: {}, truncate: false})
         .then(nums => {
-          res.send(501).send({ message: `${nums} productos eliminados con éxito!` });
+          res.status(501).send({ message: `${nums} productos eliminados con éxito!` });
         })
         .catch(err => {
           res.status(500).send({

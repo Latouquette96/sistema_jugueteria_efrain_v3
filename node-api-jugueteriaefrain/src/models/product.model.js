@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            p_bardcode: {
+            p_barcode: {
                 type: Sequelize.STRING(48),
                 allowNull: true,
                 unique: true

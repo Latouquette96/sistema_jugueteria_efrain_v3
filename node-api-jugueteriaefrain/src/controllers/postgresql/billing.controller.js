@@ -58,7 +58,7 @@ exports.findOne = (req, res) => {
 
 //Recupera todas las facturas de una distribuidora en particular.
 exports.findAll = (req, res) => {
-    const id = parseInt(request.params.id)
+    const id = parseInt(req.params.id)
 
     Billings.findAll({ where: { db_distributor: id} })
         .then(data => {

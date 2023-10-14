@@ -14,8 +14,6 @@ exports.create = (req, res) => {
   
     //Crea un precio del producto.
     const price_product = {
-        //pp_product, pp_distributor, pp_price_base, pp_date_update
-        pp_id: req.body.pp_id, 
         pp_product: req.body.pp_product, 
         pp_distributor: req.body.pp_distributor, 
         pp_price_base: req.body.pp_price_base, 
@@ -25,7 +23,7 @@ exports.create = (req, res) => {
     //Guarda el precio del producto en la base de datos.
     ProductsPrices.create(price_product)
       .then(data => {
-        res.status(201).send(data);
+        res.send(data);
       })
       .catch(err => {
         res.status(500).send({
@@ -58,7 +56,7 @@ exports.findOne = (req, res) => {
 
 //Recupera todos los precios del producto en particular.
 exports.findAll = (req, res) => {
-    const id = parseInt(request.params.id)
+    const id = parseInt(req.params.id)
 
     ProductsPrices.findAll({ where: { pp_product: id} })
         .then(data => {
