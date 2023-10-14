@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_from_mysql.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models_json/response_api_json_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
@@ -20,37 +22,43 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   Future<void> initialize({BuildContext? context}) async{
     //Obtiene la direccion del servidor.
     final url = ref.watch(urlAPIProvider);
+    //Mapeo con el contenido a mostrar
+    Map<String, dynamic> map;
 
     try{
-      final content = await http.get(Uri.http(url, "/mysql/distributors"));
-      print(content.body);
-      Map<String, dynamic> map = jsonDecode(content.body);
+      //Recupera, de ser posible, las distribuidoras del servidor de mysql.
+      http.Response content = await http.get(Uri.http(url, "/mysql/distributors"));
+      map = jsonDecode(content.body);
+
       List<Distributor> list = [];
-      List<Distributor> listDistributors = ref.read(catalogDistributorProvider);
 
-      //Para cada fila de los resultados obtenidos.
-      for (var row in map['value']){
-        //Construye la distribuidora de acuerdo al distribuidora de MySQL.
-        Distributor distributorRow = ConvertFromMySQL.getDitributorFromMySQL(row);
+      if (map['status']==200 || map['status']==201){
+        List<Distributor> listDistributors = ref.read(catalogDistributorProvider);
 
-        //Si no hay distribuidoras actualmente en la base de datos, entonces insertar directamente.
-        if (listDistributors.isEmpty){
-          distributorRow.buildPlutoRow();
-          list.add(distributorRow);
-        }
-        else{
-          //Bandera para comprobar si se inserta la distribuidora o no.
-          bool insertDistr = false;
+        //Para cada fila de los resultados obtenidos.
+        for (var row in map['value']){
+          //Construye la distribuidora de acuerdo al distribuidora de MySQL.
+          Distributor distributorRow = ConvertFromMySQL.getDitributorFromMySQL(row);
 
-          //Se obtiene la distribuidora existente de la lista o devuelve null.
-          Distributor? distributorExisting = _isExistingDistributor(listDistributors, distributorRow);
-          //Si la distribuidora existe y ademas la distribuidora fue modificado, o si la distribuidora no existe, entonces se debe insertar el triple.
-          insertDistr = (distributorExisting!=null) ? _isDistributorModified(distributorExist: distributorExisting, distributorMySQL: distributorRow) : true;
-
-          //Si se debe insertar, entonces...
-          if (insertDistr){
+          //Si no hay distribuidoras actualmente en la base de datos, entonces insertar directamente.
+          if (listDistributors.isEmpty){
             distributorRow.buildPlutoRow();
             list.add(distributorRow);
+          }
+          else{
+            //Bandera para comprobar si se inserta la distribuidora o no.
+            bool insertDistr = false;
+
+            //Se obtiene la distribuidora existente de la lista o devuelve null.
+            Distributor? distributorExisting = _isExistingDistributor(listDistributors, distributorRow);
+            //Si la distribuidora existe y ademas la distribuidora fue modificado, o si la distribuidora no existe, entonces se debe insertar el triple.
+            insertDistr = (distributorExisting!=null) ? _isDistributorModified(distributorExist: distributorExisting, distributorMySQL: distributorRow) : true;
+
+            //Si se debe insertar, entonces...
+            if (insertDistr){
+              distributorRow.buildPlutoRow();
+              list.add(distributorRow);
+            }
           }
         }
       }
@@ -63,8 +71,13 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
       //Actualiza el estado.
       state = [...list];
     }
-    // ignore: empty_catches
-    catch(e){}
+    catch(e){
+      map = ResponseApiJSON.getProblemOccurredMessage();
+    }
+
+    if (context!=null && context.mounted){
+      ElegantNotificationCustom.showNotificationAPI(context, map);
+    }
   }
 
   ///ImportDistributorMySQLProvider: Dada una lista de distribuidoras, comprueba si un distribuidora (de un determinado código) pertenece a la lista y retorna el elemento de la lista.
@@ -110,7 +123,7 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
     //Limpia el estado actual.
     state = [];
     //Inicializa el catalogo.
-    await initialize();
+    await initialize(context: context);
   }
 
   ///ImportDistributorMySQLProvider: Remueve la distribuidora de la lista.

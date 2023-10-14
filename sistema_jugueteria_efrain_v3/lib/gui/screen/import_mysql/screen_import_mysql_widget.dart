@@ -95,7 +95,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
                               //Refrescar el catálogo de productos.
-                              await ref.read(importDistributorMySQLProvider.notifier).refresh();
+                              await ref.read(importDistributorMySQLProvider.notifier).refresh(context: context);
                             },
                           ),
                           IconButton(
@@ -142,7 +142,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
                               //Refrescar el catálogo de productos.
-                              await ref.read(importProductMySQLProvider.notifier).refresh();
+                              await ref.read(importProductMySQLProvider.notifier).refresh(context: context);
                             },
                           ),
                           IconButton(

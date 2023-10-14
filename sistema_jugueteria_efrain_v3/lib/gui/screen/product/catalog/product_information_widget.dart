@@ -34,6 +34,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {
@@ -712,6 +713,38 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                   width: 235,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
+                                )
+                            ),
+                            TreeNode(
+                                content: Container(
+                                  color: Colors.lightBlue.shade50,
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
+                                  height: 60,
+                                  width: 235,
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(child: TextField(
+                                        decoration: StyleForm.getDecorationTextField("Sitio web del producto"),
+                                        controller: TextEditingController(text: e.getValue2()!.getWebsite()),
+                                        onChanged: (String value){
+                                          e.getValue2()!.setWebsite(value);
+                                        },
+                                        onSubmitted:(value) {
+                                          setState(() {});
+                                        },
+                                      )),
+                                      IconButton(
+                                          onPressed: () async {
+                                            Uri url = Uri.parse(e.getValue2()?.getWebsite() ?? "");
+                                            if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                              throw Exception('Could not launch $url');
+                                            }
+                                          },
+                                          icon: Icon(MdiIcons.fromString("web"), color: Colors.blue)
+                                      )
+                                    ],
+                                  ),
                                 )
                             ),
                             TreeNode(

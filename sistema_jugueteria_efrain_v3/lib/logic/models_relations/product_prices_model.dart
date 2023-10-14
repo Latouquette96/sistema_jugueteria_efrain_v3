@@ -12,6 +12,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
   late int _distributor; //RN-P5.
   late double _priceBase; //RN-P4.
   late int _dateLastUpdated; //RN-P21.
+  late String? _website;
 
   //Atributos de clase
   static const String _keyID          = "pp_id";
@@ -19,6 +20,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
   static const String _keyDistributor = "pp_distributor";
   static const String _keyPriceBase   = "pp_price_base";
   static const String _keyDateUpdate  = "pp_date_update";
+  static const String _keyWebsite     = "pp_website";
 
   ///Constructor de ProductPrice.
   ProductPrice({
@@ -26,13 +28,15 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     required int p,
     required int d,
     required double price,
-    required int date}
-  ) {
+    required int date,
+    String? website
+  }) {
     _id = id;
     _priceBase = price;
     _productID = p;
     _distributor = d;
     _dateLastUpdated = date;
+    _website = website;
   }
 
   ProductPrice.clear(Product p){
@@ -41,6 +45,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _dateLastUpdated = DatetimeCustom.getDatetimeIntegerNow();
     _distributor = 0;
     _productID = p.getID();
+    _website = null;
   }
 
   ProductPrice.fromJSON(Map<String, dynamic> map){
@@ -50,6 +55,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
       _productID = int.parse(map[_keyProduct].toString());
       _dateLastUpdated = int.parse(map[_keyDateUpdate].toString());
       _distributor = int.parse(map[_keyDistributor].toString());
+      _website = map[_keyWebsite];
     }
     // ignore: empty_catches
     catch(e){
@@ -76,6 +82,10 @@ class ProductPrice extends JSONalizable<ProductPrice>{
 
   static String getKeyDateUpdate(){
     return _keyDateUpdate;
+  }
+
+  static String getKeyWebsite(){
+    return _keyWebsite;
   }
 
   //--------------------PRODUCTO----------------------
@@ -118,6 +128,16 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _priceBase = price;
   }
 
+  //-------------------WEBSITE------------------------------------------
+
+  String? getWebsite(){
+    return _website;
+  }
+
+  void setWebsite(String? web){
+    _website = web;
+  }
+
   //-------------------ULTIMA FECHA DE ACTUALIZACION---------------------
 
   String getDateLastUpdated() {
@@ -133,6 +153,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _productID = int.parse(map[_keyProduct]);
     _distributor = map[_keyDistributor];
     _dateLastUpdated = map[_keyDateUpdate];
+    _website = map[_keyWebsite];
   }
   
   @override
@@ -142,7 +163,8 @@ class ProductPrice extends JSONalizable<ProductPrice>{
       _keyDistributor: _distributor,
       _keyProduct: _productID,
       _keyDateUpdate: _dateLastUpdated,
-      _keyPriceBase: _priceBase
+      _keyPriceBase: _priceBase,
+      _keyWebsite: _website
     };
   }
 

@@ -30,6 +30,9 @@ class FormGroupProductPrices {
       ),
       ProductPrice.getKeyID(): FormControl<int>(
           value: 0
+      ),
+      ProductPrice.getKeyWebsite(): FormControl<String?>(
+          value: null
       )
     });
   }
