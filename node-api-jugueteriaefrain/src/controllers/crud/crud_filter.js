@@ -11,9 +11,23 @@ const pool = new Pool({
 const getLoadedBrands = (request, response) => {
   pool.query('SELECT distinct(p_brand) FROM public.products ORDER BY p_brand ASC', (error, results) => {
     if (error) {
-      throw error
+      response.status(404).json({
+        status: 404, 
+        title: "Error 404",
+        message: 'Error: No se pudo obtener el listado de las marcas de los productos registrados.',
+        error: null,
+        value: null
+        });
+      return;
     }
-    response.status(200).json(results.rows)
+    response.status(200).json({
+      status: 200, 
+      title: "Operación exitosa",
+      message: 'Las marcas de los productos fueron recuperadas con éxito.',
+      error: null,
+      value: results.rows
+      });
+    return;
   })
 }
 

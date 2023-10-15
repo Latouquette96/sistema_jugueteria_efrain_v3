@@ -13,6 +13,7 @@ var app = express.Router();
 app.get('/distributors/billings/distributor/:id',  /*md_auth.ensureAuth, */ BillingController.findAll)
 app.post('/distributors/billings',  /*md_auth.ensureAuth, */ BillingController.create)
 app.delete('/distributors/billings/:id',  /*md_auth.ensureAuth, */ BillingController.delete)
+app.delete('/distributors/billings/deleteAll/:id',  /*md_auth.ensureAuth, */ BillingController.deleteAll)
 
 //Exportación de la configuración
 module.exports = app;

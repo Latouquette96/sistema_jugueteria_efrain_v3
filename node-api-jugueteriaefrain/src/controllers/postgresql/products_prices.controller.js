@@ -6,9 +6,13 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
     //Validacion de datos.
     if (!req.body) {
-      res.status(400).send({
-        message: "Error: El contenido del formulario no puede estar vacío."
-      });
+      res.status(400).json({
+        status: 400, 
+        title: "Error 400",
+        message: 'Error::ProductPrice.create(): Error producido al recibir un formulario nulo.',
+        error: null,
+        value: null
+        })
       return;
     }
   
@@ -22,15 +26,24 @@ exports.create = (req, res) => {
   
     //Guarda el precio del producto en la base de datos.
     ProductsPrices.create(price_product)
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Error: Se produjo un error al crear el precio del producto."
+    .then(data => {
+      res.status(201).json({
+        status: 201, 
+        title: "Operación exitosa",
+        message: 'El precio del producto fue creado e insertado en la base de datos con éxito.',
+        error: null,
+        value: {p_id: data.p_id}
         });
-      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        status: 500, 
+        title: "Error 500",
+        message: 'Error::ProductPrice.create(): Error al crear e insertar el precio del producto en la base de datos.',
+        error: err,
+        value: null
+        });
+    });
 };
 
 //Realiza la busqueda de un precio del producto con identificador id.
@@ -40,17 +53,31 @@ exports.findOne = (req, res) => {
     ProductsPrices.findByPk(id)
       .then(data => {
         if (data) {
-          res.status(200).send(data);
+          res.status(200).json({
+            status: 200, 
+            title: "Operación exitosa",
+            message: 'El precio del producto fue recuperada de la base de datos con éxito.',
+            error: null,
+            value: data
+            });
         } else {
-          res.status(404).send({
-            message: `Error: No se pudo hallar precio del producto con id=${id}.`
-          });
+          res.status(404).json({
+            status: 404, 
+            title: "Error 404",
+            message: 'Error::ProductPrice.findOne(): No se pudo recuperar el precio del producto de la base de datos.',
+            error: null,
+            value: null
+            });
         }
       })
       .catch(err => {
-        res.status(500).send({
-          message: "Error: Ocurrió un problema al intentar recuperar el precio del producto con id=" + id
-        });
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::Product.findOne(): Ocurrió un problema al recuperar el precio del producto de la base de datos.',
+          error: err,
+          value: null
+          });
       });
 };
 
@@ -59,15 +86,24 @@ exports.findAll = (req, res) => {
     const id = parseInt(req.params.id)
 
     ProductsPrices.findAll({ where: { pp_product: id} })
-        .then(data => {
-        res.send(data);
-        })
-        .catch(err => {
-        res.status(500).send({
-            message:
-            err.message || "Error: Ocurrió un error al recuperar los precio del productos."
-        });
-        });
+      .then(data => {
+        res.status(200).json({
+          status: 200, 
+          title: "Operación exitosa",
+          message: 'Se recuperaron todas los precios del producto almacenadas en la base de datos.',
+          error: null,
+          value: data
+          });
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::ProductPrice.findAll(): Ocurrió un problema al recuperar los precios del producto de la base de datos.',
+          error: err,
+          value: null
+          });
+      });
 };
 
 //Actualiza los datos de un precio del producto con identificador id.
@@ -75,59 +111,94 @@ exports.update = (req, res) => {
     const id = req.params.id;
 
     ProductsPrices.update(req.body, { where: { pp_id: id } })
-        .then(num => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: "Precio del producto actualizado con éxito."
-                });
-            } 
-            else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar el precio del producto con id=" + id + ". Comprueba los datos e intente nuevamente."
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió un error al actualizar el precio del producto con id=" + id
-            });
-        });
+      .then(num => {
+        if (num == 1) {
+            res.status(200).json({
+              status: 200, 
+              title: "Operación exitosa",
+              message: 'El precio del producto fue actualizada con éxito.',
+              error: null,
+              value: num
+              });
+        } 
+        else {
+            res.status(501).json({
+              status: 501, 
+              title: "Error 501",
+              message: 'Error::ProductPrice.update(): No se pudo efectuar la actualización de el precio del producto. Compruebe los datos e intente nuevamente.',
+              error: null,
+              value: null
+              });
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::ProductPrice.update(): Ocurrió un problema al actualizar el precio del producto en la base de datos.',
+          error: err,
+          value: null
+          });
+    });
 };
 
 //Elimina un precio del producto con un determinado id.
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    ProductsPrices.destroy({ where: { db_id: id } })
-        .then(num => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: "Precio del producto eliminado con éxito!"
-                });
-            } 
-            else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar el precio del producto con id="+id+". Comprueba los datos e intente nuevamente."
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió un error al eliminar el precio del producto con id=" + id
+    ProductsPrices.destroy({ where: { pp_id: id } })
+    .then(num => {
+      if (num == 1) {
+        res.status(200).json({
+          status: 200, 
+          title: "Operación exitosa",
+          message: 'El precio del producto fue eliminada de la base de datos con éxito.',
+          error: null,
+          value: num
+          });
+      } 
+      else {
+          res.status(501).json({
+            status: 501, 
+            title: "Error 501",
+            message: 'Error::ProductPrice.delete(): No se pudo efectuar la eliminación de el precio del producto. Compruebe los datos e intente nuevamente.',
+            error: null,
+            value: null
             });
-        });
+      }
+    })
+    .catch(err => {
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::ProductPrice.delete(): Ocurrió un problema al eliminar el precio del producto de la base de datos.',
+          error: err,
+          value: null
+          });
+    });
 };
 
 //Elimina todos los precio del productos de la base de datos.
 exports.deleteAll = (req, res) => {
-    ProductsPrices.destroy({ where: {}, truncate: false})
-        .then(nums => {
-          res.status(200).send({ message: `${nums} precio del productos eliminados con éxito!` });
-        })
-        .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Error: Ha ocurrido un error al eliminar los precio del productos."
-          });
-        });
+  const id = req.params.id;
+
+  ProductsPrices.destroy({ where: {pp_product: id}, truncate: false})
+  .then(nums => {
+    res.status(200).json({
+      status: 200, 
+      title: "Operación exitosa",
+      message: 'Se eliminó, de la base de datos, todas los precios del producto existentes .',
+      error: null,
+      value: nums
+      });          
+  })
+  .catch(err => {
+    res.status(500).json({
+      status: 500, 
+      title: "Error 500",
+      message: 'Error::ProductPrice.deleteAll(): Ocurrió un problema al eliminar los precios del producto en la base de datos.',
+      error: err,
+      value: null
+    });
+  });
 };

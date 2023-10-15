@@ -7,9 +7,13 @@ exports.create = (req, res) => {
   console.log(req.body)
     //Validacion de datos.
     if (!req.body) {
-      res.status(400).send({
-        message: "Error: El contenido del formulario no puede estar vacío."
-      });
+      res.status(400).json({
+        status: 400, 
+        title: "Error 400",
+        message: 'Error::Distributor.create(): Error producido al recibir un formulario nulo.',
+        error: null,
+        value: null
+        })
       return;
     }
   
@@ -28,13 +32,22 @@ exports.create = (req, res) => {
     //Guarda el distribuidora en la base de datos.
     Distributors.create(distribuidora)
       .then(data => {
-        res.status(201).send(data);
+        res.status(201).json({
+          status: 201, 
+          title: "Operación exitosa",
+          message: 'La distribuidora fue creada e insertada en la base de datos con éxito.',
+          error: null,
+          value: data
+          })
       })
       .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Error: Se produjo una error al crear la distribuidora."
-        });
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::Distributor.create(): Error al crear e insertar la distribuidora en la base de datos.',
+          error: err,
+          value: null
+          });
       });
 };
 
@@ -43,20 +56,34 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
 
     Distributors.findByPk(id)
-      .then(data => {
-        if (data) {
-          res.status(200).send(data);
-        } else {
-          res.status(404).send({
-            message: `Error: No se pudo hallar distribuidora con id=${id}.`
+    .then(data => {
+      if (data) {
+        res.status(200).json({
+          status: 200, 
+          title: "Operación exitosa",
+          message: 'La distribuidora en cuestión fue recuperada de la base de datos con éxito.',
+          error: null,
+          value: data
           });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Error: Ocurrió una problema al intentar recuperar la distribuidora con id=" + id
+      } else {
+        res.status(404).json({
+          status: 404, 
+          title: "Error 404",
+          message: 'Error::Distributor.findOne(): No se pudo recuperar la distribuidora de la base de datos.',
+          error: null,
+          value: null
+          });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        status: 500, 
+        title: "Error 500",
+        message: 'Error::Distributor.findOne(): Ocurrió un problema al recuperar la distribuidora de la base de datos.',
+        error: err,
+        value: null
         });
-      });
+    });
 };
 
 //Recupera todos los distribuidoras de la base de datos.
@@ -64,13 +91,22 @@ exports.findAll = (req, res) => {
 
   Distributors.findAll({ where: {} })
     .then(data => {
-      res.status(200).send(data);
+      res.status(200).json({
+        status: 200, 
+        title: "Operación exitosa",
+        message: 'Se recuperaron todas las distribuidoras almacenadas en la base de datos.',
+        error: null,
+        value: data
+        });
     })
     .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Error: Ocurrió una error al recuperar los distribuidoras."
-      });
+      res.status(500).json({
+        status: 500, 
+        title: "Error 500",
+        message: 'Error::Distributor.findAll(): Ocurrió un problema al recuperar las distribuidoras de la base de datos.',
+        error: err,
+        value: null
+        });
     });
 };
 
@@ -82,19 +118,31 @@ exports.update = (req, res) => {
     Distributors.update(req.body, { where: { d_id: id } })
         .then(num => {
             if (num == 1) {
-                res.status(200).send({
-                    message: "Distribuidora actualizada con éxito."
+              res.status(200).json({
+                status: 200, 
+                title: "Operación exitosa",
+                message: 'La distribuidora fue actualizada en la base de datos con éxito.',
+                error: null,
+                value: num
                 });
             } 
             else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar la distribuidora con id=" + id + ". Comprueba los datos e intente nuevamente."
+                res.status(501).json({
+                  status: 501, 
+                  title: "Error 501",
+                  message: 'Error::Distributor.update(): No se pudo efectuar la actualización de la distribuidora. Compruebe los datos e intente nuevamente.',
+                  error: null,
+                  value: null
                 });
             }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió una error al actualizar la distribuidora con id=" + id
+          res.status(500).json({
+            status: 500, 
+            title: "Error 500",
+            message: 'Error::Distributor.update(): Error al actualizar la información de la distribuidora en la base de datos.',
+            error: err,
+            value: null
             });
         });
 };
@@ -106,19 +154,31 @@ exports.delete = (req, res) => {
     Distributors.destroy({ where: { d_id: id } })
         .then(num => {
             if (num == 1) {
-                res.status(200).send({
-                    message: "Distribuidora eliminada con éxito!"
-                });
+                res.status(200).json({
+                  status: 200, 
+                  title: "Operación exitosa",
+                  message: 'La distribuidora fue eliminada de la base de datos con éxito.',
+                  error: null,
+                  value: num
+                  });
             } 
             else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar la distribuidora con id="+id+". Comprueba los datos e intente nuevamente."
+                res.status(501).json({
+                  status: 501, 
+                  title: "Error 501",
+                  message: 'Error::Distributor.delete(): No se pudo efectuar la eliminación de la distribuidora. Compruebe los datos e intente nuevamente.',
+                  error: null,
+                  value: null
                 });
             }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió una error al eliminar la distribuidora con id=" + id
+          res.status(500).json({
+            status: 500, 
+            title: "Error 500",
+            message: 'Error::Distributor.delete(): Error al eliminar la distribuidora en la base de datos.',
+            error: err,
+            value: null
             });
         });
 };
@@ -127,12 +187,21 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Distributors.destroy({ where: {}, truncate: false})
         .then(nums => {
-          res.status(200).send({ message: `${nums} distribuidoras eliminadas con éxito!` });
+          res.status(200).json({
+            status: 200, 
+            title: "Operación exitosa",
+            message: 'Se eliminó todas las distribuidoras existentes de la base de datos (' + nums +' distribuidoras).',
+            error: null,
+            value: nums
+          }); 
         })
         .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Error: Ha ocurrido una error al eliminar las distribuidoras."
-          });
+          res.status(500).json({
+            status: 500, 
+            title: "Error 500",
+            message: 'Error::Distributor.deleteAll(): Error al eliminar todas las distribuidoras de la base de datos.',
+            error: err,
+            value: null
+            });
         });
 };

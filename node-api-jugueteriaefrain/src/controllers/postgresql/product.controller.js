@@ -6,9 +6,13 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
     //Validacion de datos.
     if (!req.body) {
-      res.status(400).send({
-        message: "Error: El contenido del formulario no puede estar vacío."
-      });
+      res.status(400).json({
+        status: 400, 
+        title: "Error 400",
+        message: 'Error::Product.create(): Error producido al recibir un formulario nulo.',
+        error: null,
+        value: null
+        })
       return;
     }
   
@@ -32,13 +36,22 @@ exports.create = (req, res) => {
     //Guarda el producto en la base de datos.
     Products.create(producto)
       .then(data => {
-        res.status(201).json({p_id: data.p_id});
+        res.status(201).json({
+          status: 201, 
+          title: "Operación exitosa",
+          message: 'El producto fue creado e insertado en la base de datos con éxito.',
+          error: null,
+          value: {p_id: data.p_id}
+          });
       })
       .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Error: Se produjo un error al crear el producto."
-        });
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::Product.create(): Error al crear e insertar el producto en la base de datos.',
+          error: err,
+          value: null
+          });
       });
 };
 
@@ -49,17 +62,31 @@ exports.findOne = (req, res) => {
     Products.findByPk(id)
       .then(data => {
         if (data) {
-          res.status(200).send(data);
+          res.status(200).json({
+            status: 200, 
+            title: "Operación exitosa",
+            message: 'El producto en cuestión fue recuperado de la base de datos con éxito.',
+            error: null,
+            value: data
+            });
         } else {
-          res.status(404).send({
-            message: `Error: No se pudo hallar producto con id=${id}.`
-          });
+          res.status(404).json({
+            status: 404, 
+            title: "Error 404",
+            message: 'Error::Product.findOne(): No se pudo recuperar el producto de la base de datos.',
+            error: null,
+            value: null
+            });
         }
       })
       .catch(err => {
-        res.status(500).send({
-          message: "Error: Ocurrió un problema al intentar recuperar el producto con id=" + id
-        });
+        res.status(500).json({
+          status: 500, 
+          title: "Error 500",
+          message: 'Error::Product.findOne(): Ocurrió un problema al recuperar el producto de la base de datos.',
+          error: err,
+          value: null
+          });
       });
 };
 
@@ -68,13 +95,22 @@ exports.findAll = (req, res) => {
 
   Products.findAll({ where: {} })
     .then(data => {
-      res.status(200).send(data);
+      res.status(200).json({
+        status: 200, 
+        title: "Operación exitosa",
+        message: 'Se recuperaron todos los productos almacenados en la base de datos.',
+        error: null,
+        value: data
+        });
     })
     .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Error: Ocurrió un error al recuperar los productos."
-      });
+      res.status(500).json({
+        status: 500, 
+        title: "Error 500",
+        message: 'Error::Product.findAll(): Ocurrió un problema al recuperar los productos de la base de datos.',
+        error: err,
+        value: null
+        });
     });
 };
 
@@ -85,20 +121,32 @@ exports.update = (req, res) => {
     Products.update(req.body, { where: { p_id: id } })
         .then(num => {
             if (num == 1) {
-                res.status(200).send({
-                    message: "Producto actualizado con éxito."
-                });
+                res.status(200).json({
+                  status: 200, 
+                  title: "Operación exitosa",
+                  message: 'El producto '+ req.body.p_title.toUpperCase() + ' fue actualizado con éxito.',
+                  error: null,
+                  value: num
+                  });
             } 
             else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
-                });
+                res.status(501).json({
+                  status: 501, 
+                  title: "Error 501",
+                  message: 'Error::Product.update(): No se pudo efectuar la actualización del producto. Compruebe los datos e intente nuevamente.',
+                  error: null,
+                  value: null
+                  });
             }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió un error al actualizar el producto con id=" + id
-            });
+            res.status(500).json({
+              status: 500, 
+              title: "Error 500",
+              message: 'Error::Product.update(): Ocurrió un problema al actualizar el producto en la base de datos.',
+              error: err,
+              value: null
+              });
         });
 };
 
@@ -109,20 +157,32 @@ exports.updatePricePublic = (req, res) => {
 
   Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
       .then(num => {
-          if (num == 1) {
-              res.status(200).send({
-                  message: "Producto actualizado con éxito."
+        if (num == 1) {
+          res.status(200).json({
+            status: 200, 
+            title: "Operación exitosa",
+            message: 'El precio del producto fue actualizado con éxito.',
+            error: null,
+            value: num
+            });
+        } 
+        else {
+            res.status(501).json({
+              status: 501, 
+              title: "Error 501",
+              message: 'Error::Product.updatePricePublic(): No se pudo efectuar la actualización del producto. Compruebe los datos e intente nuevamente.',
+              error: null,
+              value: null
               });
-          } 
-          else {
-              res.status(501).send({
-                  message: "Error: No se puede actualizar el producto con id=" + id + ". Comprueba los datos e intente nuevamente."
-              });
-          }
+        }
       })
       .catch(err => {
-          res.status(500).send({
-              message: "Error: Ocurrió un error al actualizar el producto con id=" + id
+          res.status(500).json({
+            status: 500, 
+            title: "Error 500",
+            message: 'Error::Product.updatePricePublic(): Ocurrió un problema al actualizar el precio del producto en la base de datos.',
+            error: err,
+            value: null
           });
       });
 };
@@ -133,21 +193,33 @@ exports.delete = (req, res) => {
 
     Products.destroy({ where: { p_id: id } })
         .then(num => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: "Producto eliminado con éxito!"
+          if (num == 1) {
+            res.status(200).json({
+              status: 200, 
+              title: "Operación exitosa",
+              message: 'El producto fue eliminado de la base de datos con éxito.',
+              error: null,
+              value: num
+              });
+          } 
+          else {
+              res.status(501).json({
+                status: 501, 
+                title: "Error 501",
+                message: 'Error::Product.delete(): No se pudo efectuar la eliminación del producto. Compruebe los datos e intente nuevamente.',
+                error: null,
+                value: null
                 });
-            } 
-            else {
-                res.status(501).send({
-                    message: "Error: No se puede actualizar el producto con id="+id+". Comprueba los datos e intente nuevamente."
-                });
-            }
+          }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error: Ocurrió un error al eliminar el producto con id=" + id
-            });
+            res.status(500).json({
+              status: 500, 
+              title: "Error 500",
+              message: 'Error::Product.delete(): Ocurrió un problema al eliminar el producto de la base de datos.',
+              error: err,
+              value: null
+              });
         });
 };
 
@@ -155,12 +227,21 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Products.destroy({ where: {}, truncate: false})
         .then(nums => {
-          res.status(501).send({ message: `${nums} productos eliminados con éxito!` });
+          res.status(200).json({
+            status: 200, 
+            title: "Operación exitosa",
+            message: 'Se eliminó todos los productos existentes de la base de datos.',
+            error: null,
+            value: null
+            });          
         })
         .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Error: Ha ocurrido un error al eliminar los productos."
+          res.status(500).json({
+            status: 500, 
+            title: "Error 500",
+            message: 'Error::Product.deleteAll(): Ocurrió un problema al eliminar todos los productos en la base de datos.',
+            error: err,
+            value: null
           });
         });
 };
