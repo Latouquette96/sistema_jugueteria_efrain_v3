@@ -1,11 +1,11 @@
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -49,14 +49,14 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
               //IconButton para mostrar informacion del producto.
               Expanded(child:
                 IconButton(
-                  onPressed: (){
+                  onPressed: () async{
                     if (ref.read(productProvider)==null){
                       //Busca el producto de acuerdo a la fila.
                       Product product = _getProductForRendererContext(rendererContext);
                       ///Carga un producto al proveedor para que pueda ser editado.
                       ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                       ref.read(productProvider.notifier).load(product);
-                      ref.read(productPricesByIDProvider.notifier).refresh();
+                      await ref.read(productPricesByIDProvider.notifier).refresh();
                     }
                     else{
                       ref.read(plutoRowProvider.notifier).free();
@@ -147,25 +147,14 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   Future<void> _remove(Product product) async{
     ref.read(productRemoveProvider.notifier).load(product);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseStatusCode statusCode = await ref.read(removeProductWithAPIProvider.future);
+    ResponseAPI response = await ref.read(removeProductWithAPIProvider.future);
 
     if (mounted){
-      //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-      if (statusCode==ResponseStatusCode.statusCodeOK){
-        ElegantNotification.success(
-            title:  const Text("Información"),
-            description:  const Text("La información de la producto fue eliminada con éxito.")
-        ).show(context);
+      ElegantNotificationCustom.showNotificationAPI(context, response);
 
+      if (response.isResponseSuccess()){
         ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()!]);
         ref.read(productRemoveProvider.notifier).free();
-      }
-      else{
-        //Caso contrario, mostrar notificación de error.
-        ElegantNotification.error(
-            title:  const Text("Error"),
-            description:  const Text("Ocurrió un error y no fue posible eliminar la información del producto.")
-        ).show(context);
       }
     }
   }

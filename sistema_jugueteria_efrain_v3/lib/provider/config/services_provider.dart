@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -18,16 +19,23 @@ class ServiceProvider {
   ServiceProvider(this.ref): super();
 
   ///ServiceProvider: Inicializa las service del sistema.
-  Future<void> run() async {
+  Future<ResponseSystem> run() async {
+    ResponseSystem responseSystem;
     try{
       //Inicializa los servicios.
       await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
       await ref.read(productCatalogProvider.notifier).initialize();
       await ref.read(productCatalogPDFProvider.notifier).initialize();
       await ref.read(catalogDistributorProvider.notifier).initialize();
+
+      responseSystem = ResponseSystem.manual(status: 200, value: null, title: "Operación exitosa", message: "Servicios del sistema inicializados con éxito.");
     }
     // ignore: empty_catches
-    catch(e){}
+    catch(e){
+      responseSystem = ResponseSystem.manual(status: 501, value: null, title: "Error 501", message: "Error::Service.run(): Error al ejecutar los comandos.");
+    }
+
+    return responseSystem;
   }
 
   ///ServiceProvider: Detiene todos los servicios ene ejcución.

@@ -5,8 +5,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
@@ -172,16 +172,15 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
   Future<void> _remove(Distributor distributor) async{
     ref.read(distributorStateRemoveProvider.notifier).load(distributor);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseStatusCode response = await ref.read(removeDistributorWithAPIProvider.future);
+    ResponseAPI response = await ref.read(removeDistributorWithAPIProvider.future);
     //Si ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
     if (context.mounted){
-      if (response==ResponseStatusCode.statusCodeOK){
-        ElegantNotificationCustom.showNotificationSuccess(context);
+      ElegantNotificationCustom.showNotificationAPI(context, response);
+
+      if (response.isResponseSuccess()){
+        // ignore: unused_result
         ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorStateRemoveProvider)!.getPlutoRow()!]);
         ref.read(distributorStateRemoveProvider.notifier).free();
-      }
-      else{
-        ElegantNotificationCustom.showNotificationError(context);
       }
     }
   }

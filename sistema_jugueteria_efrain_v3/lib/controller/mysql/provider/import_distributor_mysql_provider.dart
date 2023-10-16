@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_from_mysql.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/response_api_json_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
@@ -19,24 +16,22 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   ImportDistributorMySQLProvider(this.ref): super([]);
 
   ///ImportDistributorMySQLProvider: Inicializa el arreglo de distribuidora.
-  Future<void> initialize({BuildContext? context}) async{
+  Future<ResponseAPI> initialize() async{
     //Obtiene la direccion del servidor.
     final url = ref.watch(urlAPIProvider);
     //Mapeo con el contenido a mostrar
-    Map<String, dynamic> map;
+    ResponseAPI responseAPI;
 
     try{
       //Recupera, de ser posible, las distribuidoras del servidor de mysql.
-      http.Response content = await http.get(Uri.http(url, "/mysql/distributors"));
-      map = jsonDecode(content.body);
-
+      ResponseAPI content = await APICall.get(url: url, route: "/mysql/distributors");
       List<Distributor> list = [];
 
-      if (map['status']==200 || map['status']==201){
+      if (content.isResponseSuccess()){
         List<Distributor> listDistributors = ref.read(catalogDistributorProvider);
 
         //Para cada fila de los resultados obtenidos.
-        for (var row in map['value']){
+        for (var row in content.getValue()){
           //Construye la distribuidora de acuerdo al distribuidora de MySQL.
           Distributor distributorRow = ConvertFromMySQL.getDitributorFromMySQL(row);
 
@@ -69,15 +64,14 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
       }
 
       //Actualiza el estado.
+      responseAPI = content;
       state = [...list];
     }
     catch(e){
-      map = ResponseApiJSON.getProblemOccurredMessage();
+      responseAPI = ResponseAPI.getProblemOccurredMessage();
     }
 
-    if (context!=null && context.mounted){
-      ElegantNotificationCustom.showNotificationAPI(context, map);
-    }
+    return responseAPI;
   }
 
   ///ImportDistributorMySQLProvider: Dada una lista de distribuidoras, comprueba si un distribuidora (de un determinado código) pertenece a la lista y retorna el elemento de la lista.
@@ -115,7 +109,7 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   }
 
   ///ImportDistributorMySQLProvider: Refrezca el listado de distribuidoras.
-  Future<void> refresh({BuildContext? context}) async {
+  Future<ResponseAPI> refresh() async {
     //Limpia el catalogo de todas las filas.
     if (ref.read(stateManagerDistributorMySQLProvider)!=null){
       ref.read(stateManagerDistributorMySQLProvider)!.removeAllRows();
@@ -123,7 +117,7 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
     //Limpia el estado actual.
     state = [];
     //Inicializa el catalogo.
-    await initialize(context: context);
+    return await initialize();
   }
 
   ///ImportDistributorMySQLProvider: Remueve la distribuidora de la lista.

@@ -7,6 +7,10 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
@@ -67,22 +71,17 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
             },
             onCustom: ref.watch(importDistributorMySQLProvider).isNotEmpty
                 ? () async {
-                    bool success = true;
-                    try{
-                      success = await ref.read(importDistributorWithAPIProvider.future);
-                    }
-                    catch(e){
-                      success = false;
-                    }
+                    ResponseAPI response;
+                    response = await ref.read(importDistributorWithAPIProvider.future);
 
                     if (context.mounted){
-                      (success)
-                          ? ElegantNotificationCustom.showNotificationSuccess(context)
-                          : ElegantNotificationCustom.showNotificationError(context);
-                    }
-
-                    if (success){
-                      ref.read(notifyImportsProvider.future);
+                      ElegantNotificationCustom.showNotificationAPI(context, response);
+                      if (response.isResponseSuccess()){
+                        await ref.read(catalogDistributorProvider.notifier).refresh();
+                        ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                        await ref.read(importDistributorMySQLProvider.notifier).refresh();
+                        ref.read(notifyImportsProvider.future);
+                      }
                     }
                   }
                 : null,

@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/services_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
@@ -185,18 +186,9 @@ class _DrawerLoginState extends ConsumerState<DrawerLogin> with ContainerParamet
               ref.read(passwordLoginProvider.notifier).state = _form.control(_keyPassword).value.toString();
               ref.read(urlLoginProvider.notifier).state = _form.control(_keyURL).value.toString();    
               //Sincronizar
-              try{
-                await ref.read(serviceProvider)!.run();
-                if (context.mounted){
-                  ElegantNotificationCustom.showNotificationSuccess(context, title: "Sesión iniciada", description: "La información ha sido sincronizada con éxito.");
-                }
-              }
-              catch(e){
-                if (context.mounted){
-                  ElegantNotificationCustom.showNotificationError(context, title: "Error", description: "Error al iniciar sesión:\n${e.toString()}");
-                }
-              }
+              ResponseAPI response = await ref.read(serviceProvider)!.run();
               if (context.mounted){
+                ElegantNotificationCustom.showNotificationAPI(context, response);
                 Navigator.pop(context);
               }
             },

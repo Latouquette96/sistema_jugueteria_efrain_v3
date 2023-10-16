@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/mapeable/jsonizable.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
@@ -18,13 +18,9 @@ abstract class CatalogPlutonizableStateNotifier<E extends JSONalizable<E>> exten
   ///Constructor CatalogStateNotifier.
   ///
   ///[ref] Referencia al provider que notifica el estado.
-  ///
   ///[path] Directorio donde está ubicado el catalogo en la API.
-  ///
   ///[buildElement] Function que permite recuperar una lista de elementos de tipo [E] a partir de un mapeo.
-  ///
   ///[stateProvider] Provider que controla la grilla donde se mostrará los elementos.
-  ///
   ///[sharingProvider] Provider para controlar los elementos seleccionados.
   CatalogPlutonizableStateNotifier(
     super.state, 
@@ -44,30 +40,40 @@ abstract class CatalogPlutonizableStateNotifier<E extends JSONalizable<E>> exten
   }
 
   ///CatalogStateNotifier: Inicializa el catalogo.
-  Future<void> initialize() async{
+  Future<ResponseAPI> initialize() async{
     state = [];
     //Obtiene la direccion del servidor.
     final url = _ref.watch(urlAPIProvider);
-    //Obtiene la respuesta a la solicitud http.
+    ResponseAPI response;
+
     try{
-      final content = await http.get(Uri.http(url, _path));
-      List<dynamic> map = jsonDecode(content.body);
-      List<E> list = _buildElement(map);
-      state = [...list];
-      //Notifica al catalogo.
-      if (_stateProvider!=null){
-        if (_ref.read(_stateProvider!)!=null){
-          _ref.read(_stateProvider!)!.insertRows(0, state.map((e) => e.getPlutoRow()!).toList());
+      //Obtiene la respuesta a la solicitud http.
+      response = await APICall.get(url: url, route: _path);
+
+      if (response.isResponseSuccess()){
+        List<E> list = _buildElement(response.getValue());
+        state = [...list];
+        //Notifica al catalogo.
+        if (_stateProvider!=null){
+          if (_ref.read(_stateProvider!)!=null){
+            _ref.read(_stateProvider!)!.insertRows(0, state.map((e) => e.getPlutoRow()!).toList());
+          }
         }
+      }
+      else{
+        state = [];
       }
     }
     catch(e){
       state = [];
+      response = ResponseAPI.manual(status: 404, value: null, title: "Error 404", message: "Error: No se pudo recuperar los datos del servidor.");
     }
+
+    return response;
   }
 
   ///CatalogStateNotifier: Recarga los cambios en el catalogo.
-  Future<void> refresh() async {
+  Future<ResponseAPI> refresh() async {
     state = [];
     //Limpia el catalogo de todas las filas.
     if (_stateProvider!=null) {
@@ -81,7 +87,7 @@ abstract class CatalogPlutonizableStateNotifier<E extends JSONalizable<E>> exten
       _ref.read(_sharingProvider!.notifier).clear();
     }
     //Inicializa el catalogo.
-    await initialize();
+    return await initialize();
   }
 
   ///CatalogStateNotifier: Inserta un nuevo elemento.

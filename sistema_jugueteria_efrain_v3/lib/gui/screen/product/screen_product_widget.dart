@@ -60,17 +60,8 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
             visible: ref.watch(productSharingProvider).isNotEmpty,
             child: IconButton(
               onPressed: () async{
-                try{
-                  await BuilderPDF.buildPDF(ref.read(productSharingProvider));
-                  if (context.mounted){
-                    ElegantNotificationCustom.showNotificationSuccess(context);
-                  }
-                }
-                catch(e){
-                  if (context.mounted){
-                    ElegantNotificationCustom.showNotificationError(context);
-                  }
-                }
+                final response = await BuilderPDF.buildPDF(ref.read(productSharingProvider));
+                if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
               },
               icon: Icon(MdiIcons.fromString("file-pdf-box")),
               tooltip: "Generar archivo PDF (productos seleccionados).",

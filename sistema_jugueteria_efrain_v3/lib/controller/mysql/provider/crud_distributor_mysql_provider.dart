@@ -1,43 +1,50 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Proveedor para crear un Distributoro en particular.
-final importDistributorWithAPIProvider = FutureProvider<bool>((ref) async {
-  bool toReturn = true;
+final importDistributorWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
+  ResponseAPI toReturn;
 
   try{
     final url = ref.watch(urlAPIProvider);
     final List<Distributor> listImport = ref.watch(importDistributorMySQLProvider);
 
+    int errors = 0;
+
     for (Distributor d in listImport){
       //Realiza la petición POST para insertar el Distributoro.
-      final response = await http.post(
-        Uri.http(url, '/distributors'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(d.getJSON()), 
+      final response = await APICall.post(
+        url: url, route: '/distributors',
+        body: d.getJSON(),
       );
 
       //List<dynamic> json = jsonDecode(response.body);
-      if (response.statusCode<200 && response.statusCode>299){
-        toReturn = false;
-        break;
+      if (response.isResponseSuccess()==false){
+        errors++;
       }
     }
 
-    await ref.read(catalogDistributorProvider.notifier).refresh();
-    ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-    await ref.read(importDistributorMySQLProvider.notifier).refresh();
+    toReturn = ResponseAPI.manual(
+        status: (errors==0) ? 200 : 501,
+        value: null,
+        title: (errors==0) ? "Importación exitosa" : "Error 501",
+        message: (errors==0)
+            ? "La importación de distribuidoras del Sistema v2 fue realizada con éxito."
+            : "Error: ${ (errors<listImport.length) ? "Se importaron ${listImport.length-errors} distribuidoras." : "No se importó ninguna distribuidora del Sistema v2."}"
+    );
   }
   catch(e){
-    toReturn = false;
+    toReturn = ResponseAPI.manual(
+        status: 404,
+        value: null,
+        title: "Error 404",
+        message: "Error: No se pudo llevar a cabo la importación de distribuidoras del Sistema v2."
+    );
   }
 
   return toReturn;  

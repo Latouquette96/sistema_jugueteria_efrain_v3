@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_from_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_product_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/response_api_json_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
@@ -24,24 +22,22 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   ImportProductMySQLProvider(this.ref): super([]);
 
   ///ImportProductMySQLProvider: Inicializa el arreglo de producto.
-  Future<void> initialize({BuildContext? context}) async{
+  Future<ResponseAPI> initialize() async{
     //Obtiene la direccion del servidor.
     final url = ref.watch(urlAPIProvider);
     //Mapeo con el contenido a mostrar
-    Map<String, dynamic> map;
+    ResponseAPI toReturn;
 
     try{
       List<Distributor> distributors = ref.watch(catalogDistributorProvider);
 
-      final content = await http.get(Uri.http(url, "/mysql/products"));
-      map = jsonDecode(content.body);
+      final content = await APICall.get(url: url, route: "/mysql/products");
 
       List<Triple<Product, Distributor, double>> list = [];
-
-      if (map['status']==200 || map['status']==201){
+      if (content.isResponseSuccess()){
         List<Product> listProducts = ref.watch(productCatalogProvider);
         //Para cada fila de los resultados obtenidos.
-        for (Map<String, dynamic> row in map['value']){
+        for (Map<String, dynamic> row in content.getValue()){
           //Recupera las tres coluumnas principales de la consulta.
           Map<String, dynamic> mapProductRow = jsonDecode(row['product']);
           Map<String, dynamic> mapProductPriceRow = jsonDecode(row['price_product']);
@@ -85,14 +81,14 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       if (ref.read(stateManagerProductMySQLProvider)!=null){
         ref.read(stateManagerProductMySQLProvider)!.insertRows(0, state.map((e) => e.getValue1().getPlutoRow()!).toList());
       }
+
+      toReturn = content;
     }
     catch(e){
-      map = ResponseApiJSON.getProblemOccurredMessage();
+      toReturn = ResponseAPI.getProblemOccurredMessage();
     }
 
-    if (context!=null && context.mounted){
-      ElegantNotificationCustom.showNotificationAPI(context, map);
-    }
+    return toReturn;
   }
 
   ///ImportProductMySQLProvider: Dada una lista de productos, comprueba si un producto (de un determinado código) pertenece a la lista y retorna el elemento de la lista.
@@ -135,7 +131,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   }
 
   ///ImportProductMySQLProvider: Refrezca el listado de productos.
-  Future<void> refresh({BuildContext? context}) async {
+  Future<ResponseAPI> refresh() async {
     //Limpia el catalogo de todas las filas.
     if (ref.read(stateManagerProductMySQLProvider)!=null){
       ref.read(stateManagerProductMySQLProvider)!.removeAllRows();
@@ -144,7 +140,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
     //Limpia el estado actual.
     state = [];
     //Inicializa el catalogo.
-    await initialize(context: context);
+    return await initialize();
   }
 
   ///ImportProductMySQLProvider: Remueve el producto de la lista.

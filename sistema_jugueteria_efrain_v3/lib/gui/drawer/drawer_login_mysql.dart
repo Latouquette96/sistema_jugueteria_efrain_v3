@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
 
 ///Clase DrawerLoginMySQL: Widget que permite controlar las configuraciones del sistema.
@@ -171,12 +172,9 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
           Expanded(child: ElevatedButton(
             style: StyleElevatedButton.getStyleLoginCancel(),
             onPressed: () async{
-              Map<String,dynamic> response = await ref.read(closeConnectionMySQLProvider.future);
+              ResponseAPI response = await ref.read(closeConnectionMySQLProvider.future);
               if (context.mounted){
                 ElegantNotificationCustom.showNotificationAPI(context, response);
-              }
-
-              if (context.mounted){
                 Navigator.pop(context);
               }
             },
@@ -191,12 +189,9 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
               ref.read(passwordLoginMySQLProvider.notifier).state = _form.control(_keyPassword).value.toString();
               ref.read(urlLoginMySQLProvider.notifier).state = _form.control(_keyURL).value.toString();
               //Sincronizar
-              Map<String, dynamic> response = await ref.read(connectionMySQLProvider.future);
+              ResponseAPI response = await ref.read(connectionMySQLProvider.future);
               if (context.mounted){
                 ElegantNotificationCustom.showNotificationAPI(context, response);
-              }
-
-              if (context.mounted){
                 Navigator.pop(context);
               }
             },

@@ -5,9 +5,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
@@ -173,22 +173,23 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
   ///DistributorInformationWidget: Inserta una nueva distribuidora.
   Future<void> _insert(BuildContext context) async{
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseStatusCode response = await ref.watch(newDistributorWithAPIProvider.future);
+    ResponseAPI response = await ref.watch(newDistributorWithAPIProvider.future);
 
-    if (response==ResponseStatusCode.statusCodeOK){
+    if (response.isResponseSuccess()){
+      //Notifica con exito en la operacion
+      if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
+
       //Inserta el nuevo registro por el actualizado.
       ref.read(stateManagerDistributorProvider.notifier).insert(distributorStateProvider);
       //Actualizar datos de ultima actualizacion
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-      //Notifica con exito en la operacion
-      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
 
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
       ref.read(distributorStateProvider.notifier).free();
       setState(() {});
     }
     else{
-      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+      if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
     }
   }
 
@@ -197,21 +198,18 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
     //Carga los datos del formulario en la distribuidora.
     ref.read(distributorStateProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseStatusCode response = await ref.watch(updateDistributorWithAPIProvider.future);
+    ResponseAPI response = await ref.watch(updateDistributorWithAPIProvider.future);
 
-    if (response==ResponseStatusCode.statusCodeOK){
+    if (response.isResponseSuccess()){
+      if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
       ref.read(stateManagerDistributorProvider.notifier).update(distributorStateProvider);
       //Actualizar datos de ultima actualizacion
-      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-      if (context.mounted) ElegantNotificationCustom.showNotificationSuccess(context);
-
-      //Libera el distribuidor del proveedor.
       ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
       ref.read(distributorStateProvider.notifier).free();
       setState(() {});
     }
-    else{ 
-      if (context.mounted) ElegantNotificationCustom.showNotificationError(context);
+    else{
+      if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
     }
   }
 }

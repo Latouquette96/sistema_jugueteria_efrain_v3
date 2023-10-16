@@ -4,11 +4,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login_mysql.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/distributor_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
@@ -95,7 +97,10 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
                               //Refrescar el catálogo de productos.
-                              await ref.read(importDistributorMySQLProvider.notifier).refresh(context: context);
+                              ResponseAPI response = await ref.read(importDistributorMySQLProvider.notifier).refresh();
+                              if (mounted){
+                                ElegantNotificationCustom.showNotificationAPI(context, response);
+                              }
                             },
                           ),
                           IconButton(
@@ -142,7 +147,10 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
                               //Refrescar el catálogo de productos.
-                              await ref.read(importProductMySQLProvider.notifier).refresh(context: context);
+                              ResponseAPI response = await ref.read(importProductMySQLProvider.notifier).refresh();
+                              if (mounted){
+                                ElegantNotificationCustom.showNotificationAPI(context, response);
+                              }
                             },
                           ),
                           IconButton(

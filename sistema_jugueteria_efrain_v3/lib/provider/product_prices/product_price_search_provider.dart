@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
@@ -17,14 +17,15 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
   final StateNotifierProviderRef<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> ref;
   final StateNotifierProvider<ElementStateProvider<Product>, Product?> providerSearch;
 
-
   ///Constructor de ProductPriceSearchProvider
   ProductPriceSearchProvider(this.ref, this.providerSearch): super([]);
 
   ///ProductPriceSearchProvider: Inicializa el arreglo de precios del producto.
-  Future<void> initialize() async{
+  Future<ResponseAPI> initialize() async{
     //Obtiene la direccion del servidor.
     final url = ref.watch(urlAPIProvider);
+    ResponseAPI content;
+    
     //Obtiene la respuesta a la solicitud http.
     try{
       //Producto sobre el cual se busca los precios de producto.
@@ -32,21 +33,25 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
 
       //Obtiene todas las distribuidoras existentes.
       List<Distributor> listDistributor = (await ref.read(catalogDistributorProvider));
+      List<Pair<Distributor, ProductPrice>> listProduct = [];
 
       //Obtiene todos los precios de producto
       //Peticion GET para obtener los precios de producto.
-      final content = await http.get(Uri.http(url, '/products/prices_products/${product!.getID()}'));
-      List<dynamic> map = jsonDecode(content.body);
-      List<ProductPrice> list = map.map((e) => ProductPrice.fromJSON(e)).toList();
+      content = await APICall.get(url: url, route: '/products/prices_products/${product!.getID()}');
 
-      //Computa ambas listas (ditribuidora y precios en una sola)
-      List<Pair<Distributor, ProductPrice>> listProduct = list.map((e){
-        Distributor d = listDistributor.firstWhere((element) => element.getID()==e.getDistributor());
+      if (content.isResponseSuccess()){
+        List<dynamic> map = content.getValue();
+        List<ProductPrice> list = map.map((e) => ProductPrice.fromJSON(e)).toList();
+
+        //Computa ambas listas (ditribuidora y precios en una sola)
+        listProduct = list.map((e){
+          Distributor d = listDistributor.firstWhere((element) => element.getID()==e.getDistributor());
           return Pair(v1: d, v2: e);
         }).toList();
-        
-      //Establece las distribuidoras libres para un determinado producto.
-      ref.read(distributorFreeProductPriceProvider.notifier).load(listDistributor, listProduct);
+
+        //Establece las distribuidoras libres para un determinado producto.
+        ref.read(distributorFreeProductPriceProvider.notifier).load(listDistributor, listProduct);
+      }
 
       state = listProduct;
     }
@@ -54,13 +59,16 @@ class ProductPriceSearchProvider extends StateNotifier<List<Pair<Distributor, Pr
       if (mounted){
         state = [];
       }
+      content = ResponseAPI.manual(status: 404, value: null, title: "Error 404", message: "Error: No fue posible recuperar los precios del producto.");
     }
+
+    return content;
   }
 
   ///ProductPriceSearchProvider: Refrezca el listado de precios del producto.
-  Future<void> refresh() async {
+  Future<ResponseAPI> refresh() async {
     state.clear();
-    await initialize();
+    return await initialize();
   }
 }
 

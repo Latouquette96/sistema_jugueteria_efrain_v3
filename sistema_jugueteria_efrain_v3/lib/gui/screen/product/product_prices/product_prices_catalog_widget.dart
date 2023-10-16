@@ -1,16 +1,16 @@
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
@@ -168,17 +168,14 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
               //Escribe el nuevo valor al público del producto.
               ref.read(widget.getProvider())!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
               //Realiza la peticion de escritura en el servidor.
-              ResponseStatusCode response = await ref.read(updatePricePublicWithAPIProvider.future);
+              ResponseAPI response = await ref.read(updatePricePublicWithAPIProvider.future);
 
               //Comprueba si resultó exitosa la operacion (cod. 200), en caso contrario, es error.
-              if (response==ResponseStatusCode.statusCodeOK){
-                if (context.mounted){
-                  ElegantNotification.success(
-                    title:  const Text("Información"),
-                    description:  const Text("La información ha sido actualizada con éxito.")
-                  ).show(context);
-                }
-                
+              if (context.mounted){
+                ElegantNotificationCustom.showNotificationAPI(context, response);
+              }
+
+              if (response.isResponseSuccess()){
                 //Recupero la posición del registro del producto.
                 int index = ref.read(widget.getProviderStateManager())!.rows.indexOf(ref.read(widget.getProviderPlutoRow())!);
                 //Si está dentro del arreglo.
@@ -189,15 +186,6 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
 
                 ref.read(widget.getProvider().notifier);
                 setState(() {});
-              }
-              else{
-                //Caso contrario, mostrar notificación de error.
-                if (context.mounted){
-                  ElegantNotification.error(
-                    title:  const Text("Error"),
-                    description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                  ).show(context);
-                }
               }
             },
           ),
@@ -247,9 +235,14 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                                   icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
                                   onPressed: () async{
                                     ref.read(productPriceProvider.notifier).load(e.getValue2()!);
-                                    await ref.read(updateProductPriceWithAPIProvider.future);
-                                    await ref.read(widget.getProviderID().notifier).refresh();
-                                    setState(() {});
+                                    ResponseAPI response = await ref.read(updateProductPriceWithAPIProvider.future);
+                                    if (mounted){
+                                      ElegantNotificationCustom.showNotificationAPI(context, response);
+                                      if (response.isResponseSuccess()){
+                                        await ref.read(widget.getProviderID().notifier).refresh();
+                                        setState(() {});
+                                      }
+                                    }
                                   },
                                 ),
                                 IconButton(
@@ -258,9 +251,14 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                                   icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
                                   onPressed: () async{
                                     ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
-                                    await ref.read(removeProductPriceWithAPIProvider.future);
-                                    await ref.read(widget.getProviderID().notifier).refresh();
-                                    setState(() {});
+                                    ResponseAPI response = await ref.read(removeProductPriceWithAPIProvider.future);
+                                    if (mounted){
+                                      ElegantNotificationCustom.showNotificationAPI(context, response);
+                                      if (response.isResponseSuccess()){
+                                        await ref.read(widget.getProviderID().notifier).refresh();
+                                        setState(() {});
+                                      }
+                                    }
                                   },
                                 ),
                             ],
@@ -384,23 +382,14 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                         onPressed: () async{
                           ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
                           final response = await ref.read(newProductPriceWithAPIProvider.future);
+
                           if (mounted){
-                            if (response==ResponseStatusCode.statusCodeOK){
-                              ElegantNotification.success(
-                                  title:  const Text("Información"),
-                                  description:  const Text("La información ha sido actualizada con éxito.")
-                              ).show(context);
+                            ElegantNotificationCustom.showNotificationAPI(context, response);
+                            if (response.isResponseSuccess()){
+
                               ref.read(productPriceProvider.notifier).free();
                               await ref.read(widget.getProviderID().notifier).refresh();
                               setState(() {});
-                            }
-                            else{
-                              //Caso contrario, mostrar notificación de error.
-                              // ignore: use_build_context_synchronously
-                              ElegantNotification.error(
-                                  title:  const Text("Error"),
-                                  description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                              ).show(context);
                             }
                           }
                         },

@@ -1,4 +1,3 @@
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -6,9 +5,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/enum/response_status_code.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
@@ -83,16 +82,15 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 ref.read(billingInformationProvider.notifier).free();
               },
               onDelete: (ref.watch(billingInformationProvider)!.getID()!=0) ? () async{
-                ResponseStatusCode respose = await ref.read(removeBillingsProvider.future);
+                ResponseAPI response = await ref.read(removeBillingsProvider.future);
+                
                 if (context.mounted){
-                  if (respose==ResponseStatusCode.statusCodeOK){
-                    ElegantNotificationCustom.showNotificationSuccess(context);
+                  ElegantNotificationCustom.showNotificationAPI(context, response);
+
+                  if (response.isResponseSuccess()){
                     // ignore: unused_result
                     ref.refresh(billingsByDistributorProvider.future);
                     ref.read(billingInformationProvider.notifier).free();
-                  }
-                  else{
-                    ElegantNotificationCustom.showNotificationError(context);
                   }
                 }
               } : null,
@@ -100,25 +98,15 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                 if(_form.valid){
                   //Carga los nuevos valores en el billingInformationProvider.
                   ref.read(billingInformationProvider)?.fromJSONtoForm(_form.value);
-                  ResponseStatusCode response = await ref.watch(newBillingWithAPIProvider.future);
+                  ResponseAPI response = await ref.watch(newBillingWithAPIProvider.future);
 
-                  if (mounted){
-                    //Si no ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
-                    if (response==ResponseStatusCode.statusCodeOK){
-                      ElegantNotification.success(
-                          title:  const Text("Información"),
-                          description:  const Text("La información ha sido actualizada con éxito.")
-                      ).show(context);
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationAPI(context, response);
+
+                    if (response.isResponseSuccess()){
                       // ignore: unused_result
                       ref.refresh(billingsByDistributorProvider.future);
                       ref.read(billingInformationProvider.notifier).free();
-                    }
-                    else{
-                      //Caso contrario, mostrar notificación de error.
-                      ElegantNotification.error(
-                          title:  const Text("Error"),
-                          description:  const Text("Ocurrió un error y no fue posible actualizar la información.")
-                      ).show(context);
                     }
                   }
                 }
