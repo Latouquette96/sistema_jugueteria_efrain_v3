@@ -10,7 +10,7 @@ var app = express.Router();
 //var md_auth = require('../middlewares/authenticated');
 
 //-- Creación de rutas para los métodos del controlador --
-app.get('/services/extract_text_pdf',  /*md_auth.ensureAuth, */ FunctionController.extractTextFromPDF)
+app.get('/services/extract_text_pdf/:path',  /*md_auth.ensureAuth, */ FunctionController.extractTextFromPDF)
 
 //Exportación de la configuración
 module.exports = app;
