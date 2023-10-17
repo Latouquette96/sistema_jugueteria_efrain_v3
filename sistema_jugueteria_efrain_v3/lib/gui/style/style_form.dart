@@ -87,6 +87,10 @@ class StyleForm {
     return TextStyle(color: Colors.grey.shade700, fontSize: 14, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle getTextStyleSubtitle(){
+    return TextStyle(color: Colors.grey.shade700, fontSize: 12, fontWeight: FontWeight.w500);
+  }
+
   static BoxDecoration getDecorationContainer(){
     return BoxDecoration(
         gradient: LinearGradient(colors: [Colors.blueGrey.shade300, Colors.blueGrey.shade200, Colors.blueGrey.shade300]), 

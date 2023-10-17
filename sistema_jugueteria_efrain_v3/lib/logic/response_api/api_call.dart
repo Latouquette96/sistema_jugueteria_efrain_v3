@@ -43,7 +43,7 @@ class APICall {
   static Future<ResponseAPI> get({required String url, required String route}) async{
     http.Response response = await http.get(
       Uri.http(url, route),
-      headers: {'Content-Type': 'application/json; charset=UTF-8'}
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
 
     return ResponseAPI.fromResponse(response: response);

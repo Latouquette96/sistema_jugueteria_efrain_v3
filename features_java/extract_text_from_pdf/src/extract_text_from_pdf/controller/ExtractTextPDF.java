@@ -66,7 +66,7 @@ public class ExtractTextPDF {
 
 
         // Imprima el texto en la consola
-        System.out.println(json);
+        System.out.println(json.toString());
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class ExtractTextPDF {
 	        document.close();
 	        
 	        //Construye el JSON
-	        toReturn = getJSON(0, text); 
+	        toReturn = getJSON(200, "Texto extraido del PDF con éxito.", "Lectura exitosa", null, text); 
 		}
 		catch(IOException e) {
 			toReturn = getError(FILE_ERROR);
@@ -103,6 +103,7 @@ public class ExtractTextPDF {
 	
 	private static JSONObject getError(int error) {
 		String message = "";
+		int errorAPI = 501;
 		
 		switch(error) {
 			case FILE_ERROR: {
@@ -132,7 +133,7 @@ public class ExtractTextPDF {
 		}
 		
 		//Construye el JSON de error
-		return getJSON(error, message);
+		return getJSON(errorAPI, message, "Se produjo un error...", null, null);
 	}
 	
 	/**
@@ -141,10 +142,22 @@ public class ExtractTextPDF {
 	 * @param message String con el texto.
 	 * @return JSON.
 	 */
-	private static JSONObject getJSON(int status, String message) {
+	private static JSONObject getJSON(int status, String message, String title, String error, String value) {
 		JSONObject obj = new JSONObject();
+		/**
+		 * Segun la API REST, toda solicitud a la API debe tener el siguiente formato.
+		 * status: 200, 
+           title: "Operación exitosa",
+           message: 'La factura fue actualizada con éxito.',
+           error: null,
+           value: num
+		 */
+		
+		obj.put("title", title);
 	    obj.put("status", status);
 	    obj.put("message", message);
+	    obj.put("error", error);
+	    obj.put("value", value);
 		
 		return obj;
 	}
