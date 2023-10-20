@@ -2,8 +2,8 @@ import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.da
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/factory/factory_category_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/category_mysql_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/subcategory_mysql_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/category_util.dart';
 
 ///Clase ConvertCategory: Permite realizar conversiones de una CategoryMySQL a Category.

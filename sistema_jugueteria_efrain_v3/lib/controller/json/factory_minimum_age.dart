@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/mixin_factory_json.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/minimum_age.dart';
 
 ///Clase FactoryMinimumAge: Permite construir las posibles edades minimas que podran ser utilizadas en el sistema.
 class FactoryMinimumAge with MixinFactoryJSONDefault<MinimumAge, MinimumAge>{

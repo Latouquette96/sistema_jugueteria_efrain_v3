@@ -18,10 +18,10 @@ import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product.
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product_price.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/minimum_age.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/minimum_age.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';

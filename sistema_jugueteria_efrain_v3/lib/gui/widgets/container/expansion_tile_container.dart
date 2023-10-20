@@ -10,13 +10,15 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   final String? subtitle;
   final List<Widget> children;
   final bool isRow;
+  final bool expanded;
 
   ///Constructor de ExpansionTileContainerWidget
   ///
   /// [title] Titulo del contenedor (parte siempre visible).
   /// [subtitle] (opcional) Subtitulo del contenedor (siempre visible si se define).
   /// [children] Lista de Widgets.
-  const ExpansionTileContainerWidget({super.key, required this.title, this.subtitle, required this.children, this.isRow=false });
+  /// [expanded] True para mostrar expandido el contenedo, en caso contrario False.
+  const ExpansionTileContainerWidget({super.key, required this.title, this.subtitle, required this.children, this.isRow=false, this.expanded = true });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -34,10 +36,11 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
   @override
   Widget build(BuildContext context) {
     return ExpansionTileCard(
+
       expandedTextColor: Colors.black,
       expandedColor: Colors.blueGrey.shade50,
       baseColor: Colors.blueGrey.shade100,
-      initiallyExpanded: true,
+      initiallyExpanded: widget.expanded,
       contentPadding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       title: Center(child: Text(widget.title, style: StyleForm.getTextStyleTitle())),
       subtitle: widget.subtitle!=null ? Text(widget.subtitle!, style: const TextStyle(fontSize: 13)) : null,

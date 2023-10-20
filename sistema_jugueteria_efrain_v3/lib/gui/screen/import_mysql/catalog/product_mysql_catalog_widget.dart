@@ -73,23 +73,26 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
             onClose: (){
               ref.read(showImportProductsMySQL.notifier).toggle();
             },
-            onCustom: ref.watch(catalogProductsImportProvider).isNotEmpty
-                ? () async {
-                    ResponseAPI response = await ref.read(importProductWithAPIProvider.future);
+            onButton: IconButton(
+              onPressed: () async {
+                if (ref.watch(catalogProductsImportProvider).isNotEmpty){
+                  ResponseAPI response = await ref.read(importProductWithAPIProvider.future);
 
-                    if (context.mounted){
-                      ElegantNotificationCustom.showNotificationAPI(context, response);
-                      if (response.isResponseSuccess()) {
-                        await ref.read(productCatalogProvider.notifier).refresh();
-                        ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
-                        await ref.read(importProductMySQLProvider.notifier).refresh();
-                        await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
-                        ref.read(notifyImportsProvider.future);
-                      }
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationAPI(context, response);
+                    if (response.isResponseSuccess()) {
+                      await ref.read(productCatalogProvider.notifier).refresh();
+                      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                      await ref.read(importProductMySQLProvider.notifier).refresh();
+                      await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+                      await ref.read(notifyImportsProvider.future);
                     }
                   }
-                : null,
-            iconCustom: Icons.download,
+                }
+              },
+              icon: const Icon(Icons.download, color: Colors.yellow,),
+            ),
+            isButtonVisible: ref.watch(catalogProductsImportProvider).isNotEmpty,
             tooltipCustom: "Importar todos los productos seleccionados.",
           ),
           Expanded(
@@ -104,8 +107,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                 }
               },
               //Si se selecciona/deselecciona la casilla checked.
-              onRowChecked:(event) {
-                //Si no se seleccionó todos los elementos.
+              onRowChecked:(event) {//Si no se seleccionó todos los elementos.
                 if (event.isChecked==null){
                   return;
                 }
@@ -130,14 +132,21 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                   if (event.row!=null){
                     //Se recupera el producto en cuestion.
                     Triple<Product, Distributor, double> triple = _getTripleData(event.row!);
+                    print("object");
                     //Se notifica al catalogo de acuerdo
-                    if (ref.read(catalogProductsImportProvider.notifier).contains(triple)){
+                    if (ref.watch(catalogProductsImportProvider).contains(triple)){
                       ref.read(catalogProductsImportProvider.notifier).remove(triple);
                     }
                     else{
                       ref.read(catalogProductsImportProvider.notifier).insert(triple);
                     }
                   }
+                }
+                try{
+
+                }
+                catch(e){
+                  print("Error: $e");
                 }
               },
               configuration: PlutoConfig.getConfiguration(),

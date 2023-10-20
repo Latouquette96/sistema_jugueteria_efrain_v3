@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 

@@ -1,8 +1,8 @@
 
 import 'dart:convert';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/mixin_factory_json.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
 ///Clase FactoryCategory: Permite construir las posibles categorias que podran ser utilizadas en el sistema.

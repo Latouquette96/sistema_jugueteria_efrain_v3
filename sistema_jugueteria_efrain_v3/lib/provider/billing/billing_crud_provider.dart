@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/distributor_billing_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';

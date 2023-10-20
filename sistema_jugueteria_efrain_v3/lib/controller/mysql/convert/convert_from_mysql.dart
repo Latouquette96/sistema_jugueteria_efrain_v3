@@ -5,8 +5,8 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/category_mys
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/model/subcategory_mysql_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/subcategory_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_json/category_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.dart';
 
 ///Clase ConvertFromMySQL
 class ConvertFromMySQL {

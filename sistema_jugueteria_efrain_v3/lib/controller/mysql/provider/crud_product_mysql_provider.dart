@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models_relations/product_prices_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
@@ -81,7 +81,7 @@ final notifyImportsProvider = FutureProvider((ref) async{
   await Future.delayed(const Duration(seconds: 1));
   final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogProductsImportProvider);
 
-  if (ref.read(stateManagerProductMySQLProvider)!=null){
+  if (ref.watch(stateManagerProductMySQLProvider)!=null){
     ref.read(stateManagerProductMySQLProvider)!.removeRows(
         listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
     );
