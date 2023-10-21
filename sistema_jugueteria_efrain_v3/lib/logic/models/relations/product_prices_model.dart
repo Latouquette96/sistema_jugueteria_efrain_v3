@@ -9,23 +9,26 @@ class ProductPrice extends JSONalizable<ProductPrice>{
   //Atributos de instancia
   late int _id;
   late int _productID;
+  late String? _internalCode;
   late int _distributor; //RN-P5.
   late double _priceBase; //RN-P4.
   late int _dateLastUpdated; //RN-P21.
   late String? _website;
 
   //Atributos de clase
-  static const String _keyID          = "pp_id";
-  static const String _keyProduct     = "pp_product";
-  static const String _keyDistributor = "pp_distributor";
-  static const String _keyPriceBase   = "pp_price_base";
-  static const String _keyDateUpdate  = "pp_date_update";
-  static const String _keyWebsite     = "pp_website";
+  static const String _keyID            = "pp_id";
+  static const String _keyProduct       = "pp_product";
+  static const String _keyDistributor   = "pp_distributor";
+  static const String _keyInternalCode  = "pp_internal_code";
+  static const String _keyPriceBase     = "pp_price_base";
+  static const String _keyDateUpdate    = "pp_date_update";
+  static const String _keyWebsite       = "pp_website";
 
   ///Constructor de ProductPrice.
   ProductPrice({
     required int id,
     required int p,
+    String? internalCode,
     required int d,
     required double price,
     required int date,
@@ -37,6 +40,7 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _distributor = d;
     _dateLastUpdated = date;
     _website = website;
+    _internalCode = internalCode;
   }
 
   ProductPrice.clear(Product p){
@@ -46,9 +50,11 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _distributor = 0;
     _productID = p.getID();
     _website = null;
+    _internalCode = null;
   }
 
   ProductPrice.fromJSON(Map<String, dynamic> map){
+
     try{
       _id = int.parse(map[_keyID].toString());
       _priceBase = double.parse(map[_keyPriceBase].toString());
@@ -56,6 +62,8 @@ class ProductPrice extends JSONalizable<ProductPrice>{
       _dateLastUpdated = int.parse(map[_keyDateUpdate].toString());
       _distributor = int.parse(map[_keyDistributor].toString());
       _website = map[_keyWebsite];
+      //Compatibilidad con MySQL (no tiene dicha columna)
+      _internalCode = (map.keys.toList().contains(_keyInternalCode)) ? map[_keyInternalCode] : null;
     }
     // ignore: empty_catches
     catch(e){
@@ -66,6 +74,10 @@ class ProductPrice extends JSONalizable<ProductPrice>{
 
   static String getKeyID(){
     return _keyID;
+  }
+
+  static String getKeyInternalCode(){
+    return _keyInternalCode;
   }
 
   static String getKeyProduct(){
@@ -138,6 +150,16 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _website = web;
   }
 
+  //-------------------CODIGO INTERNO------------------------------------------
+
+  String? getInternalCode(){
+    return _internalCode;
+  }
+
+  void setInternalCode(String? ic){
+    _internalCode = ic;
+  }
+
   //-------------------ULTIMA FECHA DE ACTUALIZACION---------------------
 
   String getDateLastUpdated() {
@@ -154,6 +176,8 @@ class ProductPrice extends JSONalizable<ProductPrice>{
     _distributor = map[_keyDistributor];
     _dateLastUpdated = map[_keyDateUpdate];
     _website = map[_keyWebsite];
+    //Compatibilidad con MySQL (no tiene dicha columna)
+    _internalCode = (map.keys.toList().contains(_keyInternalCode)) ? map[_keyInternalCode] : null;
   }
   
   @override
@@ -164,7 +188,8 @@ class ProductPrice extends JSONalizable<ProductPrice>{
       _keyProduct: _productID,
       _keyDateUpdate: _dateLastUpdated,
       _keyPriceBase: _priceBase,
-      _keyWebsite: _website
+      _keyWebsite: _website,
+      _keyInternalCode: _internalCode
     };
   }
 

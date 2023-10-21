@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
+            pp_internal_code: {
+                type: Sequelize.STRING(20),
+                allowNull: true,
+            },
             pp_product: {
                 type: Sequelize.INTEGER,
                 allowNull: false,

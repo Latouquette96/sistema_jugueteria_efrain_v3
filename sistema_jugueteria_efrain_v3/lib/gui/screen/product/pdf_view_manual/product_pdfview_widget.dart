@@ -8,9 +8,12 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/extract_data/data_fragment.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 
 ///Clase ProductPDFViewWidget: Permite mostrar y actualizar la información de un producto.
 class ProductPDFViewWidget extends ConsumerStatefulWidget {
@@ -117,7 +120,17 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                     color: Colors.black12,
                     child: ListTile(
                       title: Text(e.getTitle()),
-                      trailing: IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios_rounded)),
+                      trailing: IconButton(onPressed: (){
+                        if (ref.read(productExtractTextProvider)!=null){
+                          ref.read(productExtractTextProvider.notifier).free();
+                        }
+                        else{
+                          //Busca el producto de acuerdo a la fila.
+                          Product product = e;
+                          ref.read(productExtractTextProvider.notifier).load(product);
+                          ref.read(productPricesExtractTextPDFProvider.notifier).refresh();
+                        }
+                      }, icon: const Icon(Icons.arrow_forward_ios_rounded)),
                     ),
                   );
                 }).toList(),
@@ -135,7 +148,17 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                     margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
                     child: ListTile(
                       title: Text(e.getTitle()),
-                      trailing: IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios_rounded)),
+                      trailing: IconButton(onPressed: (){
+                        if (ref.read(productExtractTextProvider)!=null){
+                          ref.read(productExtractTextProvider.notifier).free();
+                        }
+                        else{
+                          //Busca el producto de acuerdo a la fila.
+                          Product product = e;
+                          ref.read(productExtractTextProvider.notifier).load(product);
+                          ref.read(productPricesExtractTextPDFProvider.notifier).refresh();
+                        }
+                      }, icon: const Icon(Icons.arrow_forward_ios_rounded)),
                     ),
                   );
                 }).toList(),

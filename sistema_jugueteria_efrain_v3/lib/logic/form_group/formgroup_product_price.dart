@@ -13,6 +13,9 @@ class FormGroupProductPrices {
   static buildFormGroupProductPrices(WidgetRef ref, StateNotifierProvider<ElementStateProvider<Product>, Product?> provider){
 
     return FormGroup({
+      ProductPrice.getKeyInternalCode(): FormControl<String>(
+        value:  null,
+      ),
       "${ProductPrice.getKeyDistributor()}Object": FormControl<Distributor>(
         value:  null,
       ),

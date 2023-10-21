@@ -70,7 +70,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
           Visibility(
               visible: ref.watch(productSearchPDFPriceProvider) != null,
               child: SizedBox(
-                width: 400,
+                width: 375,
                 child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [

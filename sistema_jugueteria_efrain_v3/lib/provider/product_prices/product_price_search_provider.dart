@@ -77,3 +77,6 @@ final productPricesByIDProvider = StateNotifierProvider<ProductPriceSearchProvid
 
 ///productPricesPDFByIDProvider es un proveedor que almacena la lista de productos.
 final productPricesPDFByIDProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productSearchPDFPriceProvider));
+
+///productPricesPDFByIDProvider es un proveedor que almacena la lista de productos.
+final productPricesExtractTextPDFProvider = StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>>((ref) => ProductPriceSearchProvider(ref, productExtractTextProvider));

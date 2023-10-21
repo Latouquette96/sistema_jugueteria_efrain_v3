@@ -18,6 +18,7 @@ exports.create = (req, res) => {
   
     //Crea un precio del producto.
     const price_product = {
+        pp_internal_code: req.body.pp_internal_code,
         pp_product: req.body.pp_product, 
         pp_distributor: req.body.pp_distributor, 
         pp_price_base: req.body.pp_price_base, 

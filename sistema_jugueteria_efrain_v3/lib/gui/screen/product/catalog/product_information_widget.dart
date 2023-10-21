@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/new_product_prices_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_listview_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
@@ -21,19 +22,15 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_crud_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {
@@ -49,7 +46,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
   //Atributos de instancia.
   late final FormGroup _form, _formNewPP;
-  final TreeController _controller = TreeController(allNodesExpanded: false);
   late bool _brandManual;
   
   final Widget _separadorHeight = const SizedBox(height: 5,);
@@ -146,7 +142,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                                             _separadorHeight,
                                             _buildWidgetPricePublic(context, product),
                                             _separadorHeight,
-                                            _buildReactiveFormProductPrices(context, product, distributorFree)
+                                            _buildReactiveFormProductPrices(context, distributorFree)
                                           ],
                                         )
                                     )
@@ -598,7 +594,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   //--------------------CONSTRUIR GUI (PRECIOS DE PRODUCTOS)-------------------
 
   ///ProductPriceWidget: Construye un formulario reactivo de precios de producto.
-  Widget _buildReactiveFormProductPrices(BuildContext context, Product product, List<Distributor> distributorFree){
+  Widget _buildReactiveFormProductPrices(BuildContext context, List<Distributor> distributorFree){
     //Precios del producto
     return ReactiveForm(
         formGroup: _formNewPP,
@@ -616,279 +612,19 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             //Construye el ListView
             Visibility(
               visible: ref.read(productProvider)!.getID()!=0,
-              child: _buildWidgetListView(context, product)
+              child: ProductPriceListViewWidget(
+                  providerProduct: productProvider,
+                  providerPriceDistributor: productPricesByIDProvider,
+              )
             ),
             //LISTTILE para crear un nuevo registro.
             Visibility(
                 visible: distributorFree.isNotEmpty && ref.read(productProvider)!.getID()!=0,
-                child: _buildWidgetNewProductPrice(context)
+                child: NewProductPricesWidget(providerProduct: productProvider, formGroup: _formNewPP)
             )
           ],
         )
     );
-  }
-
-  ///ProductPriceWidget: Construye el widget listado de precios de producto.
-  Widget _buildWidgetListView(BuildContext context, Product product){
-    var pricesProduct = ref.watch(productPricesByIDProvider);
-
-    return Container(
-        height: 300,
-        padding: const EdgeInsets.all(5),
-        margin: const EdgeInsets.all(0),
-        decoration: StyleForm.getDecorationFormControl(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Precios de producto por distribuidora", style: StyleForm.getTextStyleTitle()),
-            Expanded(
-                child: SingleChildScrollView(
-                  child: TreeView(
-                    indent: 10,
-                    treeController: _controller,
-                    //Lo nodos serán cada uno de los elementos 'e' que son pares de <Distribuidora, PrecioProducto>
-                    nodes: pricesProduct.map((e){
-                      //Nodo del elemento 'e'
-                      return TreeNode(
-                          content: Container(
-                            decoration: StyleForm.getDecorationControlImage(),
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                            width: 250,
-                            child: Row(
-                              children: [
-                                Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
-                                Visibility(
-                                  visible: e.getValue2()!.getWebsite()!=null,
-                                  child: IconButton(
-                                        onPressed: () async {
-                                          Uri url = Uri.parse(e.getValue2()?.getWebsite() ?? "");
-                                          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                                            throw Exception('Could not launch $url');
-                                          }
-                                        },
-                                        icon: Icon(MdiIcons.fromString("web"), color: Colors.blue)
-                                    ),
-                                ),
-                                IconButton(
-                                  tooltip: "Guarda los cambios realizados.",
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(MdiIcons.fromString("content-save"), color: Colors.blueGrey,),
-                                  onPressed: () async{
-                                    ref.read(productPriceProvider.notifier).load(e.getValue2()!);
-                                    ResponseAPI response = await ref.read(updateProductPriceWithAPIProvider.future);
-                                    if (mounted){
-                                      ElegantNotificationCustom.showNotificationAPI(context, response);
-                                      if (response.isResponseSuccess()){
-                                        await ref.read(productPricesByIDProvider.notifier).refresh();
-                                        setState(() {});
-                                      }
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  tooltip: "Elimina el precio del producto.",
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(MdiIcons.fromString("delete"), color: Colors.redAccent,),
-                                  onPressed: () async{
-                                    ref.read(productPriceRemoveProvider.notifier).load(e.getValue2()!);
-                                    ResponseAPI response = await ref.read(removeProductPriceWithAPIProvider.future);
-                                    if (mounted){
-                                      ElegantNotificationCustom.showNotificationAPI(context, response);
-                                      if (response.isResponseSuccess()){
-                                        await ref.read(productPricesByIDProvider.notifier).refresh();
-                                        setState(() {});
-                                      }
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          children: [
-                            //Nodo de precio.
-                            TreeNode(
-                                content: Container(
-                                  color: Colors.grey.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-                                  height: 60,
-                                  width: 235,
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                  child: TextField(
-                                    decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
-                                    controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
-                                    onChanged: (String value){
-                                      e.getValue2()!.setPriceBase(double.parse(value));
-                                    },
-                                    onSubmitted:(value) {
-                                      setState(() {});
-                                    },
-                                  ),
-                                )
-                            ),
-                            TreeNode(
-                                content: Container(
-                                  color: Colors.grey.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                  height: 40,
-                                  width: 235,
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
-                                )
-                            ),
-                            TreeNode(
-                                content: Container(
-                                  color: Colors.grey.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                                  height: 50,
-                                  width: 235,
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(child: TextField(
-                                        decoration: StyleForm.getDecorationTextField("Sitio web del producto"),
-                                        controller: TextEditingController(text: e.getValue2()!.getWebsite()),
-                                        onChanged: (String value){
-                                          e.getValue2()!.setWebsite(value);
-                                        },
-                                        onSubmitted:(value) {
-                                          setState(() {});
-                                        },
-                                      )),
-                                    ],
-                                  ),
-                                )
-                            ),
-                            TreeNode(
-                                content: Container(
-                                  color: Colors.grey.shade50,
-                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                  height: 60,
-                                  width: 235,
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
-                                )
-                            )
-                          ]
-                      );
-                    }).toList(),
-                  ),
-                )
-            ),
-          ],
-        )
-    );
-  }
-
-  ///ProductPriceWidget: Constuye el widget para la insersion de un nuevo precio de producto.
-  Widget _buildWidgetNewProductPrice(BuildContext context){
-    final distributorsFree = ref.watch(distributorFreeProductPriceProvider);
-
-    return Container(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-        margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-        decoration: StyleForm.getDecorationFormControl(),
-        height: 200,
-        child: ReactiveForm(
-          formGroup: _formNewPP,
-          child: ListTile(
-            //Title: Distribuidora.
-            title: Text("Ingresar nuevo precio de producto", style: StyleForm.getTextStyleTitle()),
-            //Subtitle
-            subtitle: Container(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Column(
-                  children: [
-                    ReactiveDropdownField<Distributor>(
-                      formControlName: "${ProductPrice.getKeyDistributor()}Object",
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Distribuidora"),
-                      items: distributorsFree.map((e) => DropdownMenuItem<Distributor>(
-                        value: e,
-                        child: Text(e.getName()),
-                      )).toList(),
-                      onChanged: (control) {
-                        _formNewPP.control(ProductPrice.getKeyDistributor()).value = control.value!.getID();
-                        _formNewPP.focus(ProductPrice.getKeyPriceBase());
-                      },
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Seleccione la distribuidora."
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
-                      formControlName: ProductPrice.getKeyPriceBase(),
-                      validationMessages: {
-                        ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
-                      },
-                    ),
-                    Container(
-                      margin: EdgeInsets.zero,
-                      height: 32,
-                      child: Row(
-                        children: [
-                          Expanded(child: IconButton(
-                            color: Colors.blueGrey,
-                            padding: EdgeInsets.zero,
-                            icon: Row(
-                              children: [
-                                Icon(MdiIcons.fromString("content-save")),
-                                Text("\tGuardar", style: StyleForm.getTextStyleListTileSubtitle(),),
-                              ],
-                            ),
-                            onPressed: () async{
-                              ref.read(productPriceProvider.notifier).load(ProductPrice.fromJSON(_formNewPP.value));
-                              final response = await ref.read(newProductPriceWithAPIProvider.future);
-
-                              if (mounted){
-                                ElegantNotificationCustom.showNotificationAPI(context, response);
-
-                                if (response.isResponseSuccess()){
-                                  ref.read(productPriceProvider.notifier).free();
-                                  await ref.read(productPricesByIDProvider.notifier).refresh();
-                                  setState(() {});
-                                }
-                              }
-                            },
-                          )),
-                          Expanded(child: IconButton(
-                            color: Colors.redAccent,
-                            padding: EdgeInsets.zero,
-                            icon: Row(
-                              children: [
-                                Icon(MdiIcons.fromString("eraser")),
-                                Expanded(child: Text("\tLimpiar", style: StyleForm.getTextStyleListTileSubtitle(),)),
-                              ],
-                            ),
-                            onPressed: (){
-                              _clearForm();
-                              setState(() {});
-                            },
-                          ),)
-                        ],
-                      ),
-                    )
-                  ],
-                )
-            ),
-          ),
-        )
-    );
-  }
-
-
-  //------------------OPERACIONES DE GUI---------------------------------
-
-  ///ProductPriceWidget: Limpia el formulario de insersion de precio de producto.
-  void _clearForm(){
-    final distributorsFree = ref.read(distributorFreeProductPriceProvider);
-    _formNewPP.control(ProductPrice.getKeyDistributor()).value = 0;
-    _formNewPP.control(ProductPrice.getKeyPriceBase()).value = 0.00;
-    _formNewPP.control("${ProductPrice.getKeyDistributor()}Object").value = distributorsFree.isEmpty ? null : distributorsFree.first;
   }
 
   //------------OPERACIONES----------------------------

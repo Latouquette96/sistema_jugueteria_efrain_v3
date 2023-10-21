@@ -89,9 +89,27 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
     nameProduct = nameProduct.replaceAll("¡", "");
     nameProduct = nameProduct.replaceAll("?", "");
     nameProduct = nameProduct.replaceAll("¿", "");
+    nameProduct = nameProduct.replaceAll("(", "");
+    nameProduct = nameProduct.replaceAll(")", "");
+    nameProduct = nameProduct.replaceAll("[", "");
+    nameProduct = nameProduct.replaceAll("]", "");
 
     List<String> titleSplit = nameProduct.split(" ");
-    titleSplit.removeWhere((element) => element.isEmpty || element=="" || element.length<=3);
+    titleSplit.removeWhere((element){
+      return element.isEmpty
+          || element==""
+          || element.toUpperCase()=="A"
+          || element.toUpperCase()=="E"
+          || element.toUpperCase()=="Y"
+          || element.toUpperCase()=="O"
+          || element.toUpperCase()=="U"
+          || element.toUpperCase()=="CON"
+          || element.toUpperCase()=="DE"
+          || element.toUpperCase()=="EN"
+          || element.toUpperCase()=="UN"
+          || element.toUpperCase()=="UNA"
+          || element.toUpperCase()=="PARA";
+    });
     int matchs = 0;
 
     for (int i=0; i<titleSplit.length; i++){
