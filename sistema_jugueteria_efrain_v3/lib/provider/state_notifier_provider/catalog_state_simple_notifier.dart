@@ -8,7 +8,7 @@ class CatalogStateSimpleNotifier<E> extends StateNotifier<List<E>> {
   late final StateNotifierProviderRef _ref; 
   late final String _path;
   late final E Function(Map<String, dynamic> map) _byInserting;
-  late final E _secureValue;
+  late final E? _secureValue;
   
   ///Constructor CatalogStateSimpleNotifier.
   ///
@@ -22,7 +22,7 @@ class CatalogStateSimpleNotifier<E> extends StateNotifier<List<E>> {
       required StateNotifierProviderRef ref, 
       required String path,
       required E Function (Map<String, dynamic> map) byInserting,
-      required E secureValue
+      E? secureValue
     }
   ){
     _ref = ref;
@@ -57,12 +57,12 @@ class CatalogStateSimpleNotifier<E> extends StateNotifier<List<E>> {
 
       //Si la lista está vacia, entonces ingresa el valor seguro.
       if (state.isEmpty) {
-        state.add(_secureValue);
+        if (_secureValue!=null) state.add(_secureValue as E);
       }
       //Si la lista tiene elementos, comprueba la existencia de dicho valor seguro.
       else {
-        if (!state.contains(_secureValue)) {
-          state.add(_secureValue);
+        if (_secureValue!=null) {
+          if (!state.contains(_secureValue)) state.add(_secureValue as E);
         }
       }
     }

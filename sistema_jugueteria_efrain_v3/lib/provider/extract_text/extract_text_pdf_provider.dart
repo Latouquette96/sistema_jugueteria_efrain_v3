@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/extract_data/data_fragment.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
@@ -40,34 +41,40 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
 
       if (content.isResponseSuccess()){
         //Convierte el contenido de la respuesta en una lista de fragmentos de texto.
-        List<String> listFragments = content.getValue().split("\n");
+        List<String> listText = content.getValue().split("\n");
+        List<DataFragment> listFragments = listText.map((e){
+          return DataFragment(fragment: e);
+        }).toList();
 
-        //Para cada fragmento de texto de
-        for (var fragment in listFragments) {
+        for (Product product in listProducts){
+          List<ProductPrice> listProductPrice = [];
 
-          //Se crea un objeto DataFragment con el fin de almacenar el texto fragment junto a los posibles productos a que se refiere.
-          DataFragment dataFragment = DataFragment(fragment: fragment);
-
-          //Para cada producto, se comprueba si es candidato.
-          for (Product product in listProducts){
-
-            //Para el código de barra, se comprueba si dicho codebar está incluido en el fragmento.
-            if (product.getBarcode()!=null && fragment.contains(product.getBarcode()!)){
-              dataFragment.insertMatchBarcode(product);
-            }
-
-            //Para el titulo del producto, si algún trozo del titulo está contenido en fragmento, se inserta el producto.
-            if (_isContainsTItleInFragment(fragment, product)){
-              dataFragment.insertMatchTitle(product);
-            }
+          ResponseAPI responseProductPrice = await APICall.get(url: url, route: "/products/prices_products/${product.getID()}");
+          if (responseProductPrice.isResponseSuccess()){
+            List<dynamic> map = responseProductPrice.getValue();
+            listProductPrice = map.map((e){
+              return ProductPrice.fromJSON(e);
+            }).toList();
           }
 
-          if (dataFragment.isWithoutProducts()==false){
-            state.add(dataFragment);
+          for (DataFragment fragment in listFragments){
+            //Para el código de barra, se comprueba si dicho codebar está incluido en el fragmento.
+            if (product.getBarcode()!=null && product.getBarcode()!="-" && fragment.isContains(product.getBarcode()!)){
+              fragment.insertMatchBarcode(product);
+            }
+
+            if (listProductPrice.isNotEmpty){
+              //Para algun código interno del producto
+              if (_isContainsInternalCodeInFragment(fragment, listProductPrice)){
+                fragment.insertMatchInternalCode(product);
+              }
+            }
           }
         }
-      }
 
+        List<DataFragment> list = listFragments.where((element) => element.isWithoutProducts()==false).toList();
+        state = [...list];
+      }
     }
     catch(e){
       content = ResponseAPI.manual(status: 404, value: null, title: "Error 404", message: "Error: No fue posible recuperar los datos del servidor.");
@@ -77,48 +84,24 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
     return content;
   }
 
-  ///DataFragement: Comprueba si alguna palabra del titulo del producto está contenido en el fragmento.
-  bool _isContainsTItleInFragment(String fragment, Product product){
-    String nameProduct = product.getTitle().replaceAll("-", "");
-    nameProduct = nameProduct.replaceAll("\"", "");
-    nameProduct = nameProduct.replaceAll(":", "");
-    nameProduct = nameProduct.replaceAll(",", "");
-    nameProduct = nameProduct.replaceAll(";", "");
-    nameProduct = nameProduct.replaceAll(";", "");
-    nameProduct = nameProduct.replaceAll("!", "");
-    nameProduct = nameProduct.replaceAll("¡", "");
-    nameProduct = nameProduct.replaceAll("?", "");
-    nameProduct = nameProduct.replaceAll("¿", "");
-    nameProduct = nameProduct.replaceAll("(", "");
-    nameProduct = nameProduct.replaceAll(")", "");
-    nameProduct = nameProduct.replaceAll("[", "");
-    nameProduct = nameProduct.replaceAll("]", "");
-
-    List<String> titleSplit = nameProduct.split(" ");
-    titleSplit.removeWhere((element){
-      return element.isEmpty
-          || element==""
-          || element.toUpperCase()=="A"
-          || element.toUpperCase()=="E"
-          || element.toUpperCase()=="Y"
-          || element.toUpperCase()=="O"
-          || element.toUpperCase()=="U"
-          || element.toUpperCase()=="CON"
-          || element.toUpperCase()=="DE"
-          || element.toUpperCase()=="EN"
-          || element.toUpperCase()=="UN"
-          || element.toUpperCase()=="UNA"
-          || element.toUpperCase()=="PARA";
-    });
+  ///DataFragement: Comprueba si algun código interno está en el fragmento.
+  bool _isContainsInternalCodeInFragment(DataFragment fragment, List<ProductPrice> productPrices){
     int matchs = 0;
 
-    for (int i=0; i<titleSplit.length; i++){
-      if (fragment.toUpperCase().contains(titleSplit[i].toUpperCase())){
-        matchs++;
+    List<String> listSplit = fragment.getFragment().toUpperCase().split(" ");
+    listSplit.removeWhere((element) => element.contains(",") || element.contains("*") || element.isEmpty || element=="");
+
+    List<ProductPrice> listPrice = productPrices.where((element) => element.getInternalCode()!=null).toList();
+
+    for (ProductPrice ic in listPrice){
+      for (String str in listSplit){
+        if (ic.getInternalCode()!.toUpperCase()!="" && str.contains(ic.getInternalCode()!.toUpperCase())){
+          matchs++;
+        }
       }
     }
 
-    return matchs>=2;
+    return matchs>=1;
   }
 }
 

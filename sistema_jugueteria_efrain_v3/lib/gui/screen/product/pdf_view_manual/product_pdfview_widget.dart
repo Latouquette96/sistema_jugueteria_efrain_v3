@@ -105,6 +105,8 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
           expanded: false,
           title: dataFragment.getFragment(),
           children: [
+
+            //Coincidencias con código de barra
             Container(
               margin: const EdgeInsets.all(5),
               child: Text("Coincidencia con código de barra", style: StyleForm.getTextStyleListTileTitle(),),
@@ -116,7 +118,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
               child: ListView(
                 children: dataFragment.getMatchBarcode().map((e){
                   return Container(
-                    margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
+                    margin: const EdgeInsets.all(2.5),
                     color: Colors.black12,
                     child: ListTile(
                       title: Text(e.getTitle()),
@@ -136,16 +138,21 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                 }).toList(),
               ),
             ),
-            Text("Coincidencia con título", style: StyleForm.getTextStyleListTileTitle(),),
-            (dataFragment.getMatchTitle().isEmpty)
+
+            //Coincidencias por código interno
+            Container(
+              margin: const EdgeInsets.all(5),
+              child: Text("Coincidencia por código interno", style: StyleForm.getTextStyleListTileTitle(),),
+            ),
+            (dataFragment.getMatchInternalCode().isEmpty)
                 ? const Text("Sin resultados")
                 : SizedBox(
-              height: dataFragment.getMatchTitle().length < 4 ? dataFragment.getMatchTitle().length*75 : 250,
+              height: dataFragment.getMatchInternalCode().length < 4 ? dataFragment.getMatchInternalCode().length*75 : 250,
               child: ListView(
-                children: dataFragment.getMatchTitle().map((e){
+                children: dataFragment.getMatchInternalCode().map((e){
                   return Container(
+                    margin: const EdgeInsets.all(2.5),
                     color: Colors.black12,
-                    margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
                     child: ListTile(
                       title: Text(e.getTitle()),
                       trailing: IconButton(onPressed: (){

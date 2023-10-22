@@ -5,15 +5,13 @@ class DataFragment {
   //Atributos de instancia
   late final String  _fragment;
   late List<Product> _matchBarcode; //Si se encontró algún producto por código de barra
-  //late List<Product> _matchInternalCode; //Productos con un determinado código interno (puede ser mas de uno).
-  late List<Product> _matchTitle; //Productos encontrados por el algún fragmento del título.
+  late List<Product> _matchInternalCode; //Productos con un determinado código interno (puede ser mas de uno).
 
   ///Constructor de DataFragment
   DataFragment({required String fragment}){
     _fragment = fragment;
     _matchBarcode = [];
-    //_matchInternalCode = [];
-    _matchTitle = [];
+    _matchInternalCode = [];
   }
 
   ///DataFragment: Devuelve el producto que tiene su código de barra en el fragmento de texto (null si no hay tal producto).
@@ -32,7 +30,7 @@ class DataFragment {
   }
 
   ///DataFragment: Devuelve una lista con los productos que tienen alguna palabra de su nombre en el fragmento de texto.
-  /*Iterable<Product> getMatchInternalCode(){
+  Iterable<Product> getMatchInternalCode(){
     return _matchInternalCode;
   }
 
@@ -44,21 +42,6 @@ class DataFragment {
   ///DataFragment:Remueve todos los productos que tienen su código interno en el fragmento de texto.
   void removeAllMatchInternalCode(){
     _matchInternalCode.clear();
-  }*/
-
-  ///DataFragment: Devuelve una lista con los productos que tienen su código interno en el fragmento de texto.
-  Iterable<Product> getMatchTitle(){
-    return _matchTitle;
-  }
-
-  ///DataFragment: Inserta un producto que tiene alguna palabra de su nombre en el fragmento de texto.
-  void insertMatchTitle(Product p){
-    _matchTitle.add(p);
-  }
-
-  ///DataFragment:Remueve todos los productos que tienen alguna palabra de su nombre en el fragmento de texto.
-  void removeAllMatchTitle(){
-    _matchTitle.clear();
   }
 
   ///DataFragment: Devuelve el fragmento de texto.
@@ -66,8 +49,13 @@ class DataFragment {
     return _fragment;
   }
 
+  ///DataFragment: Devuelve true si contiene a str.
+  bool isContains(String str){
+    return _fragment.contains(str);
+  }
+
   ///DataFragment: Devuelve true si el DataFragment no tiene productos asociados.
   bool isWithoutProducts(){
-    return (_matchBarcode.isEmpty && _matchTitle.isEmpty);
+    return (_matchBarcode.isEmpty && _matchInternalCode.isEmpty);
   }
 }
