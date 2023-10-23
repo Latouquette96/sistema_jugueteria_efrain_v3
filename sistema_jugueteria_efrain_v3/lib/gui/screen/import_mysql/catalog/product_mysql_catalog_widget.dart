@@ -132,7 +132,6 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                   if (event.row!=null){
                     //Se recupera el producto en cuestion.
                     Triple<Product, Distributor, double> triple = _getTripleData(event.row!);
-                    print("object");
                     //Se notifica al catalogo de acuerdo
                     if (ref.watch(catalogProductsImportProvider).contains(triple)){
                       ref.read(catalogProductsImportProvider.notifier).remove(triple);
@@ -160,6 +159,18 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
   
   Triple<Product, Distributor, double> _getTripleData(PlutoRow row){
     int rowID = row.cells[Product.getKeyID()]!.value;
-    return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getID()==rowID);
+    if (rowID!=0){
+      return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getID()==rowID);
+    }
+    else{
+      String rowBarcode = row.cells[Product.getKeyBarcode()]!.value;
+      if (rowBarcode!="-"){
+        return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getBarcode()==rowBarcode);
+      }
+      else{
+        String rowInternalCode = row.cells[Product.getKeyInternalCode()]!.value;
+        return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getInternalCode()==rowInternalCode);
+      }
+    }
   }
 }

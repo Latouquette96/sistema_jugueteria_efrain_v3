@@ -26,28 +26,41 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
     while(i<listImport.length){
       Triple<Product, Distributor, double> triple = listImport[i];
 
+      print("triple.getValue1().getJSON(): ${triple.getValue1().getJSON().toString()}");
+
       //Realiza la petición POST para insertar el producto.
-      final response = await APICall.post(
-        url: url, route: '/products',
-        body: triple.getValue1().getJSON(),
-      );
+      final response = (triple.getValue1().getID()==0)
+        ? await APICall.post(
+            url: url,
+            route: '/products',
+            body: triple.getValue1().getJSON(),
+          )
+        : await APICall.put(
+            url: url,
+            route: '/products/${triple.getValue1().getID()}',
+            body: triple.getValue1().getJSON(),
+          );
 
+      //Si la respuesta fue exitosa
       if (response.isResponseSuccess()){
-        triple.getValue1().setID(response.getValue()['p_id']);
+        //Si ademas el producto en cuestion se trataba de un producto nuevo, entonces se carga su respectivo
+        if (triple.getValue1().getID()==0){
+          triple.getValue1().setID(response.getValue()['p_id']);
 
-        final productPrice = ProductPrice(
-            id: 0,
-            p: triple.getValue1().getID(),
-            d: triple.getValue2()!.getID(),
-            price: triple.getValue3() ?? 0,
-            date: DatetimeCustom.parseStringDatetime(triple.getValue1().getDateUpdate())
-        );
+          final productPrice = ProductPrice(
+              id: 0,
+              p: triple.getValue1().getID(),
+              d: triple.getValue2()!.getID(),
+              price: triple.getValue3() ?? 0,
+              date: DatetimeCustom.parseStringDatetime(triple.getValue1().getDateUpdate())
+          );
 
-        //Envio la solicitud POST para cargar
-        await APICall.post(
-          url: url, route: '/products/prices_products',
-          body: productPrice.getJSON(),
-        );
+          //Envio la solicitud POST para cargar
+          await APICall.post(
+            url: url, route: '/products/prices_products',
+            body: productPrice.getJSON(),
+          );
+        }
       }
       else{
         errors++;
@@ -71,6 +84,7 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
         title: "Error 404",
         message: "Error: No se pudo llevar a cabo la importación de productos del Sistema v2."
     );
+    print(e);
   }
 
   return toReturn;  

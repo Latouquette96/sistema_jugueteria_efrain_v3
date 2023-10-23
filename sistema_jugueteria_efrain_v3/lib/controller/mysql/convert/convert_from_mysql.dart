@@ -44,7 +44,7 @@ class ConvertFromMySQL {
 
     //Construcción del mapeo.
     Map<String, dynamic> map = {
-      Product.getKeyID():           data['p_id'],
+      Product.getKeyID():           0, //Asume producto nuevo
       Product.getKeyBarcode():      data['p_codebar'],
       Product.getKeyInternalCode(): data['p_internal_code'],
       Product.getKeyTitle():        data['p_title'],

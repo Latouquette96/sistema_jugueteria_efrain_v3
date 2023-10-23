@@ -18,9 +18,9 @@ dependencies:
   elegant_notification: ^1.11.2
   expansion_tile_card: ^3.0.0
   fade_shimmer: ^2.2.0
-  file_picker: ^5.5.0
+  file_picker: ^6.0.0
   file_selector: ^1.0.1
-  flutter_riverpod: ^2.4.3
+  flutter_riverpod: ^2.4.4
   flutter_simple_treeview: ^3.0.2
   flutter_switch: ^0.3.2
   #gsheets: ^0.5.0 #problema con web
@@ -34,9 +34,9 @@ dependencies:
   pluto_menu_bar: ^3.0.1
   printing: ^5.11.0
   #reactive_flutter_typeahead: ^2.1.0 #problema con web
-  reactive_forms: ^16.1.0
-  shared_preferences: ^2.2.1
-  syncfusion_flutter_pdfviewer: ^23.1.40
+  reactive_forms: ^16.1.1
+  shared_preferences: ^2.2.2
+  syncfusion_flutter_pdfviewer: ^23.1.41
   tabbed_view: ^1.18.0
   url_launcher: ^6.1.14
 

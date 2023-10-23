@@ -8,6 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/screen_impo
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_manual_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/statistics/statistics_screen.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
@@ -56,6 +57,21 @@ class MainBarWidget extends ConsumerWidget {
               }
             ),
             PlutoMenuItem.checkbox(
+                title: "Estadisticas Generales",
+                initialCheckValue: ref.watch(tabStatistics)!=null,
+                enable: ref.watch(tabStatistics)!=null,
+                onChanged: (bool? isSelected){
+                  if (isSelected!=null){
+                    if (isSelected){
+                      ref.read(tabbedViewProvider.notifier).insertTab(label: "Estadisticas Generales", widget: const ScreenStatistics(), icon: MdiIcons.fromString("database"), tabProvider: tabStatistics);
+                    }
+                    else{
+                      ref.read(tabbedViewProvider.notifier).removeTab(tabStatistics);
+                    }
+                  }
+                }
+            ),
+            PlutoMenuItem.checkbox(
               title: "Importar datos (Sistema v2)",
               initialCheckValue: ref.watch(tabImportMySQLCatalog)!=null,
               enable: ref.watch(tabImportMySQLCatalog)!=null,
@@ -69,7 +85,7 @@ class MainBarWidget extends ConsumerWidget {
                   }
                 }
               }
-            )
+            ),
           ]
         
         ),

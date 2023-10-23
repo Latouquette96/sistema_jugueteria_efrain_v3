@@ -105,4 +105,5 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
   }
 }
 
+///extractTextFromPDFProvider es un provider que permite almacenar en su estado interno una lista de DataFragment con productos.
 final extractTextFromPDFProvider = StateNotifierProvider<TextFromPDFProvider, List<DataFragment>>((ref) => TextFromPDFProvider([], ref: ref));

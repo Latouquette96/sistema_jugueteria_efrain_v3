@@ -18,3 +18,5 @@ final tabDistributorCatalogProvider = StateNotifierProvider<ElementStateProvider
 final tabConfigurationProvider = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
 
 final tabImportMySQLCatalog = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());
+
+final tabStatistics = StateNotifierProvider<ElementStateProvider<TabData>, TabData?>((ref) => ElementStateProvider<TabData>());

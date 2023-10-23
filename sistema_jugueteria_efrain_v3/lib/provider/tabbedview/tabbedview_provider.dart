@@ -41,9 +41,9 @@ class TabbedViewProvider extends StateNotifier<TabbedViewController> {
   ///TabbedViewProvider: Remueve el tab dado.
   void closeTab(TabData? tab){
     if (tab!=null){
-      StateNotifierProvider<ElementStateProvider<TabData>, TabData?> tabProvider;
+      StateNotifierProvider<ElementStateProvider<TabData>, TabData?>? tabProvider;
 
-      if (tab==ref.watch(tabProductCatalogProvider)) {
+      if (tab==ref.read(tabProductCatalogProvider)) {
         tabProvider = tabProductCatalogProvider;
       }
       else{
@@ -59,14 +59,28 @@ class TabbedViewProvider extends StateNotifier<TabbedViewController> {
               tabProvider = tabConfigurationProvider;
             }
             else{
-              tabProvider = tabImportMySQLCatalog;
+              if (ref.read(tabProductCatalogPDFManualProvider)==tab){
+                tabProvider = tabProductCatalogPDFManualProvider;
+              }
+              else{
+                if (ref.read(tabImportMySQLCatalog)==tab){
+                  tabProvider = tabImportMySQLCatalog;
+                }
+                else{
+                  if (ref.read(tabStatistics)==tab){
+                    tabProvider = tabStatistics;
+                  }
+                }
+              }
             }
           }
         }
       }
 
-      //Libera el TabData almacenado en el provider tabProvider.
-      ref.read(tabProvider.notifier).free();
+      if (tabProvider!=null) {
+        //Libera el TabData almacenado en el provider tabProvider.
+        ref.read(tabProvider.notifier).free();
+      }
     }
   }
 }
