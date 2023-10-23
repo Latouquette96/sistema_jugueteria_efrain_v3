@@ -3,7 +3,7 @@ let connection;
 
 exports.connect = (req, res) => {
 
-    if (connection==undefined){
+    if (connection===undefined){
         const db_host = req.body.db_host;
         const db_user = req.body.db_user;
         const db_password  = req.body.db_password;
@@ -45,8 +45,6 @@ exports.connect = (req, res) => {
             value: null,
             error: null
         });
-
-        return;
     }
 }
 
@@ -59,7 +57,6 @@ exports.close = (req, res) => {
             value: null,
             error: null
         });
-        return;
     }
     else{
         if(connection && connection.end) {
@@ -98,8 +95,9 @@ exports.close = (req, res) => {
 
 //Recupera todos los productos (junto a datos de la distribuidora y del precio del producto) de la base de datos.
 exports.findAllProducts = (req, res) => {
-    var sql = "SELECT json_object('p_id', p_id, 'p_codebar', p_codebar, 'p_title', p_title, 'p_brand', p_brand, 'p_description', p_description, 'p_sizeblister', p_sizeblister, 'p_sizeproduct', p_sizeproduct, 'p_category', p_category, 'p_subcategory', p_subcategory, 'p_stock', p_stock, 'p_iva', p_iva, 'p_pricepublic', p_pricepublic, 'p_linkimage', p_linkimage, 'p_datecreated', p_datecreated, 'p_dateupdated', p_dateupdated, 'p_minimumage', p_minimumage, 'p_internal_code', p_internal_code) as product, d_cuit, json_object('p_dateupdated', p_dateupdated, 'p_pricebase', p_pricebase) as price_product FROM db_jugueteria_efrain.products, db_jugueteria_efrain.distributors WHERE p_distributor=d_id;";
-    
+    const sql = "SELECT json_object('p_id', p_id, 'p_codebar', p_codebar, 'p_title', p_title, 'p_brand', p_brand, 'p_description', p_description, 'p_sizeblister', p_sizeblister, 'p_sizeproduct', p_sizeproduct, 'p_category', p_category, 'p_subcategory', p_subcategory, 'p_stock', p_stock, 'p_iva', p_iva, 'p_pricepublic', p_pricepublic, 'p_linkimage', p_linkimage, 'p_datecreated', p_datecreated, 'p_dateupdated', p_dateupdated, 'p_minimumage', p_minimumage, 'p_internal_code', p_internal_code) as product, d_cuit, json_object('p_dateupdated', p_dateupdated, 'p_pricebase', p_pricebase) as price_product FROM db_jugueteria_efrain.products, db_jugueteria_efrain.distributors WHERE p_distributor=d_id " +
+        " and ((p_codebar is not null) or (p_internal_code is not null));";
+
     if (connection===undefined){
         res.status(400).json({
             status: 400, 
@@ -108,10 +106,9 @@ exports.findAllProducts = (req, res) => {
             error: null,
             value: null
         });
-        return;
     }
     else{
-        connection.query(sql, function (error, results, fields) {
+        connection.query(sql, function (error, results) {
             if (error) {
               console.error(error);
               res.status(500).json({
@@ -137,7 +134,7 @@ exports.findAllProducts = (req, res) => {
 
 //Recupera todas las distribuidoras existentes.
 exports.findAllDistributors = (req, res) => {
-    var sql = "SELECT * FROM db_jugueteria_efrain.distributors;";
+    const sql = "SELECT * FROM db_jugueteria_efrain.distributors;";
     
     if (connection===undefined){
         res.status(400).json({
@@ -147,10 +144,9 @@ exports.findAllDistributors = (req, res) => {
             value: null,
             error: null
         });
-        return;
     }
     else{
-        connection.query(sql, function (error, results, fields) {
+        connection.query(sql, function (error, results) {
             if (error) {
               console.error(error);
               res.status(500).json({

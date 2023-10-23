@@ -2,8 +2,7 @@
 'use strict'
 
 // *Cargamos el fichero app.js con la configuración de Express
-var app = require('./src/app');
-const bodyParser = require('body-parser')
+let app = require('./src/app');
 const express = require('express')
 
 const cors = require("cors");
@@ -13,7 +12,7 @@ const db = require("./src/models/index");
 //Establece el puerto por el cual se escuchará.
 const PORT = process.env.PORT || 3000;
 
-var corsOptions = {
+let corsOptions = {
   origin: "http://localhost:5432"
 };
 

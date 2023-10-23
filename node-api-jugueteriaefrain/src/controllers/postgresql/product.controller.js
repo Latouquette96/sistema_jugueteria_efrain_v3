@@ -93,7 +93,13 @@ exports.findOne = (req, res) => {
 //Recupera todos los productos de la base de datos.
 exports.findAll = (req, res) => {
 
-  Products.findAll({ where: {} })
+  Products.findAll({ 
+    where: {},
+    order: [
+      ['p_title', 'ASC'],
+      ['p_brand', 'ASC']
+    ]
+  })
     .then(data => {
       res.status(200).json({
         status: 200, 
