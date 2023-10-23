@@ -89,7 +89,13 @@ exports.findOne = (req, res) => {
 //Recupera todos los distribuidoras de la base de datos.
 exports.findAll = (req, res) => {
 
-  Distributors.findAll({ where: {} })
+  Distributors.findAll({ 
+    where: {} ,
+    order: [
+      ['d_name', 'ASC'],
+      ['d_cuit', 'ASC']
+    ]
+  })
     .then(data => {
       res.status(200).json({
         status: 200, 

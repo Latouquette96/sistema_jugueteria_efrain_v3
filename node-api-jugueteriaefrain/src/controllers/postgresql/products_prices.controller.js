@@ -86,7 +86,12 @@ exports.findOne = (req, res) => {
 exports.findAll = (req, res) => {
     const id = parseInt(req.params.id)
 
-    ProductsPrices.findAll({ where: { pp_product: id} })
+    ProductsPrices.findAll({ 
+      where: { pp_product: id},
+      order: [
+        ['pp_price_base', 'ASC']
+      ]
+    })
       .then(data => {
         res.status(200).json({
           status: 200, 
