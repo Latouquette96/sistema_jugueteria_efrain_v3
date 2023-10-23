@@ -112,7 +112,7 @@ class MainBarWidget extends ConsumerWidget {
               },
             ),
             PlutoMenuItem.checkbox(
-              title: "Visor PDF",
+              title: "Catalogo de productos - Visor PDF",
               initialCheckValue: ref.watch(tabProductCatalogPDFProvider)!=null,
               enable: ref.watch(tabProductCatalogPDFProvider)!=null,
               onChanged: (bool? isSelected) {
@@ -122,7 +122,7 @@ class MainBarWidget extends ConsumerWidget {
                     ref.read(pdfTextSearchResultProvider.notifier).free();
                     
                     ref.read(tabbedViewProvider.notifier).insertTab(
-                        label:"Visor PDF",
+                        label:"Catalogo de productos - Visor PDF",
                         widget: const ScreenProductPDFViewerWidget(),
                         icon: MdiIcons.fromString("file-pdf-box"),
                         tabProvider: tabProductCatalogPDFProvider
@@ -135,7 +135,7 @@ class MainBarWidget extends ConsumerWidget {
               },
             ),
             PlutoMenuItem.checkbox(
-              title: "Visor PDF (manual)",
+              title: "Catalogo de productos - Buscador de productos en PDF",
               initialCheckValue: ref.watch(tabProductCatalogPDFManualProvider)!=null,
               enable: ref.watch(tabProductCatalogPDFManualProvider)!=null,
               onChanged: (bool? isSelected) {
@@ -145,7 +145,7 @@ class MainBarWidget extends ConsumerWidget {
                     ref.read(pdfTextSearchResultProvider.notifier).free();
 
                     ref.read(tabbedViewProvider.notifier).insertTab(
-                        label:"Visor PDF (manual)",
+                        label:"Catalogo de productos - Buscador de productos en PDF",
                         widget: const ScreenProductPDFViewerManualWidget(),
                         icon: MdiIcons.fromString("file-pdf-box"),
                         tabProvider: tabProductCatalogPDFManualProvider

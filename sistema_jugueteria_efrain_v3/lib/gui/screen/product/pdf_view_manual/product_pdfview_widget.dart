@@ -50,7 +50,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
             Stack(
               children: [
                 const HeaderInformationWidget(
-                  titleHeader: "Visor PDF",
+                  titleHeader: "Visualizador de productos en el PDF",
                   tooltipClose: "Cerrar visor PDF.",
                 ),
                 Positioned(

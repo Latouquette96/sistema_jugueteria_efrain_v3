@@ -24,7 +24,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
       backgroundColor: Colors.grey.shade700,
       appBar: AppBar(
         title: Row(
-          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos - Lector PDF"))],
+          children: [SizedBox(width: 36,child: Icon(MdiIcons.fromString("domain"),),), const Expanded(child: Text("Catálogo de Productos - Buscador de productos en PDF"))],
         ),
         backgroundColor: const Color.fromARGB(255, 44, 43, 43),
         toolbarHeight: 40,

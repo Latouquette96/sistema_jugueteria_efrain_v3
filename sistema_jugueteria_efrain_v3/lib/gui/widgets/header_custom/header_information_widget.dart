@@ -37,7 +37,7 @@ class HeaderInformationWidget extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    double right = -30;
+    double right = 0;
 
     List<Widget> listButtons = [];
     listButtons.add(

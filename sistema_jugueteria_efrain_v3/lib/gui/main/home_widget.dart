@@ -36,11 +36,20 @@ class _HomeWidgetState extends State<HomeWidget>{
     ));
     //Info: Lector PDF
     list.add(const ListTile(
-      title: Text("Producto > Visor PDF", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+      title: Text("Producto > Catálogo de productos - Visor PDF", style: TextStyle(color: Colors.yellow, fontSize: 16),),
       subtitle: Text("En el Lector PDF se puede abrir un archivo pdf almacenado en la computadora "
           "o en internet y hacer uso de las siguientes funciones:\n"
           "• Buscar productos (por su código de barra) en el archivo.\n"
           "• Actualizar el precio base y final del producto.", style: TextStyle(color: Colors.white),),
+      leading: Icon(Icons.picture_as_pdf, color: Colors.yellow, size: 16,),
+    ));
+    //Info: Catalogo de productos - Buscador de productos en PDF
+    list.add(const ListTile(
+      title: Text("Producto > Catalogo de productos - Buscador de productos en PDF", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+      subtitle: Text("En el Catalogo de productos - Buscador de productos en PDF se puede analizar un archivo PDF en busca de los posibles productos "
+          "alamcenados en el servidor y que coincidan con el contenido del PDF.\n"
+          "Además, también es posible, para los productos recuperados, modificar los datos de los distintos precios de producto.\n",
+        style: TextStyle(color: Colors.white),),
       leading: Icon(Icons.picture_as_pdf, color: Colors.yellow, size: 16,),
     ));
     //Info: Distribuidores
@@ -62,9 +71,17 @@ class _HomeWidgetState extends State<HomeWidget>{
     ));
     //Info: Importar
     list.add(const ListTile(
-      title: Text("Archivo > Importar desde MySQL", style: TextStyle(color: Colors.yellow, fontSize: 16),),
-      subtitle: Text("En Importar desde MySQL se puede visualizar los productos que se encuentran en el servidor MySQL (base de datos del antiguo sistema) "
-          "y es posible importar todos los productos que aparezcan en el catálogo.", style: TextStyle(color: Colors.white),),
+      title: Text("Archivo > Estadisticas Generales", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+      subtitle: Text("En Estadisticas Generales se puede visualizar estimaciones del total de productos que hay disponible, así como el monto total actual, entre otros datos mas.",
+                  style: TextStyle(color: Colors.white),
+                ),
+      leading: Icon(Icons.data_thresholding_rounded, color: Colors.yellow, size: 16,),
+    ));
+    //Info: Importar
+    list.add(const ListTile(
+      title: Text("Archivo > Importar datos (Sistema v2)", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+      subtitle: Text("En Importar datos (Sistema v2) se puede visualizar las distribuidoras y productos que se encuentran en el servidor del Sistema v2, "
+          "y es posible importar todas las distribuidoras y productos que aparezcan.", style: TextStyle(color: Colors.white),),
       leading: Icon(Icons.download, color: Colors.yellow, size: 16,),
     ));
 
