@@ -18,12 +18,14 @@ class PlutoConfig {
             resolveDefaultColumnFilter: (column, resolver){
               if (column.field == 'text') {
                 return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
-              } else if (column.field == 'number') {
-                return resolver<PlutoFilterTypeGreaterThan>()
-                as PlutoFilterType;
-              } else if (column.field == 'date') {
+              }
+              else if (column.field == 'number') {
+                return resolver<PlutoFilterTypeGreaterThan>() as PlutoFilterType;
+              }
+              else if (column.field == 'date') {
                 return resolver<PlutoFilterTypeLessThan>() as PlutoFilterType;
               }
+
               return resolver<PlutoFilterTypeContains>() as PlutoFilterType;
             }
         ),
@@ -69,6 +71,15 @@ class PlutoConfig {
         minWidth: 150,
         field: Product.getKeyBarcode(),
         type: PlutoColumnType.text(),
+        //Footer que contabiliza las filas checkeadas
+        footerRenderer: (rendererContext) {
+          return PlutoAggregateColumnFooter(
+            rendererContext: rendererContext,
+            type: PlutoAggregateColumnType.count,
+            format: '#,###.### productos',
+            alignment: Alignment.center,
+          );
+        },
       ),
       PlutoColumn(
         title: 'Cód. Int.',
@@ -107,6 +118,15 @@ class PlutoConfig {
         ),
         width: 100,
         minWidth: 100,
+        //Footer que contabiliza las filas checkeadas
+        footerRenderer: (rendererContext) {
+          return PlutoAggregateColumnFooter(
+            rendererContext: rendererContext,
+            type: PlutoAggregateColumnType.sum,
+            format: 'Stock: #,###.###',
+            alignment: Alignment.center,
+          );
+        },
       ),
       PlutoColumn(
         enableEditingMode: false,
@@ -145,6 +165,15 @@ class PlutoConfig {
         minWidth: 150,
         field: Distributor.getKeyCUIT(),
         type: PlutoColumnType.text(),
+        //Footer que contabiliza las filas checkeadas
+        footerRenderer: (rendererContext) {
+          return PlutoAggregateColumnFooter(
+            rendererContext: rendererContext,
+            type: PlutoAggregateColumnType.count,
+            format: '#,###.### distribuidoras',
+            alignment: Alignment.center,
+          );
+        }
       ),
       PlutoColumn(
         title: 'Nombre',

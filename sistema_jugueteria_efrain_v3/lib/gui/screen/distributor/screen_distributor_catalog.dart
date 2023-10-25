@@ -11,6 +11,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_cr
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
@@ -57,6 +58,17 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
+          IconButton(
+            onPressed: (){
+              ref.read(stateManagerDistributorProvider.notifier).toggleShowColumnFilter();
+              setState(() {});
+            },
+            icon: Icon(
+              MdiIcons.fromString("filter"),
+              color:  ref.watch(stateManagerDistributorProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+            ),
+            tooltip: "Mostrar/ocultar filtro",
+          ),
           IconButton(
             onPressed: (){
               if (ref.read(distributorStateProvider)!=null){

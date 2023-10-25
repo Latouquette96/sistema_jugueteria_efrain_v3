@@ -38,6 +38,17 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
           IconButton(
+            onPressed: (){
+              ref.read(stateManagerProductPricePDFProvider.notifier).toggleShowColumnFilter();
+              setState(() {});
+            },
+            icon: Icon(
+              MdiIcons.fromString("filter"),
+              color:  ref.watch(stateManagerProductPricePDFProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+            ),
+            tooltip: "Mostrar/ocultar filtro",
+          ),
+          IconButton(
             onPressed: () async{
               //Cierra las pantallas abiertas.
               if (ref.read(productSearchPDFPriceProvider)!=null) ref.read(productSearchPDFPriceProvider.notifier).free();

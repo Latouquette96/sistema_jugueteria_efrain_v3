@@ -5,7 +5,7 @@ import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/screen_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/screen_import_mysql_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_manual_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_pdf_viewer_extract_text_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/statistics/statistics_screen.dart';
@@ -146,7 +146,7 @@ class MainBarWidget extends ConsumerWidget {
 
                     ref.read(tabbedViewProvider.notifier).insertTab(
                         label:"Catalogo de productos - Buscador de productos en PDF",
-                        widget: const ScreenProductPDFViewerManualWidget(),
+                        widget: const ScreenPDFViewerExtractTextWidget(),
                         icon: MdiIcons.fromString("file-pdf-box"),
                         tabProvider: tabProductCatalogPDFManualProvider
                     );

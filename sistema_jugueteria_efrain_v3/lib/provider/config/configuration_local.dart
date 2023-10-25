@@ -1,24 +1,14 @@
-//TODO: import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//TODO: import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
 
 ///configurationProvider: Provider que permite obtener la configuraciones.
 final configurationProvider = Provider<ConfigurationLocal>((ref) => ConfigurationLocal.getInstance());
-
-///configImagePathProvider: Configuración del directorio de imagen.
-final configImagePathProvider = Provider<String>((ref){
-  final config = ref.watch(configurationProvider);
-
-  return config.getValue(ConfigurationLocal.getKeyImagePath())!;
-});
 
 ///Clase ConfigurationLocal: Modela las configuraciones del sistema empleando un SharedPreferences para almacenar los datos.
 class ConfigurationLocal {
   //Atributos de instancia
   late SharedPreferences _sharedPreferences;
-  late Map<String, Pair<String, String>> _map;
 
   //Instancia
   static final ConfigurationLocal _instance = ConfigurationLocal._();
@@ -28,15 +18,21 @@ class ConfigurationLocal {
   static const String _keyCatalogPath = "config_catalog_path";
   static const String _keyShopPath = "config_shop_path";
   static const String _keyBillingsPath = "config_billings_path";
+  static const String _keyInfoExpansionTile = "config_info_expansion_tile";
+
+  late String _valueImagePath;
+  late String _valueCatalogPath;
+  late String _valueShopPath;
+  late String _valueBillingsPath;
+  late bool   _valueInfoExpansionTile;
 
   ///Constructor de ConfigurationLocal
   ConfigurationLocal._(){
-    _map = {
-      _keyImagePath: Pair<String, String>(v1: "Directorio de imágenes", v2: "Sin definir"),
-      _keyCatalogPath: Pair<String, String>(v1: "Directorio de catálogo de productos", v2: "Sin definir"),
-      _keyShopPath: Pair<String, String>(v1: "Directorio de facturas de ventas", v2: "Sin definir"),
-      _keyBillingsPath: Pair<String, String>(v1: "Directorio de facturas de distribuidoras", v2: "Sin definir")
-    };
+    _valueImagePath = "Sin definir directorio";
+    _valueCatalogPath = "Sin definir directorio";
+    _valueShopPath = "Sin definir directorio";
+    _valueBillingsPath = "Sin definir directorio";
+    _valueInfoExpansionTile = false;
   }
 
   ///ConfigurationLocal: Devuelve la clave para el directorio donde se almacenarán los catálogos.
@@ -44,70 +40,93 @@ class ConfigurationLocal {
     return _keyCatalogPath;
   }
 
-  ///ConfigurationLocal: Inicializa las configuraciones del sistema.
-  Future<void> initialize() async {
-    //Recupera la instancia de SharedPreferences.
-    _sharedPreferences = await SharedPreferences.getInstance();
-
-    //TODO: Obtengo el directorio por defecto para Android o cualquier otra plataforma.
-    /*String dir =  (Platform.isAndroid)
-      ? (await getApplicationDocumentsDirectory()).path
-      : (await getDownloadsDirectory())!.path;
-
-    for (String key in _map.keys){
-      _map[key]!.setValue2(_sharedPreferences.getString(_keyImagePath) ?? dir);
-    }*/
-  }
-
-  ///ConfigurationLocal: Establece el valor para una clave dada.
-  Future<void> _setValue(String key, String directory) async{
-    await _sharedPreferences.setString(key, directory);
-    _map[key]!.setValue2(directory);
-  }
-
-  ///ConfigurationLocal: Almacena todos los valores del mapeo dado.
-  Future<void> setValueMap(Map<String, String> map) async{
-    map.forEach((key, value) async {
-      await _setValue(key, value);
-    });
-  }
-
-  ///ConfigurationLocal: Devuelve el valor de una determinada clave.
-  String? getValue(String key){
-    String? toReturn;
-
-    try{
-      toReturn = _map[key]!.getValue2();
-    }
-    catch(e){
-      toReturn = null;
-    }
-
-    return toReturn;
-  }
-
-  ///ConfigurationLocal: Devuelve la clave de la ruta de imagen.
+  ///ConfigurationLocal: Devuelve la clave para el directorio donde se almacenarán las imágenes.
   static String getKeyImagePath(){
     return _keyImagePath;
   }
 
-  ///ConfigurationLocal: Devuelve el titulo de una determinada clave.
-  String? getTitle(String key){
-    String? toReturn;
-
-    try{
-      toReturn = _map[key]!.getValue1();
-    }
-    catch(e){
-      toReturn = null;
-    }
-
-    return toReturn;
+  ///ConfigurationLocal: Devuelve la clave para el directorio donde se almacenarán los archivos de ventas realizadas.
+  static String getKeyShopPath(){
+    return _keyShopPath;
   }
 
-  ///ConfigurationLocal: Devuelve un iterable de claves.
-  List<String> getKeys(){
-    return _map.keys.toList();
+  ///ConfigurationLocal: Devuelve la clave para el directorio donde se almacenarán las facturas de las distribuidoras.
+  static String getKeyBillingPath(){
+    return _keyBillingsPath;
+  }
+
+  ///ConfigurationLocal: Devuelve la clave para la opcion de mostrar información en expansionTile.
+  static String getKeyInfoExpansionTile(){
+    return _keyInfoExpansionTile;
+  }
+
+  ///ConfigurationLocal: Inicializa las configuraciones del sistema.
+  Future<void> initialize() async {
+    //Recupera la instancia de SharedPreferences.
+    _sharedPreferences = await SharedPreferences.getInstance();
+    String dir =  (await getDownloadsDirectory())!.path;
+
+    _valueImagePath = _sharedPreferences.getString(_keyImagePath) ?? dir;
+    _valueBillingsPath = _sharedPreferences.getString(_keyBillingsPath) ?? dir;
+    _valueCatalogPath = _sharedPreferences.getString(_keyCatalogPath) ?? dir;
+    _valueShopPath = _sharedPreferences.getString(_keyShopPath) ?? dir;
+    _valueInfoExpansionTile = _sharedPreferences.getBool(_keyInfoExpansionTile) ?? true;
+  }
+
+  ///ConfigurationLocal: Establece el valor
+  Future<void> setValueImagePath(String directory) async{
+    await _sharedPreferences.setString(_keyImagePath, directory);
+    _valueImagePath = directory;
+  }
+
+  ///ConfigurationLocal: Establece el valor
+  Future<void> setValueCatalogPath(String directory) async{
+    await _sharedPreferences.setString(_keyCatalogPath, directory);
+    _valueCatalogPath = directory;
+  }
+
+  ///ConfigurationLocal: Establece el valor.
+  Future<void> setValueShopPath(String directory) async{
+    await _sharedPreferences.setString(_keyShopPath, directory);
+    _valueShopPath = directory;
+  }
+
+  ///ConfigurationLocal: Establece el valor.
+  Future<void> setValueBillingPath(String directory) async{
+    await _sharedPreferences.setString(_keyBillingsPath, directory);
+    _valueBillingsPath = directory;
+  }
+
+  ///ConfigurationLocal: Establece el valor para una clave dada.
+  Future<void> setInfoExpansionTile(bool value) async{
+    await _sharedPreferences.setBool(_keyInfoExpansionTile, value);
+    _valueInfoExpansionTile = !_valueInfoExpansionTile;
+  }
+
+
+  ///ConfigurationLocal: Devuelve el valor
+  String getValueImagePath() {
+    return _valueImagePath;
+  }
+
+  ///ConfigurationLocal: Devuelve el valor
+  String getValueCatalogPath() {
+    return _valueCatalogPath;
+  }
+
+  ///ConfigurationLocal: Devuelve el valor.
+  String getValueShopPath() {
+    return _valueShopPath;
+  }
+
+  ///ConfigurationLocal: Devuelve el valor.
+  String getValueBillingPath() {
+    return _valueBillingsPath;
+  }
+
+  ///ConfigurationLocal: Devuelve el valor.
+  bool isShowInfoExpansionTile() {
+    return _valueInfoExpansionTile;
   }
 
   ///ConfigurationLocal: Devuelve la instancia en ejecucion de la ConfigurationLocal.

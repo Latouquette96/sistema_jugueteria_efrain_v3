@@ -37,6 +37,17 @@ class PlutoGridStateManagerProvider extends StateNotifier<PlutoGridStateManager?
   ///PlutoGridStateManagerProvider: Carga un PlutoGridStateManager como estado.
   load(PlutoGridStateManager p) {
     state = p;
+    state!.setShowColumnFilter(true);
+  }
+
+  ///PlutoGridStateManagerProvider: Muestra/oculta el filtro.
+  void toggleShowColumnFilter() {
+    state!.setShowColumnFilter(!state!.showColumnFilter);
+  }
+
+  ///PlutoGridStateManagerProvider: Comprueba si el filtro se está mostrando o no.
+  bool isShowColumnFilter(){
+    return (state==null) ? false : state!.showColumnFilter;
   }
 
   ///PlutoGridStateManagerProvider: Inserta un elemento al PlutoGridStateManager

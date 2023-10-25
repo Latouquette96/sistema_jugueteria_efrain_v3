@@ -37,10 +37,16 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     _columns.addAll(PlutoConfig.getPlutoColumnsProduct(
       options: PlutoColumn(
         cellPadding: EdgeInsets.zero,
-        title: "Opciones",
+        title: "",
         field: "p_options",
+        enableContextMenu: false,
+        enableDropToResize: false,
+        enableHideColumnMenuItem: false,
+        enableSetColumnsMenuItem: false,
         type: PlutoColumnType.text(),
         enableRowChecked: true,
+        enableEditingMode: false,
+        enableFilterMenuItem: false,
         width: 100,
         minWidth: 100,
         renderer: (rendererContext) {
@@ -79,6 +85,16 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
               )
               ),
             ],
+          );
+        },
+        //Footer que contabiliza las filas checkeadas
+        footerRenderer: (rendererContext) {
+          return PlutoAggregateColumnFooter(
+            rendererContext: rendererContext,
+            type: PlutoAggregateColumnType.count,
+            format: 'Checked : #,###.###',
+            filter: (cell) => cell.row.checked == true,
+            alignment: Alignment.center,
           );
         },
       ),

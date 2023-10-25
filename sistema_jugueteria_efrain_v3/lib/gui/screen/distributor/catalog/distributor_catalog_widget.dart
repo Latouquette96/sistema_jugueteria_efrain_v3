@@ -37,6 +37,8 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
     _columns.addAll(PlutoConfig.getPlutoColumnsDistributor(
       options: PlutoColumn(
         cellPadding: EdgeInsets.zero,
+        enableEditingMode: false,
+        enableFilterMenuItem: false,
         title: "Opciones", 
         field: "key_options", 
         type: PlutoColumnType.text(),

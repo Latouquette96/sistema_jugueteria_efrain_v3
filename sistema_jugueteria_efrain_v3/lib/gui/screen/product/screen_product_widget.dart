@@ -6,7 +6,6 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/builder_pdf/builder_pdf.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
@@ -56,11 +55,22 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         titleTextStyle: const TextStyle(fontSize: 16),
         actionsIconTheme: const IconThemeData(color: Colors.yellow, opacity: 0.75),
         actions: [
+          IconButton(
+            onPressed: (){
+              ref.read(stateManagerProductProvider.notifier).toggleShowColumnFilter();
+              setState(() {});
+            },
+            icon: Icon(
+              MdiIcons.fromString("filter"),
+              color:  ref.watch(stateManagerProductProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+            ),
+            tooltip: "Mostrar/ocultar filtro",
+          ),
           Visibility(
             visible: ref.watch(productSharingProvider).isNotEmpty,
             child: IconButton(
               onPressed: () async{
-                final response = await BuilderPDF.buildPDF(ref.read(productSharingProvider));
+                final response = await BuilderPDF.buildPDF(ref:ref, list: ref.read(productSharingProvider));
                 if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
               },
               icon: Icon(MdiIcons.fromString("file-pdf-box")),
@@ -125,17 +135,6 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        decoration: StyleForm.getDecorationContainer(),
-        height: 30,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text("Cantidad de productos total: ${ref.read(productCatalogProvider).length} (${(ref.watch(stateManagerProductProvider)!=null) ? ref.watch(stateManagerProductProvider)!.refRows.filterOrOriginalLength : 0} producto/s filtrado/s)", style: StyleForm.getTextStyleListTileSubtitle(),),
-            Text("Ultima actualización: ${ref.watch(lastUpdateProvider)}", style: StyleForm.getTextStyleListTileSubtitle())
-          ],
-        ),
-      )
     );
   }
 }

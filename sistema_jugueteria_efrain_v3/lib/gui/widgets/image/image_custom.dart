@@ -53,7 +53,7 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
   @override
   Widget build(BuildContext context) {
     //Obtiene la configuracion local
-    final imagePath = ref.watch(configImagePathProvider);
+    final imagePath = ref.watch(configurationProvider).getValueImagePath();
     //Obtiene el archivo en cuestión.
     File fileImage = File("$imagePath/${widget.fileName}");
 

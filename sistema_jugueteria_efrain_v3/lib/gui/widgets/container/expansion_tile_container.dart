@@ -2,6 +2,7 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
 
 ///Clase ExpansionTileContainerWidget: Modela un ExpansionTileCard con un estilo personalizado.
 class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
@@ -36,14 +37,15 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
   @override
   Widget build(BuildContext context) {
     return ExpansionTileCard(
-
       expandedTextColor: Colors.black,
       expandedColor: Colors.blueGrey.shade50,
       baseColor: Colors.blueGrey.shade100,
       initiallyExpanded: widget.expanded,
       contentPadding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       title: Center(child: Text(widget.title, style: StyleForm.getTextStyleTitle())),
-      subtitle: widget.subtitle!=null ? Text(widget.subtitle!, style: const TextStyle(fontSize: 13)) : null,
+      subtitle: (ref.watch(configurationProvider).isShowInfoExpansionTile() && widget.subtitle!=null)
+          ? Text(widget.subtitle!, style: const TextStyle(fontSize: 13))
+          : null,
       children: [
         Container(
           margin: const EdgeInsets.all(5),

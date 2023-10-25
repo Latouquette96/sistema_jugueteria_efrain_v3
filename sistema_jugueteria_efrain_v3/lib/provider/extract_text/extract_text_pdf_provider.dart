@@ -7,8 +7,8 @@ import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.d
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 
 ///Clase TextFromPDFProvider: Provider que permite almacenar el texto leido de un pdf.
-class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
-  late final StateNotifierProviderRef<TextFromPDFProvider, List<DataFragment>> _ref;
+class TextFromPDFProvider extends StateNotifier<List<Product>> {
+  late final StateNotifierProviderRef<TextFromPDFProvider, List<Product>> _ref;
   late final String _path;
 
   ///Constructor TextFromPDFProvider.
@@ -17,7 +17,7 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
   TextFromPDFProvider(
       super.state,
       {
-        required StateNotifierProviderRef<TextFromPDFProvider, List<DataFragment>> ref
+        required StateNotifierProviderRef<TextFromPDFProvider, List<Product>> ref
       }
       ){
     _ref = ref;
@@ -38,6 +38,7 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
 
     try{
       content = await APICall.get(url: url, route: "$_path/$pathPDF");
+      List<Product> list = [];
 
       if (content.isResponseSuccess()){
         //Convierte el contenido de la respuesta en una lista de fragmentos de texto.
@@ -57,22 +58,27 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
             }).toList();
           }
 
-          for (DataFragment fragment in listFragments){
-            //Para el código de barra, se comprueba si dicho codebar está incluido en el fragmento.
-            if (product.getBarcode()!=null && product.getBarcode()!="-" && fragment.isContains(product.getBarcode()!)){
-              fragment.insertMatchBarcode(product);
-            }
+          bool productInserted = false;
 
-            if (listProductPrice.isNotEmpty){
-              //Para algun código interno del producto
-              if (_isContainsInternalCodeInFragment(fragment, listProductPrice)){
-                fragment.insertMatchInternalCode(product);
+          for (int i=0; i<listFragments.length && !productInserted; i++){
+
+            //Para el código de barra, se comprueba si dicho codebar está incluido en el fragmento.
+            if (product.getBarcode()!=null && product.getBarcode()!="-" && listFragments[i].isContains(product.getBarcode()!)){
+              list.add(product);
+              productInserted = true;
+            }
+            else{
+              if (listProductPrice.isNotEmpty){
+                //Para algun código interno del producto
+                if (_isContainsInternalCodeInFragment(listFragments[i], listProductPrice)){
+                  list.add(product);
+                  productInserted = true;
+                }
               }
             }
           }
         }
 
-        List<DataFragment> list = listFragments.where((element) => element.isWithoutProducts()==false).toList();
         state = [...list];
       }
     }
@@ -106,4 +112,4 @@ class TextFromPDFProvider extends StateNotifier<List<DataFragment>> {
 }
 
 ///extractTextFromPDFProvider es un provider que permite almacenar en su estado interno una lista de DataFragment con productos.
-final extractTextFromPDFProvider = StateNotifierProvider<TextFromPDFProvider, List<DataFragment>>((ref) => TextFromPDFProvider([], ref: ref));
+final extractTextFromPDFProvider = StateNotifierProvider<TextFromPDFProvider, List<Product>>((ref) => TextFromPDFProvider([], ref: ref));

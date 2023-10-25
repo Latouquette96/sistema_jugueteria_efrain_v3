@@ -23,17 +23,14 @@ dependencies:
   flutter_riverpod: ^2.4.4
   flutter_simple_treeview: ^3.0.2
   flutter_switch: ^0.3.2
-  #gsheets: ^0.5.0 #problema con web
   http: ^1.1.0
   mailto: ^2.0.0
   material_design_icons_flutter: ^7.0.7296
-  #mysql1: ^0.20.0 #problema con web
-  #path_provider: ^2.1.1 #problema con web
+  path_provider: ^2.1.1
   pdf: ^3.10.4
   pluto_grid: ^7.0.2
   pluto_menu_bar: ^3.0.1
   printing: ^5.11.0
-  #reactive_flutter_typeahead: ^2.1.0 #problema con web
   reactive_forms: ^16.1.1
   shared_preferences: ^2.2.2
   syncfusion_flutter_pdfviewer: ^23.1.41

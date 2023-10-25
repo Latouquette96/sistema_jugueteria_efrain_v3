@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/services.dart' show rootBundle;
 class BuilderPDF {
 
   ///BuilderPDF: Construye el pdf de acuerdo a la lista de productos dada.
-  static Future<ResponseSystem<File>> buildPDF(List<Product> list) async {
+  static Future<ResponseSystem<File>> buildPDF({required WidgetRef ref, required List<Product> list}) async {
     var dataRegular = await rootBundle.load("fonts/OpenSans-Regular.ttf");
     var dataBold = await rootBundle.load("fonts/OpenSans-SemiBold.ttf");
     var dataBoldItalic = await rootBundle.load("fonts/OpenSans-SemiBoldItalic.ttf");
@@ -46,8 +47,8 @@ class BuilderPDF {
         // ignore: prefer_typing_uninitialized_variables
         var image;
         //Busca el archivo (si es que existe) del producto.
-        File fileImg = File(
-            "${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyImagePath())!}\\${listPDF[i].getFileName(0)}");
+        File fileImg = File("${ref.read(configurationProvider).getValueImagePath()}\\${listPDF[i].getFileName(0)}");
+
         if (await fileImg.exists()) {
           //Obtiene la imagen del sistema de archivos.
           image = pw.MemoryImage(await fileImg.readAsBytes());
@@ -147,8 +148,7 @@ class BuilderPDF {
       String name = date.replaceAll("/", "");
       name = name.replaceAll(":", "");
 
-      final file = File(
-          "${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyCatalogPath())}/$name.pdf");
+      final file = File("${ref.read(configurationProvider).getValueCatalogPath()}/$name.pdf");
       await file.writeAsBytes(await pdf.save());
 
       responseSystem = ResponseSystem<File>.manual(status: 200, value: file, title: "Operación exitosa", message: "El archivo PDF fue generado con éxito.");
@@ -162,7 +162,7 @@ class BuilderPDF {
 
   ///BuilderPDF: Construye el pdf de la venta realizada recibiendo un listado de Triple, donde contiene:
   ///Value1: Producto, Value2: Cantidad, Value3: Descuento/recargo aplicado.
-  static Future<ResponseSystem<File>> buildPDFShop(List<Triple<Product, int, double>> list) async {
+  static Future<ResponseSystem<File>> buildPDFShop({required WidgetRef ref, required List<Triple<Product, int, double>> list}) async {
     //Construccion de estilos y tipografias.
     var dataBold = await rootBundle.load("fonts/OpenSans-SemiBold.ttf");
     var dataBoldItalic = await rootBundle.load("fonts/OpenSans-SemiBoldItalic.ttf");
@@ -310,8 +310,7 @@ class BuilderPDF {
       String name = date.replaceAll("/", "");
       name = name.replaceAll(":", "");
 
-      final file = File(
-          "${ConfigurationLocal.getInstance().getValue(ConfigurationLocal.getKeyCatalogPath())}/JugueteriaEfrain-$name.pdf");
+      final file = File("${ref.read(configurationProvider).getValueCatalogPath()}/JugueteriaEfrain-$name.pdf");
       await file.writeAsBytes(await pdf.save());
 
       responseSystem = ResponseSystem<File>.manual(status: 200, value: file, title: "Operación exitosa", message: "El archivo PDF fue generado con éxito.");

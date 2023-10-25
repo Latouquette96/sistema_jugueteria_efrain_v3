@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/directory_config_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/information_config_widget.dart';
 
 class ScreenConfiguration extends ConsumerStatefulWidget {
   const ScreenConfiguration({super.key});
@@ -13,8 +14,6 @@ class ScreenConfiguration extends ConsumerStatefulWidget {
 }
 
 class _ScreenConfigurationState extends ConsumerState<ConsumerStatefulWidget>{
-
-
 
   @override
   void initState() {
@@ -35,7 +34,8 @@ class _ScreenConfigurationState extends ConsumerState<ConsumerStatefulWidget>{
       backgroundColor: Colors.grey.shade700,
       body: const Row(
         children: [
-          DirectoryConfigWidget()
+          DirectoryConfigWidget(),
+          InformationConfigWidget()
         ],
       )
     );

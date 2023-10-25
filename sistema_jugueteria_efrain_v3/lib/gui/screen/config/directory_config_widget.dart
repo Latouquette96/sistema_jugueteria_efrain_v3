@@ -1,3 +1,4 @@
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
 
+///DirectoryConfigWidget: Widgwt para mostrar las configuraciones generales del sistema.
 class DirectoryConfigWidget extends ConsumerStatefulWidget {
   const DirectoryConfigWidget({super.key});
 
@@ -21,20 +23,17 @@ class DirectoryConfigWidget extends ConsumerStatefulWidget {
 class _DirectoryConfigWidgetState extends ConsumerState<DirectoryConfigWidget>{
 
   late final FormGroup _form;
-  late final ConfigurationLocal _config;
 
   @override
   void initState() {
     super.initState();
-    //Obtiene la configuracion actual
-    _config = ConfigurationLocal.getInstance();
-    //Crea el mapeo de clave-control del formulario.
-    Map<String, FormControl<String>> map = {};
-    map.addEntries(_config.getKeys().map((e){
-      return MapEntry(e, FormControl<String>(value: _config.getValue(e)));
-    }));
 
-    _form = FormGroup(map);
+    _form = FormGroup({
+      ConfigurationLocal.getKeyImagePath():   FormControl<String>(value: ref.read(configurationProvider).getValueImagePath()),
+      ConfigurationLocal.getKeyCatalogPath(): FormControl<String>(value: ref.read(configurationProvider).getValueCatalogPath()),
+      ConfigurationLocal.getKeyBillingPath(): FormControl<String>(value: ref.read(configurationProvider).getValueBillingPath()),
+      ConfigurationLocal.getKeyShopPath():    FormControl<String>(value: ref.read(configurationProvider).getValueShopPath()),
+    });
   }
 
   @override
@@ -66,37 +65,118 @@ class _DirectoryConfigWidgetState extends ConsumerState<DirectoryConfigWidget>{
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  ...
-                                  _config.getKeys().map((e){
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                            child: ReactiveTextField(
-                                                style: StyleForm.getStyleTextField(),
-                                                decoration: StyleForm.getDecorationTextField(_config.getTitle(e)??""),
-                                                formControlName: e,
-                                                textInputAction: TextInputAction.next
-                                            )
-                                        ),
-                                        IconButton(
-                                            onPressed: () async {
-                                              try{
-                                                //Desplegar para seleccionar directorio.
-                                                String? directory = await getDirectoryPath();
-                                                if (directory!=null){
-                                                  setState(() {
-                                                    _form.control(e).value = directory;
-                                                  });
-                                                }
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: ReactiveTextField(
+                                              style: StyleForm.getStyleTextField(),
+                                              decoration: StyleForm.getDecorationTextField("Directorio de imágenes descargadas"),
+                                              formControlName: ConfigurationLocal.getKeyImagePath(),
+                                              textInputAction: TextInputAction.next
+                                          )
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            try{
+                                              //Desplegar para seleccionar directorio.
+                                              String? directory = await getDirectoryPath();
+                                              if (directory!=null){
+                                                setState(() {
+                                                  _form.control(ConfigurationLocal.getKeyImagePath()).value = directory;
+                                                });
                                               }
-                                              // ignore: empty_catches
-                                              catch(e){}
-                                            },
-                                            icon: Icon(MdiIcons.fromString("folder"))
-                                        )
-                                      ],
-                                    );
-                                  }),
+                                            }
+                                            // ignore: empty_catches
+                                            catch(e){}
+                                          },
+                                          icon: Icon(MdiIcons.fromString("folder"))
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: ReactiveTextField(
+                                              style: StyleForm.getStyleTextField(),
+                                              decoration: StyleForm.getDecorationTextField("Directorio de catálogos de productos generados"),
+                                              formControlName: ConfigurationLocal.getKeyCatalogPath(),
+                                              textInputAction: TextInputAction.next
+                                          )
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            try{
+                                              //Desplegar para seleccionar directorio.
+                                              String? directory = await getDirectoryPath();
+                                              if (directory!=null){
+                                                setState(() {
+                                                  _form.control(ConfigurationLocal.getKeyCatalogPath()).value = directory;
+                                                });
+                                              }
+                                            }
+                                            // ignore: empty_catches
+                                            catch(e){}
+                                          },
+                                          icon: Icon(MdiIcons.fromString("folder"))
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: ReactiveTextField(
+                                              style: StyleForm.getStyleTextField(),
+                                              decoration: StyleForm.getDecorationTextField("Directorio de facturas descargadas"),
+                                              formControlName: ConfigurationLocal.getKeyBillingPath(),
+                                              textInputAction: TextInputAction.next
+                                          )
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            try{
+                                              //Desplegar para seleccionar directorio.
+                                              String? directory = await getDirectoryPath();
+                                              if (directory!=null){
+                                                setState(() {
+                                                  _form.control(ConfigurationLocal.getKeyBillingPath()).value = directory;
+                                                });
+                                              }
+                                            }
+                                            // ignore: empty_catches
+                                            catch(e){}
+                                          },
+                                          icon: Icon(MdiIcons.fromString("folder"))
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: ReactiveTextField(
+                                              style: StyleForm.getStyleTextField(),
+                                              decoration: StyleForm.getDecorationTextField("Directorio de archivos de ventas realizadas"),
+                                              formControlName: ConfigurationLocal.getKeyShopPath(),
+                                              textInputAction: TextInputAction.next
+                                          )
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            try{
+                                              //Desplegar para seleccionar directorio.
+                                              String? directory = await getDirectoryPath();
+                                              if (directory!=null){
+                                                setState(() {
+                                                  _form.control(ConfigurationLocal.getKeyShopPath()).value = directory;
+                                                });
+                                              }
+                                            }
+                                            // ignore: empty_catches
+                                            catch(e){}
+                                          },
+                                          icon: Icon(MdiIcons.fromString("folder"))
+                                      )
+                                    ],
+                                  ),
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,15 +185,32 @@ class _DirectoryConfigWidgetState extends ConsumerState<DirectoryConfigWidget>{
                                         style: StyleElevatedButton.getStyleElevatedButtom(),
                                         onPressed: () async{
                                           if(_form.valid){
-                                            //Escribe los nuevos cambios realizados en la configuracion local.
-                                            await _config.setValueMap(_form.value as Map<String, String>);
+                                            await ref.read(configurationProvider).setValueImagePath(_form.control(ConfigurationLocal.getKeyImagePath()).value);
+                                            await ref.read(configurationProvider).setValueBillingPath(_form.control(ConfigurationLocal.getKeyBillingPath()).value);
+                                            await ref.read(configurationProvider).setValueCatalogPath(_form.control(ConfigurationLocal.getKeyCatalogPath()).value);
+                                            await ref.read(configurationProvider).setValueShopPath(_form.control(ConfigurationLocal.getKeyShopPath()).value);
                                             setState(() {});
+
+                                            if (mounted){
+                                              ElegantNotification.success(
+                                                  title: const Text("Información actualizada"),
+                                                  description:  const Text("La configuracion del sistema fue actualizada con éxito.")
+                                              ).show(context);
+                                            }
+                                          }
+                                          else{
+                                            if (mounted){
+                                              ElegantNotification.error(
+                                                  title: const Text("Error"),
+                                                  description:  const Text("Error: Verifique que todos los campos estén completos.")
+                                              ).show(context);
+                                            }
                                           }
                                         } ,
                                         child: const Text('Guardar cambios'),
                                       )),
                                     ],
-                                  )
+                                  ),
                                 ]
                             ),
                           )
