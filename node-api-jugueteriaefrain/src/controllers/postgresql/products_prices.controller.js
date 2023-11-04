@@ -1,6 +1,5 @@
 const db = require("../../models");
 const ProductsPrices = db.products_prices;
-const Op = db.Sequelize.Op;
 
 //Crear y guardar un nuevo precio del producto.
 exports.create = (req, res) => {
@@ -34,7 +33,7 @@ exports.create = (req, res) => {
         title: "Operación exitosa",
         message: 'El precio del producto fue creado e insertado en la base de datos con éxito.',
         error: null,
-        value: null
+        value: data
         });
     })
     .catch(err => {
@@ -119,7 +118,7 @@ exports.update = (req, res) => {
 
     ProductsPrices.update(req.body, { where: { pp_id: id } })
       .then(num => {
-        if (num == 1) {
+        if (num === 1) {
             res.status(200).json({
               status: 200, 
               title: "Operación exitosa",
@@ -155,7 +154,7 @@ exports.delete = (req, res) => {
 
     ProductsPrices.destroy({ where: { pp_id: id } })
     .then(num => {
-      if (num == 1) {
+      if (num === 1) {
         res.status(200).json({
           status: 200, 
           title: "Operación exitosa",

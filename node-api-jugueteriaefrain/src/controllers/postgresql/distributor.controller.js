@@ -1,6 +1,5 @@
 const db = require("../../models");
 const Distributors = db.distributors;
-const Op = db.Sequelize.Op;
 
 //Crear y guardar una nueva distribuidora.
 exports.create = (req, res) => {
@@ -123,7 +122,7 @@ exports.update = (req, res) => {
 
     Distributors.update(req.body, { where: { d_id: id } })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) {
               res.status(200).json({
                 status: 200, 
                 title: "Operación exitosa",
@@ -159,7 +158,7 @@ exports.delete = (req, res) => {
 
     Distributors.destroy({ where: { d_id: id } })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) {
                 res.status(200).json({
                   status: 200, 
                   title: "Operación exitosa",

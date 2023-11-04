@@ -27,7 +27,6 @@ const getLoadedBrands = (request, response) => {
       error: null,
       value: results.rows
       });
-    return;
   })
 }
 
