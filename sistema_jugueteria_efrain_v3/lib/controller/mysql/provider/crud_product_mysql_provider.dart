@@ -26,8 +26,6 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
     while(i<listImport.length){
       Triple<Product, Distributor, double> triple = listImport[i];
 
-      print("triple.getValue1().getJSON(): ${triple.getValue1().getJSON().toString()}");
-
       //Realiza la petición POST para insertar el producto.
       final response = (triple.getValue1().getID()==0)
         ? await APICall.post(
@@ -84,7 +82,6 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
         title: "Error 404",
         message: "Error: No se pudo llevar a cabo la importación de productos del Sistema v2."
     );
-    print(e);
   }
 
   return toReturn;  

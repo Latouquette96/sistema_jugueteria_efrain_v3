@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/main/mainbar_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
@@ -22,9 +24,11 @@ class TabbedViewWidget extends ConsumerStatefulWidget {
 class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late Widget? _endDrawer;
 
   @override
   void initState() {
+    _endDrawer = null;
     super.initState();
   }
   
@@ -47,13 +51,30 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
     );
     return Scaffold(
       key: _scaffoldKey,
+      drawerEnableOpenDragGesture: false,
       appBar: AppBar(
         backgroundColor: Colors.black,
         toolbarHeight: 45,
         title: MainBarWidget(key: GlobalKey()),
         actions: [
           IconButton(
+            onPressed: (){
+              setState(() {
+                _endDrawer = const Drawer(
+                  child: DrawerConfiguration(),
+                );
+              });
+              _scaffoldKey.currentState!.openEndDrawer();
+            },
+            icon: Icon(MdiIcons.fromString("cog")),
+          ),
+          IconButton(
               onPressed: (){
+                setState(() {
+                  _endDrawer = const Drawer(
+                      child: DrawerLogin()
+                  );
+                });
                 _scaffoldKey.currentState!.openEndDrawer();
               },
               icon: const Icon(Icons.login)
@@ -64,9 +85,7 @@ class _TabbedViewWidgetState extends ConsumerState<TabbedViewWidget> {
         padding: const EdgeInsets.all(5),
         child: w
       ),
-      endDrawer: const Drawer(
-        child: DrawerLogin()
-      ),
+      endDrawer: _endDrawer,
     );
   }
 

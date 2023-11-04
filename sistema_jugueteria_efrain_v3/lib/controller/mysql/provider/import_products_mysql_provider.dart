@@ -60,22 +60,28 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
 
           //Si se debe insertar triple, entonces...
           if (insertTriple){
+            //Si está definido el producto
             if (productRow.getBarcode()!="-" && productRow.getInternalCode()!="-" && productRow.getTitle()!="-" && productRow.getDescription()!="-"){
-              //Obtener la distribuidora del producto.
-              Distributor distributorRow = distributors.firstWhere(
-                      (element){
-                    return element.getCUIT().replaceAll('-', '').compareTo(row['d_cuit'].toString().replaceAll('-', ''))==0;},
-                  orElse: () => distributors.first
-              );
+              //Si no está duplicado en la lista a insertar.
+              if (list.indexWhere((element){ return _equals(produc1: element.getValue1(), product2: productRow); }) ==-1){
 
-              productRow.buildPlutoRow();
+                //Obtener la distribuidora del producto.
+                Distributor distributorRow = distributors.firstWhere(
+                        (element){
+                      return element.getCUIT().replaceAll('-', '').compareTo(row['d_cuit'].toString().replaceAll('-', ''))==0;},
+                    orElse: () => distributors.first
+                );
 
-              //Triple es una tripla de valores: (producto, distribuidora, precio_base)
-              list.add(Triple<Product, Distributor, double>(
-                  v1: productRow,
-                  v2: distributorRow,
-                  v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString()))
-              );
+                productRow.buildPlutoRow();
+
+                //Triple es una tripla de valores: (producto, distribuidora, precio_base)
+                list.add(Triple<Product, Distributor, double>(
+                    v1: productRow,
+                    v2: distributorRow,
+                    v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString()))
+                );
+              }
+
             }
           }
         }
@@ -131,6 +137,20 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
       productExist.getMinimumAge()!=productMySQL.getMinimumAge() ||
       productExist.getSizes().toString()!=productMySQL.getSizes().toString() ||
       (productExist.getLinkImages().toList().map<String>((e) => e.getLink()).toList().toString())!=(productMySQL.getLinkImages().toList().map<String>((e) => e.getLink()).toList().toString())
+    );
+  }
+
+  ///ImportProductMySQLProvider: Comprueba si dos productos tienen la misma información relevante.
+  ///
+  ///[produc1] Producto existente.
+  ///[product2] Producto proveniente de MySQL.
+  bool _equals({required Product produc1, required Product product2}){
+    return (
+        produc1.getBarcode()==product2.getBarcode() &&
+            produc1.getInternalCode()==product2.getInternalCode() &&
+            produc1.getTitle()==product2.getTitle() &&
+            produc1.getBrand()==product2.getBrand() &&
+            produc1.getPricePublic()==product2.getPricePublic()
     );
   }
 

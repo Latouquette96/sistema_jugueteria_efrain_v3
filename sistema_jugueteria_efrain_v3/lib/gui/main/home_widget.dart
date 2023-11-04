@@ -22,6 +22,13 @@ class _HomeWidgetState extends State<HomeWidget>{
           subtitle: Text("El login es necesario para poder recuperar toda la información (productos, distribuidoras, etc) almacenada en el servidor.", style: TextStyle(color: Colors.white),),
           leading: Icon(Icons.login, color: Colors.yellow, size: 16,),
         ));
+    //Info: Configuración
+    list.add(const ListTile(
+      title: Text("Configuraciones", style: TextStyle(color: Colors.yellow, fontSize: 16),),
+      subtitle: Text("En Configuraciones se puede modificar los directorios donde se descargarán "
+          "las imágenes de producto y donde se almacenarán los archivos pdfs creados.", style: TextStyle(color: Colors.white),),
+      leading: Icon(Icons.settings, color: Colors.yellow, size: 16,),
+    ));
     //Info: Productos
     list.add(const ListTile(
       title: Text("Producto > Catálogo de productos", style: TextStyle(color: Colors.yellow, fontSize: 16),),
@@ -61,21 +68,6 @@ class _HomeWidgetState extends State<HomeWidget>{
           "• Cargar facturas de compras realizadas a cada distribuidoras.\n"
           "• Las distribuidoras existentes pueden ser editados ya sea haciendo doble click en la fila en el botón editar.", style: TextStyle(color: Colors.white),),
       leading: Icon(Icons.list_alt, color: Colors.yellow, size: 16,),
-    ));
-    //Info: Configuración
-    list.add(const ListTile(
-      title: Text("Archivo > Configuraciones", style: TextStyle(color: Colors.yellow, fontSize: 16),),
-      subtitle: Text("En Configuraciones se puede modificar los directorios donde se descargarán "
-          "las imágenes de producto y donde se almacenarán los archivos pdfs creados.", style: TextStyle(color: Colors.white),),
-      leading: Icon(Icons.settings, color: Colors.yellow, size: 16,),
-    ));
-    //Info: Importar
-    list.add(const ListTile(
-      title: Text("Archivo > Estadisticas Generales", style: TextStyle(color: Colors.yellow, fontSize: 16),),
-      subtitle: Text("En Estadisticas Generales se puede visualizar estimaciones del total de productos que hay disponible, así como el monto total actual, entre otros datos mas.",
-                  style: TextStyle(color: Colors.white),
-                ),
-      leading: Icon(Icons.data_thresholding_rounded, color: Colors.yellow, size: 16,),
     ));
     //Info: Importar
     list.add(const ListTile(

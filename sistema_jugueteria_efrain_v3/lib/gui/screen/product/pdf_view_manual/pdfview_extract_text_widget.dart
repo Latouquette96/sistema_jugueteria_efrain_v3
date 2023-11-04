@@ -63,6 +63,21 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
                     titleHeader: "Visor PDF",
                     tooltipClose: "Cerrar visor PDF.",
                   ),
+                  Visibility(
+                    visible: _file!=null,
+                    child: Positioned(
+                        right: 30,
+                        child: IconButton(
+                          tooltip: "Cierra el archivo pdf.",
+                          icon: Icon(MdiIcons.fromString("close-circle"), color: Colors.red, size: 24,),
+                          onPressed: () {
+                            _file = null;
+                            ref.read(extractTextFromPDFProvider.notifier).close();
+                            setState(() {});
+                          },
+                        )
+                    ),
+                  ),
                   Positioned(
                       right: 0,
                       child: IconButton(

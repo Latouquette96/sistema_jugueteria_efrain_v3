@@ -51,7 +51,7 @@ class ResponseAPI {
   ///ResponseAPI: Devuelve el texto de error (puede no existir).
   ///Es seguro que si [status] es [200] o [201], entonces el error es nulo.
   String? getError(){
-    return _response['error'];
+    return _response['error'].toString();
   }
 
   ///ResponseAPI: Devuelve el texto de mensaje.

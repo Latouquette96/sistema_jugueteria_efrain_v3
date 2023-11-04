@@ -189,6 +189,13 @@ class Distributor extends JSONalizable<Distributor> {
     return _iva == 1.21;
   }
 
+  ///Distributor: Devuelve el nombre de carpeta que tiene la distribuidora.
+  String getDirectoryName(){
+    String toReturn = _name;
+    toReturn = toReturn.replaceAll(" ", "_").toLowerCase();
+    return toReturn;
+  }
+
   @override
   Map<String, dynamic> getJSON() {
     return {

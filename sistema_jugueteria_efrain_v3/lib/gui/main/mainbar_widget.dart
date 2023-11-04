@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/config/screen_configuration.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/screen_distributor_catalog.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/screen_import_mysql_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_pdf_viewer_extract_text_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_pdf_viewer_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/screen_product_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/statistics/statistics_screen.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabbedview_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/tabbedview/tabdata_provider.dart';
@@ -16,6 +14,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 @immutable
 class MainBarWidget extends ConsumerWidget {
+
   const MainBarWidget({super.key});
 
   @override
@@ -36,42 +35,6 @@ class MainBarWidget extends ConsumerWidget {
           title: "Archivo",
           children: [
             PlutoMenuItem.checkbox(
-              icon: MdiIcons.fromString("cog"),
-              title: "Configuraciones",
-              initialCheckValue: ref.watch(tabConfigurationProvider)!=null,
-              enable: ref.watch(tabConfigurationProvider)!=null,
-              onChanged: (bool? isSelected){
-                if (isSelected!=null){
-                  if (isSelected){
-                    ref.read(tabbedViewProvider.notifier).insertTab(
-                        label: "Configuraciones",
-                        widget: const ScreenConfiguration(),
-                        icon: MdiIcons.fromString("cog"),
-                        tabProvider: tabConfigurationProvider
-                    );
-                  }
-                  else{
-                    ref.read(tabbedViewProvider.notifier).removeTab(tabConfigurationProvider);
-                  }
-                }
-              }
-            ),
-            PlutoMenuItem.checkbox(
-                title: "Estadisticas Generales",
-                initialCheckValue: ref.watch(tabStatistics)!=null,
-                enable: ref.watch(tabStatistics)!=null,
-                onChanged: (bool? isSelected){
-                  if (isSelected!=null){
-                    if (isSelected){
-                      ref.read(tabbedViewProvider.notifier).insertTab(label: "Estadisticas Generales", widget: const ScreenStatistics(), icon: MdiIcons.fromString("database"), tabProvider: tabStatistics);
-                    }
-                    else{
-                      ref.read(tabbedViewProvider.notifier).removeTab(tabStatistics);
-                    }
-                  }
-                }
-            ),
-            PlutoMenuItem.checkbox(
               title: "Importar datos (Sistema v2)",
               initialCheckValue: ref.watch(tabImportMySQLCatalog)!=null,
               enable: ref.watch(tabImportMySQLCatalog)!=null,
@@ -87,7 +50,7 @@ class MainBarWidget extends ConsumerWidget {
               }
             ),
           ]
-        
+
         ),
         PlutoMenuItem(title: "Producto",
           children: [

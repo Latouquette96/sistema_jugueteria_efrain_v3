@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -144,9 +146,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                 try{
 
                 }
-                catch(e){
-                  print("Error: $e");
-                }
+                catch(e){}
               },
               configuration: PlutoConfig.getConfiguration(),
             ),

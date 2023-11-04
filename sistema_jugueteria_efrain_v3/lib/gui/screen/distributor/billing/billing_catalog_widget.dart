@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_operations_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
 
@@ -85,8 +86,10 @@ class BillingCatalogWidget extends ConsumerWidget {
                                   onPressed: (){
                                     if (ref.read(billingSearchProvider)==null){
                                       ref.read(billingSearchProvider.notifier).load(e);
+                                      ref.read(billingOperationsProvider.notifier).initialize();
                                     }
                                     else{
+                                      ref.read(billingOperationsProvider.notifier).free();
                                       ref.read(billingSearchProvider.notifier).free();
                                     }
                                   },

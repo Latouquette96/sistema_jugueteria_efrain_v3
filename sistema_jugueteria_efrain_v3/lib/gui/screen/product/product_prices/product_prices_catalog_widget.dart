@@ -5,6 +5,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/new_product_prices_widget.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_image_carousel_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_listview_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
@@ -112,6 +113,10 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
             Expanded(
               child: ListView(
                 children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ProductImageCarouselWidget(providerProduct: widget.getProvider(), imagesDisplay: 2,),
+                  ),
                   //Precio al público del producto.
                   _buildWidgetPricePublic(context, product),
                   //Construye el ListView

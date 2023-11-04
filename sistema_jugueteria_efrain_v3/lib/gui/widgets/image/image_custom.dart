@@ -215,7 +215,6 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
                             tooltip: "Descargar imagen",
                             onPressed: () async {
                               if (isError){
-                                print("Gol");
                                 return;
                               }
                               Response<Uint8List> response = await Dio().get<Uint8List>(link, options: Options(responseType: ResponseType.bytes));

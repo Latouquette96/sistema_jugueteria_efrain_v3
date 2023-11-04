@@ -38,7 +38,6 @@ class DistributorBilling extends JSONalizable<DistributorBilling> {
   }
 
 
-
   ///Constructor de DistributorBilling.
   DistributorBilling.fromJSON(Map<String, dynamic> map){
     fromJSON(map);
@@ -122,6 +121,13 @@ class DistributorBilling extends JSONalizable<DistributorBilling> {
   ///DistributorBilling: Devuelve el total de la factura.
   double getTotal() {
     return _total;
+  }
+
+  //----------------------FILE---------------------------
+
+  ///DistributorBilling: Devuelve el nombre que tendrá el archivo creado.
+  String getFileName(){
+    return "${_date.toString()}.pdf";
   }
 
   //------------------------------------------------------
