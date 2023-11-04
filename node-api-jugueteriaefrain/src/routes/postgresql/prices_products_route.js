@@ -1,13 +1,13 @@
 'use strict'
 //Carga el módulo de express para poder crear rutas
-var express = require('express');
+let express = require('express');
 
 //Carga el controlador
-var PricesProductController = require('../../controllers/postgresql/products_prices.controller');
+let PricesProductController = require('../../controllers/postgresql/products_prices.controller');
 
 //Se llama al router
-var app = express.Router();
-//var md_auth = require('../middlewares/authenticated');
+let app = express.Router();
+//let md_auth = require('../middlewares/authenticated');
 
 //-- Creación de rutas para los métodos del controlador --
 app.get('/products/prices_products/:id',  /*md_auth.ensureAuth, */ PricesProductController.findAll)

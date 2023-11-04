@@ -7,13 +7,6 @@ exports.extractTextFromPDF = (req, res) => {
     child.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
       res.status(200).send(data);
-      /*res.status(200).json({
-        status: 200, 
-        title: "Texto recuperado",
-        message: 'El archivo PDF fue leído con éxito.',
-        value: data.toString('utf8'),
-        error: null
-      });*/
     });
   
     child.stderr.on('data', (data) => {

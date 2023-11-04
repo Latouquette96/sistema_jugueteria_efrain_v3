@@ -19,10 +19,11 @@ exports.create = (req, res) => {
     //Crea un precio del producto.
     const price_product = {
         pp_internal_code: req.body.pp_internal_code,
-        pp_product: req.body.pp_product, 
-        pp_distributor: req.body.pp_distributor, 
-        pp_price_base: req.body.pp_price_base, 
-        pp_date_update: req.body.pp_date_update
+        pp_product: req.body.pp_product,
+        pp_distributor: req.body.pp_distributor,
+        pp_price_base: req.body.pp_price_base,
+        pp_date_update: req.body.pp_date_update,
+        pp_website: req.body.pp_website,
     };
   
     //Guarda el precio del producto en la base de datos.
@@ -33,7 +34,7 @@ exports.create = (req, res) => {
         title: "Operación exitosa",
         message: 'El precio del producto fue creado e insertado en la base de datos con éxito.',
         error: null,
-        value: {p_id: data.p_id}
+        value: null
         });
     })
     .catch(err => {

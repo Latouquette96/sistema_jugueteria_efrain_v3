@@ -1,6 +1,5 @@
 const db = require("../../models");
 const Products = db.products;
-const Op = db.Sequelize.Op;
 
 //Crear y guardar un nuevo producto.
 exports.create = (req, res) => {
@@ -126,7 +125,7 @@ exports.update = (req, res) => {
 
     Products.update(req.body, { where: { p_id: id } })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) {
                 res.status(200).json({
                   status: 200, 
                   title: "Operación exitosa",
@@ -163,7 +162,7 @@ exports.updatePricePublic = (req, res) => {
 
   Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
       .then(num => {
-        if (num == 1) {
+        if (num === 1) {
           res.status(200).json({
             status: 200, 
             title: "Operación exitosa",
@@ -199,7 +198,7 @@ exports.delete = (req, res) => {
 
     Products.destroy({ where: { p_id: id } })
         .then(num => {
-          if (num == 1) {
+          if (num === 1) {
             res.status(200).json({
               status: 200, 
               title: "Operación exitosa",
@@ -238,8 +237,8 @@ exports.deleteAll = (req, res) => {
             title: "Operación exitosa",
             message: 'Se eliminó todos los productos existentes de la base de datos.',
             error: null,
-            value: null
-            });          
+            value: nums
+            });
         })
         .catch(err => {
           res.status(500).json({

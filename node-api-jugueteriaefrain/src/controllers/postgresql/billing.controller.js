@@ -1,6 +1,5 @@
 const db = require("../../models");
 const Billings = db.billings;
-const Op = db.Sequelize.Op;
 
 //Crear y guardar una nueva factura.
 exports.create = (req, res) => {
@@ -18,8 +17,6 @@ exports.create = (req, res) => {
   
     //Crea una factura.
     const factura = {
-        //db_id, db_distributor, db_datetime, db_total, db_url_file
-        db_id: req.body.db_id, 
         db_distributor: req.body.db_distributor, 
         db_datetime: req.body.db_datetime, 
         db_total: req.body.db_total, 
@@ -112,9 +109,17 @@ exports.findAll = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Billings.update(req.body, { where: { db_id: id } })
+    //Crea una factura.
+    const factura = {
+        db_distributor: req.body.db_distributor,
+        db_datetime: req.body.db_datetime,
+        db_total: req.body.db_total,
+        db_url_file: req.body.db_url_file
+    };
+
+    Billings.update(factura, { where: { db_id: id } })
       .then(num => {
-        if (num == 1) {
+        if (num === 1) {
             res.status(200).json({
               status: 200, 
               title: "Operación exitosa",
@@ -150,7 +155,7 @@ exports.delete = (req, res) => {
 
     Billings.destroy({ where: { db_id: id } })
       .then(num => {
-        if (num == 1) {
+        if (num === 1) {
           res.status(200).json({
             status: 200, 
             title: "Operación exitosa",
