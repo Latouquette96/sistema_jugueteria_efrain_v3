@@ -5,13 +5,13 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
-final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Triple<Product, Distributor, double>>, List<Triple<Product, Distributor, double>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
+final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Fourfold<Product, Distributor, double, String>>, List<Fourfold<Product, Distributor, double, String>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
 
 ///Proveedor para crear un producto en particular.
 final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
@@ -19,38 +19,39 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
 
   try{
     final url = ref.watch(urlAPIProvider);
-    final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogProductsImportProvider);
+    final List<Fourfold<Product, Distributor, double, String>> listImport = ref.watch(catalogProductsImportProvider);
     int i=0;
     int errors = 0;
 
     while(i<listImport.length){
-      Triple<Product, Distributor, double> triple = listImport[i];
+      Fourfold<Product, Distributor, double, String> fourfold = listImport[i];
 
       //Realiza la petición POST para insertar el producto.
-      final response = (triple.getValue1().getID()==0)
+      final response = (fourfold.getValue1().getID()==0)
         ? await APICall.post(
             url: url,
             route: '/products',
-            body: triple.getValue1().getJSON(),
+            body: fourfold.getValue1().getJSON(),
           )
         : await APICall.put(
             url: url,
-            route: '/products/${triple.getValue1().getID()}',
-            body: triple.getValue1().getJSON(),
+            route: '/products/${fourfold.getValue1().getID()}',
+            body: fourfold.getValue1().getJSON(),
           );
 
       //Si la respuesta fue exitosa
       if (response.isResponseSuccess()){
         //Si ademas el producto en cuestion se trataba de un producto nuevo, entonces se carga su respectivo
-        if (triple.getValue1().getID()==0){
-          triple.getValue1().setID(response.getValue()['p_id']);
+        if (fourfold.getValue1().getID()==0){
+          fourfold.getValue1().setID(response.getValue()['p_id']);
 
           final productPrice = ProductPrice(
               id: 0,
-              p: triple.getValue1().getID(),
-              d: triple.getValue2()!.getID(),
-              price: triple.getValue3() ?? 0,
-              date: DatetimeCustom.parseStringDatetime(triple.getValue1().getDateUpdate())
+              internalCode: fourfold.getValue4(),
+              p: fourfold.getValue1().getID(),
+              d: fourfold.getValue2()!.getID(),
+              price: fourfold.getValue3() ?? 0,
+              date: DatetimeCustom.parseStringDatetime(fourfold.getValue1().getDateUpdate())
           );
 
           //Envio la solicitud POST para cargar
@@ -90,15 +91,15 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
 ///notifyImportsProvider: Provider que se utiliza para notificar las importaciones realizadas.
 final notifyImportsProvider = FutureProvider((ref) async{
   await Future.delayed(const Duration(seconds: 1));
-  final List<Triple<Product, Distributor, double>> listImport = ref.watch(catalogProductsImportProvider);
+  final List<Fourfold<Product, Distributor, double, String>> listImport = ref.watch(catalogProductsImportProvider);
 
   if (ref.watch(stateManagerProductMySQLProvider)!=null){
     ref.read(stateManagerProductMySQLProvider)!.removeRows(
         listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
     );
 
-    for (Triple<Product, Distributor, double> triple in ref.read(catalogProductsImportProvider)){
-      ref.read(importProductMySQLProvider.notifier).remove(triple);
+    for (Fourfold<Product, Distributor, double, String> fourfold in ref.read(catalogProductsImportProvider)){
+      ref.read(importProductMySQLProvider.notifier).remove(fourfold);
     }
 
     ref.read(catalogProductsImportProvider.notifier).removeAll();

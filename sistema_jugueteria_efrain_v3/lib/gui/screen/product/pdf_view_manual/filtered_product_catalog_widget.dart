@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
@@ -36,7 +36,7 @@ class _FilteredProductCatalogWidgetState extends ConsumerState<FilteredProductCa
     return Container(
       width: 750,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: StyleForm.getDecorationContainer(),
+      decoration: StyleContainer.getDecoration(),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -53,7 +53,7 @@ class _FilteredProductCatalogWidgetState extends ConsumerState<FilteredProductCa
                     children: ref.watch(extractTextFromPDFProvider).map((e){
                       return Container(
                         margin: const EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 2.5),
-                        decoration: ContainerStyle.getContainerChild(),
+                        decoration: StyleContainer.getContainerChild(),
                         child: ListTile(
                           title: Text(e.getTitle(), style: TextStyle(color: (ref.watch(productExtractTextProvider)==e) ? Colors.blueAccent.shade700 : Colors.grey.shade900),),
                           leading: Icon(Icons.arrow_back_ios_new_rounded, color: (ref.watch(productExtractTextProvider)==e) ? Colors.blueAccent : Colors.grey.shade700, size: 16,),

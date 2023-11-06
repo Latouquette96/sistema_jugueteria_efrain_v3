@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
@@ -38,7 +39,7 @@ class _BillingPDFViewWidgetState extends ConsumerState<BillingPDFViewWidget> {
     Widget widgetPDF;
     if (db!=null && triple!=null){
       if (ref.watch(billingOperationsProvider)!.getValue1()==null && ref.watch(billingOperationsProvider)!.getValue3()==false){
-        widgetPDF = Text("Error: Seleccione una factura para poder visualizarla en el visor.", style: StyleForm.getTextStyleListTileTitle(),);
+        widgetPDF = Text("Error: Seleccione una factura para poder visualizarla en el visor.", style: StyleListTile.getTextStyleTitle(),);
       }
       else{
         if (ref.watch(billingOperationsProvider)!.getValue1()!=null){
@@ -50,7 +51,7 @@ class _BillingPDFViewWidgetState extends ConsumerState<BillingPDFViewWidget> {
       }
     }
     else{
-      widgetPDF = Text("Seleccione una factura para poder visualizarla en el visor.", style: StyleForm.getTextStyleListTileTitle(),);
+      widgetPDF = Text("Seleccione una factura para poder visualizarla en el visor.", style: StyleListTile.getTextStyleTitle(),);
     }
 
     return Container(
@@ -92,7 +93,7 @@ class _BillingPDFViewWidgetState extends ConsumerState<BillingPDFViewWidget> {
             Expanded(
               child: (db!=null)
                   ? widgetPDF
-                  : Text("Seleccione una factura para poder visualizarla en el visor.", style: StyleForm.getTextStyleListTileTitle(),)
+                  : Text("Seleccione una factura para poder visualizarla en el visor.", style: StyleListTile.getTextStyleTitle(),)
             )
           ]
       )

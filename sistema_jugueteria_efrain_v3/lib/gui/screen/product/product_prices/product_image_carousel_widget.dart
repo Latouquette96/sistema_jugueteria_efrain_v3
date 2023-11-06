@@ -27,7 +27,6 @@ class ProductImageCarouselWidget extends ConsumerStatefulWidget {
 
 class _ProductImageCarouselWidgetState extends ConsumerState<ProductImageCarouselWidget>{
 
-
   @override
   Widget build(BuildContext context) {
     int index = -1;

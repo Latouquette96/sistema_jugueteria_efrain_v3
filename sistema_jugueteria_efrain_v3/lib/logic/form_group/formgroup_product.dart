@@ -40,9 +40,6 @@ class FormGroupProduct {
         value: ref.read(provider)?.getBarcode(),
         validators: [Validators.required, Validators.maxLength(Product.getMaxCharsBarcode())]
       ),
-      Product.getKeyInternalCode(): FormControl<String>(
-        value: ref.read(provider)?.getInternalCode(),
-      ),
       Product.getKeyTitle(): FormControl<String>(
         value: ref.read(provider)?.getTitle(),
         validators: [Validators.required, Validators.maxLength(Product.getMaxCharsTitle())]

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
@@ -52,7 +54,7 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
     return Container(
         width: 600,
         margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-        decoration: ContainerStyle.getContainerRoot(),
+        decoration: StyleContainer.getContainerRoot(),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -112,12 +114,12 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
               (_file==null)
               ? Expanded(
                   child: Container(
-                    decoration: ContainerStyle.getContainerChild(),
+                    decoration: StyleContainer.getContainerChild(),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(child: Center(child: Text("Seleccione un archivo PDF", style: StyleForm.getTextStyleListTileTitle(),),))
+                        Expanded(child: Center(child: Text("Seleccione un archivo PDF", style: StyleListTile.getTextStyleTitle(),),))
                       ],
                     ),
                   ),
@@ -149,8 +151,8 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
                     ),
                     Expanded(child:
                     (ref.read(pdfExtractTextTextSearchResultProvider)!=null)
-                        ? Center(child: Text("${ref.watch(pdfExtractTextTextSearchResultProvider)!.currentInstanceIndex}/${ref.watch(pdfExtractTextTextSearchResultProvider)!.totalInstanceCount}", style: StyleForm.getStyleTextField(),))
-                        : Center(child: Text("Sin resultados", style: StyleForm.getStyleTextField()),)
+                        ? Center(child: Text("${ref.watch(pdfExtractTextTextSearchResultProvider)!.currentInstanceIndex}/${ref.watch(pdfExtractTextTextSearchResultProvider)!.totalInstanceCount}", style: StyleTextField.getTextStyleNormal(),))
+                        : Center(child: Text("Sin resultados", style: StyleTextField.getTextStyleNormal()),)
                     ),
                     Expanded(child:
                     IconButton(

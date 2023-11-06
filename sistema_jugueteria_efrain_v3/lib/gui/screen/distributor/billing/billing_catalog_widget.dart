@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/billing/billing_crud_provider.dart';
@@ -23,7 +23,7 @@ class BillingCatalogWidget extends ConsumerWidget {
           if (snap.hasData){
             return Container(
                 margin: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-                decoration: ContainerStyle.getContainerChild(),
+                decoration: StyleContainer.getContainerChild(),
                 child: _getBillingsDistributor(context, ref, snap.data!)
             );
           }
@@ -68,11 +68,11 @@ class BillingCatalogWidget extends ConsumerWidget {
                           iconColor: Colors.black,
                           title: Row(
                               children: [
-                                Text("Fecha: ", style: StyleForm.getStyleTextField(),),
-                                Expanded(child: Text(e.getDatetime(), style: StyleForm.getStyleTextField()))
+                                Text("Fecha: ", style: StyleTextField.getTextStyleNormal(),),
+                                Expanded(child: Text(e.getDatetime(), style: StyleTextField.getTextStyleNormal()))
                               ]
                           ),
-                          subtitle: Text("Total: \$${e.getTotal().toStringAsFixed(2)}", style: StyleForm.getStyleTextField(),),
+                          subtitle: Text("Total: \$${e.getTotal().toStringAsFixed(2)}", style: StyleTextField.getTextStyleNormal(),),
                           trailing: SizedBox(
                             width: 75,
                             child: Row(

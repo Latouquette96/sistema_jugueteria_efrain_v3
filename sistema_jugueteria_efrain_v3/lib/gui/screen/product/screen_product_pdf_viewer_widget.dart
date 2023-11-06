@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_pdfview_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_price_pdfview_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
@@ -64,7 +64,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
         children: [
           Expanded(child: Container(
             margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: ContainerStyle.getContainerRoot(),
+            decoration: StyleContainer.getContainerRoot(),
             child: const ProductPricePDFViewCatalogWidget(),
           )),
           const Visibility(

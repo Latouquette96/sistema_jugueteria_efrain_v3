@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
@@ -67,11 +69,11 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
         height: 300,
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.all(0),
-        decoration: StyleForm.getDecorationFormControl(),
+        decoration: StyleContainer.getDecorationFormControl(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Precios de producto por distribuidora", style: StyleForm.getTextStyleTitle()),
+            Center(child: Text("Precios de producto por distribuidora", style: StyleContainer.getTextStyleChildren()),),
             Expanded(
                 child: SingleChildScrollView(
                   child: TreeView(
@@ -82,13 +84,13 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                       //Nodo del elemento 'e'
                       return TreeNode(
                           content: Container(
-                            decoration: StyleForm.getDecorationControlImage(),
+                            decoration: StyleContainer.getDecorationImage(),
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                             margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
                             width: widget.getWidthTreeNode(),
                             child: Row(
                               children: [
-                                Expanded(child: Text(e.getValue1().getName(), style: StyleForm.getTextStyleListTileTitle(), overflow: TextOverflow.ellipsis,)),
+                                Expanded(child: Text(e.getValue1().getName(), style: StyleListTile.getTextStyleTitle(), overflow: TextOverflow.ellipsis,)),
                                 Visibility(
                                   visible: e.getValue2()!.getWebsite()!=null,
                                   child: IconButton(
@@ -146,7 +148,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                                   width: widget.getWidthTreeNode()-15,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: TextField(
-                                    decoration: StyleForm.getDecorationTextField("Código interno"),
+                                    decoration: StyleTextField.getDecoration("Código interno"),
                                     controller: TextEditingController(text: e.getValue2()!.getInternalCode()),
                                     onChanged: (String value){
                                       e.getValue2()!.setInternalCode(value);
@@ -166,7 +168,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                                   width: widget.getWidthTreeNode()-15,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                   child: TextField(
-                                    decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
+                                    decoration: StyleTextField.getDecoration("Precio base (sin impuestos)"),
                                     controller: TextEditingController(text: e.getValue2()!.getPriceBase().toStringAsFixed(2)),
                                     onChanged: (String value){
                                       e.getValue2()!.setPriceBase(double.parse(value));
@@ -184,7 +186,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                                   height: 40,
                                   width: widget.getWidthTreeNode()-15,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleForm.getTextStyleListTileSubtitle()),
+                                  child: Text("• Precio compra (x${e.getValue1().getIVA().toStringAsFixed(2)}): \$${(e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)}", style: StyleContainer.getTextStyleBold()),
                                 )
                             ),
                             TreeNode(
@@ -197,7 +199,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                                   child: Row(
                                     children: [
                                       Expanded(child: TextField(
-                                        decoration: StyleForm.getDecorationTextField("Sitio web del producto"),
+                                        decoration: StyleTextField.getDecoration("Sitio web del producto"),
                                         controller: TextEditingController(text: e.getValue2()!.getWebsite()),
                                         onChanged: (String value){
                                           e.getValue2()!.setWebsite(value);
@@ -217,7 +219,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                                   height: 60,
                                   width: widget.getWidthTreeNode()-15,
                                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleForm.getTextStyleListTileSubtitle()),
+                                  child: Text("• Ultimo cambio: ${e.getValue2()!.getDateLastUpdated()}", style: StyleContainer.getTextStyleBold()),
                                 )
                             )
                           ]

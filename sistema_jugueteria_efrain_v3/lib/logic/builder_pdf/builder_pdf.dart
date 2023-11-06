@@ -72,7 +72,7 @@ class BuilderPDF {
         ]));
         listRow.add(pw.Row(children: [
           pw.Text("Código de barras: ", style: styleLabel),
-          pw.Text(e.getBarcode() ?? e.getInternalCode() ?? "-",
+          pw.Text(e.getBarcode(),
               style: styleInfo)
         ]));
         listRow.add(pw.Row(children: [
@@ -215,9 +215,7 @@ class BuilderPDF {
                       pw.Container(
                           width: 75,
                           child: pw.Text(
-                              e.getValue1().getBarcode() ??
-                                  e.getValue1().getInternalCode() ??
-                                  "-",
+                              e.getValue1().getBarcode(),
                               style: styleLabel)),
                       pw.Container(
                           width: 225,

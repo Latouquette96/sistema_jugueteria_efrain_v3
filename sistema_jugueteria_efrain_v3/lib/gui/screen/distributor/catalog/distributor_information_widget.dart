@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
@@ -38,7 +38,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
     return Container(
       width: 400,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: ContainerStyle.getContainerRoot(),
+      decoration: StyleContainer.getContainerRoot(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -59,7 +59,7 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
           Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  decoration: ContainerStyle.getContainerChild(),
+                  decoration: StyleContainer.getContainerChild(),
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(5),
                   child: ReactiveForm(
@@ -68,8 +68,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                       children: [
                         ReactiveTextField(
                           maxLength: 13,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("CUIT"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("CUIT"),
                           formControlName: Distributor.getKeyCUIT(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -83,8 +83,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ),
                         ReactiveTextField(
                           maxLength: 50,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Nombre"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Nombre"),
                           formControlName: Distributor.getKeyName(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -97,8 +97,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ),
                         ReactiveTextField(
                           maxLength: 75,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Dirección"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Dirección"),
                           formControlName: Distributor.getKeyAddress(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -108,8 +108,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ),
                         ReactiveTextField(
                           maxLength: 15,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Teléfono (celular o fijo)"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Teléfono (celular o fijo)"),
                           formControlName: Distributor.getKeyCel(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -119,8 +119,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ),
                         ReactiveTextField(
                           maxLength: 150,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Correo electrónico"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Correo electrónico"),
                           formControlName: Distributor.getKeyEmail(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -133,8 +133,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         ),
                         ReactiveDropdownField<double>(
                           formControlName: Distributor.getKeyIVA(),
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("IVA aplicado a los productos."),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("IVA aplicado a los productos."),
                           items: const [
                             DropdownMenuItem<double>(value: 1.00,child: Text("1.00 (sin IVA)"),),
                             DropdownMenuItem<double>(value: 1.21,child: Text("1.21 (con IVA)"),),
@@ -150,8 +150,8 @@ class _DistributorInformationWidgetState extends ConsumerState<ConsumerStatefulW
                         const SizedBox(height: 15,),
                         ReactiveTextField(
                           maxLength: 150,
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Sitio web"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Sitio web"),
                           formControlName: Distributor.getKeyWebsite(),
                           textInputAction: TextInputAction.none,
                           onSubmitted: (_){

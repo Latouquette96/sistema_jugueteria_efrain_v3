@@ -12,8 +12,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 class Product extends JSONalizable<Product> {
   ///Atributos de instancia
   late int _id;
-  late String? _barcode; //RN-P1.
-  late String? _internalCode; //RN-P2.
+  late String _barcode; //RN-P1.
   late String _title; //RN-P8
   late String _brand; //RN-P7
   late String _description; //RN-P8
@@ -35,7 +34,6 @@ class Product extends JSONalizable<Product> {
   
   static const String _keyID           = "p_id";
   static const String _keyBarcode      = "p_barcode";
-  static const String _keyInternalCode = "p_internal_code";
   static const String _keyTitle        = "p_title";
   static const String _keyDescription  = "p_description";
   static const String _keyBrand        = "p_brand";
@@ -52,8 +50,7 @@ class Product extends JSONalizable<Product> {
   ///Product: Constructor genérico de producto.
   Product({
     int id = 0,
-    String? barcode,
-    String? internalCode,
+    required String barcode,
     required String title,
     String description = "",
     String brand = "IMPORT.",
@@ -68,7 +65,6 @@ class Product extends JSONalizable<Product> {
   }) {
     _id = id;
     _barcode = barcode;
-    _internalCode = internalCode;
     _title = title;
     _description = description;
     _brand = brand;
@@ -92,7 +88,6 @@ class Product extends JSONalizable<Product> {
   Product.clean() {
     _id = 0;
     _barcode = "-";
-    _internalCode = "-";
     _title = "-";
     _description = "-";
     _brand = "IMPORT.";
@@ -143,10 +138,6 @@ class Product extends JSONalizable<Product> {
 
   static String getKeyBarcode(){
     return _keyBarcode;
-  }
-
-  static String getKeyInternalCode(){
-    return _keyInternalCode;
   }
 
   static String getKeyTitle(){
@@ -248,25 +239,13 @@ class Product extends JSONalizable<Product> {
   //------------------CODIGO DE BARRAS---------------------------------------------
 
   ///Product: Devuelve el código de barras.
-  String? getBarcode() {
+  String getBarcode() {
     return _barcode;
   }
 
   ///Product: Establece el código de barras.
-  void setBarcode(String? value) {
+  void setBarcode(String value) {
     _barcode = value;
-  }
-
-  //------------------CODIGO INTERNO---------------------------------------------
-
-  ///Product: Devuelve el código interno.
-  String? getInternalCode() {
-    return _internalCode;
-  }
-
-  ///Product: Establece el código interno.
-  void setInternalCode(String? value) {
-    _internalCode = value;
   }
 
   //------------------TITULO---------------------------------------------
@@ -420,7 +399,6 @@ class Product extends JSONalizable<Product> {
     return {
       _keyID: _id,
       _keyBarcode: _barcode,
-      _keyInternalCode: _internalCode,
       _keyTitle: _title,
       _keyDescription: _description,
       _keyBrand: _brand,
@@ -439,7 +417,6 @@ class Product extends JSONalizable<Product> {
   Map<String, dynamic> getJSONWithoutID() {
     return {
       _keyBarcode: _barcode,
-      _keyInternalCode: _internalCode,
       _keyTitle: _title,
       _keyDescription: _description,
       _keyBrand: _brand,
@@ -459,7 +436,6 @@ class Product extends JSONalizable<Product> {
   void fromJSON(Map<String, dynamic> map) {
     _id = map[_keyID];
     _barcode = map[_keyBarcode];
-    _internalCode = map[_keyInternalCode];
     _title = map[_keyTitle];
     _description = map[_keyDescription];
     _brand = map[_keyBrand];
@@ -488,7 +464,6 @@ class Product extends JSONalizable<Product> {
 
       _id = map[_keyID];
       _barcode = map[_keyBarcode];
-      _internalCode = map[_keyInternalCode];
       _title = map[_keyTitle];
       _description = map[_keyDescription];
       _brand = map[_keyBrand];
@@ -517,7 +492,6 @@ class Product extends JSONalizable<Product> {
           "p_options": PlutoCell(),
           Product.getKeyID(): PlutoCell(value: _id),
           Product.getKeyBarcode(): PlutoCell(value: getBarcode()),
-          Product.getKeyInternalCode(): PlutoCell(value: getInternalCode()),
           Product.getKeyTitle(): PlutoCell(value: getTitle()),
           Product.getKeyBrand(): PlutoCell(value: getBrand()),
           Product.getKeyCategory(): PlutoCell(value: "${categoryPair.getValue1()!.getCategoryName()} > ${categoryPair.getValue2()!.getSubCategoryName()}"),

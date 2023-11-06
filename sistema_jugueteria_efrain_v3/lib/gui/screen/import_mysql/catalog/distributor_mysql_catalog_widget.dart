@@ -4,7 +4,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_distributor_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
@@ -60,7 +60,7 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: ContainerStyle.getContainerRoot(),
+      decoration: StyleContainer.getContainerRoot(),
       child: Column(
         children: [
           HeaderInformationWidget(

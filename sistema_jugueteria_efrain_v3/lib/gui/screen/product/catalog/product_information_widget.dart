@@ -8,10 +8,14 @@ import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_minimum_age
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/new_product_prices_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_listview_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_dropdown.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_area.dart';
+
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/image/image_custom.dart';
@@ -70,7 +74,7 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     return Container(
         margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-        decoration: ContainerStyle.getContainerRoot(),
+        decoration: StyleContainer.getContainerRoot(),
         child: Column(
           children: [
             HeaderInformationWidget(
@@ -249,9 +253,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               child: ListView(
                 children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
                   return Container(
-                      decoration: StyleForm.getDecorationListTileItem(),
+                      decoration: StyleListTile.getDecorationContainer(),
                       child: ListTile(
-                        titleTextStyle: StyleForm.getStyleDropdownField(),
+                        titleTextStyle: StyleDropdown.getTextStyle(),
                         title: Text(e),
                         trailing: IconButton(
                           tooltip: "Remover",
@@ -275,8 +279,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             iconSize: 50,
             icon: const Icon(Icons.arrow_drop_down, size: 25,),
             formControlName: FormGroupProduct.getKeyTemplateSize(),
-            style: StyleForm.getStyleDropdownField(),
-            decoration: StyleForm.getDecorationTextField("Selección de plantilla"),
+            style: StyleDropdown.getTextStyle(),
+            decoration: StyleTextField.getDecoration("Selección de plantilla"),
             items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
               value: e,
               child: Container(
@@ -299,8 +303,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
           ReactiveTextField(
             maxLines: 5,
             minLines: 1,
-            style: StyleForm.getStyleTextArea(),
-            decoration: StyleForm.getDecorationTextField("Insertar medida"),
+            style: StyleTextArea.getTextStyle(),
+            decoration: StyleTextField.getDecoration("Insertar medida"),
             formControlName: FormGroupProduct.getKeySizeAux(),
             textInputAction: TextInputAction.next,
             onSubmitted: (_){
@@ -331,8 +335,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             width: 250,
             child: ReactiveDropdownField<Category>(
               formControlName: Product.getKeyCategory(),
-              style: StyleForm.getStyleTextField(),
-              decoration: StyleForm.getDecorationTextField("Categoria"),
+              style: StyleTextField.getTextStyleNormal(),
+              decoration: StyleTextField.getDecoration("Categoria"),
               items: FactoryCategory.getInstance().getList().map((e) => DropdownMenuItem<Category>(
                 value: e,
                 child: Text(e.getCategoryName()),
@@ -351,8 +355,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             visible: _form.control(Product.getKeyCategory()).value.getCategoryID()!=0,
             child: ReactiveDropdownField<SubCategory>(
               formControlName: Product.getKeySubcategory(),
-              style: StyleForm.getStyleTextField(),
-              decoration: StyleForm.getDecorationTextField("Subcategoria"),
+              style: StyleTextField.getTextStyleNormal(),
+              decoration: StyleTextField.getDecoration("Subcategoria"),
               items: (_form.control(Product.getKeyCategory()).value as Category).getListSubcategory().map((e) => DropdownMenuItem<SubCategory>(
                 value: e,
                 child: Text(e.getSubCategoryName(),),
@@ -380,8 +384,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         children: [
           ReactiveTextField(
             maxLength: Product.getMaxCharsTitle(),
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Título del producto."),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Título del producto."),
             formControlName: Product.getKeyTitle(),
             textInputAction: TextInputAction.next,
             onSubmitted: (_){
@@ -426,8 +430,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               visible: !_brandManual,
               child: ReactiveDropdownField<String>(
                 formControlName: FormGroupProduct.getKeyBrandAux(),
-                style: StyleForm.getStyleTextField(),
-                decoration: StyleForm.getDecorationTextField("Buscar marca/importador"),
+                style: StyleTextField.getTextStyleNormal(),
+                decoration: StyleTextField.getDecoration("Buscar marca/importador"),
                 items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
                   value: e,
                   child: Text(e),
@@ -447,8 +451,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
               child: ReactiveTextField(
                 maxLines: 1,
                 maxLength: Product.getMaxCharsBrand(),
-                style: StyleForm.getStyleTextArea(),
-                decoration: StyleForm.getDecorationTextArea("Marca/importadora"),
+                style: StyleTextArea.getTextStyle(),
+                decoration: StyleTextArea.getDecoration("Marca/importadora"),
                 formControlName: Product.getKeyBrand(),
                 textInputAction: TextInputAction.newline,
                 onChanged: (_){
@@ -470,8 +474,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         subtitle: "[Obligatorio] Se debe establecer el stock, que es la cantidad de productos disponible, y a su vez, el precio al cual se vende el producto al público.",
         children: [
           ReactiveTextField<double>(
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Precio público"),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Precio público"),
             formControlName: Product.getKeyPricePublic(),
             textInputAction: TextInputAction.none,
             onSubmitted: (_){
@@ -485,8 +489,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
           ),
           _separadorHeightBlock,
           ReactiveTextField<int>(
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Stock"),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Stock"),
             formControlName: Product.getKeyStock(),
             textInputAction: TextInputAction.none,
             onSubmitted: (_){
@@ -513,8 +517,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             child: ReactiveTextField(
               maxLines: 15,
               maxLength: Product.getMaxCharsDescription(),
-              style: StyleForm.getStyleTextArea(),
-              decoration: StyleForm.getDecorationTextArea("Descripción"),
+              style: StyleTextArea.getTextStyle(),
+              decoration: StyleTextArea.getDecoration("Descripción"),
               formControlName: Product.getKeyDescription(),
               textInputAction: TextInputAction.newline,
               onChanged: (_){
@@ -537,8 +541,8 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
         children: [
           ReactiveDropdownField<MinimumAge>(
             formControlName: Product.getKeyMinimumAge(),
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Edad mínima recomendada"),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Edad mínima recomendada"),
             items: FactoryMinimumAge.getInstance().getList().map((e) => DropdownMenuItem<MinimumAge>(
               value: e,
               child: Text(e.getMinimumAgeValue()),
@@ -558,33 +562,21 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
   ///ProductPriceWidget: Construye el Widget de .
   Widget _buildWidgetProductCode(BuildContext context, Product product){
     return ExpansionTileContainerWidget(
-        title: "Código de barra e interno del producto",
-        subtitle: "[Obligatorio] El código de barra o el código interno debe ser definido ya que permite la búsqueda del producto de manera rápida y sin errores.",
+        title: "Código de barra",
+        subtitle: "[Obligatorio] El código de barra debe ser definido ya que permite la búsqueda del producto de manera rápida y sin errores.",
         children: [
           ReactiveTextField(
             maxLength: Product.getMaxCharsBarcode(),
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Código de barras"),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Código de barras"),
             formControlName: Product.getKeyBarcode(),
             textInputAction: TextInputAction.next,
             onSubmitted: (_){
               setState(() {});
-              _form.focus(Product.getKeyInternalCode());
+              _form.focus(Product.getKeyTitle());
             },
             validationMessages: {
               ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
-            },
-          ),
-          _separadorHeight,
-          ReactiveTextField(
-            maxLength: 50,
-            style: StyleForm.getStyleTextField(),
-            decoration: StyleForm.getDecorationTextField("Código interno"),
-            formControlName: Product.getKeyInternalCode(),
-            textInputAction: TextInputAction.next,
-            onSubmitted: (_){
-              setState(() {});
-              _form.focus(Product.getKeyTitle());
             },
           ),
         ]

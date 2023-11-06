@@ -4,8 +4,10 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_header_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
 
@@ -88,10 +90,10 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
             Container(
               margin: getMarginInformationForms(),
               padding: getPaddingInformationForms(),
-              decoration: StyleForm.getDecorationFormControl(),
+              decoration: StyleContainer.getDecorationFormControl(),
               child: ReactiveTextField(
-                style: StyleForm.getStyleTextField(),
-                decoration: StyleForm.getDecorationTextField("Servidor (por ej. 192.168.0.10)"),
+                style: StyleTextField.getTextStyleNormal(),
+                decoration: StyleTextField.getDecoration("Servidor (por ej. 192.168.0.10)"),
                 formControlName: _keyURL,
                 textInputAction: TextInputAction.next,
                 onSubmitted: (_){
@@ -107,10 +109,10 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
             Container(
               margin: getMarginInformationForms(),
               padding: getPaddingInformationForms(),
-              decoration: StyleForm.getDecorationFormControl(),
+              decoration: StyleContainer.getDecorationFormControl(),
               child: ReactiveTextField(
-                style: StyleForm.getStyleTextField(),
-                decoration: StyleForm.getDecorationTextField("Usuario"),
+                style: StyleTextField.getTextStyleNormal(),
+                decoration: StyleTextField.getDecoration("Usuario"),
                 formControlName: _keyUser,
                 textInputAction: TextInputAction.next,
                 onSubmitted: (_){
@@ -126,12 +128,12 @@ class _DrawerLoginMySQLState extends ConsumerState<DrawerLoginMySQL> with Contai
             Container(
               margin: getMarginInformationForms(),
               padding: getPaddingInformationForms(),
-              decoration: StyleForm.getDecorationFormControl(),
+              decoration: StyleContainer.getDecorationFormControl(),
               child: Row(
                 children: [
                   Expanded(child: ReactiveTextField(
-                    style: StyleForm.getStyleTextField(),
-                    decoration: StyleForm.getDecorationTextField("Contraseña"),
+                    style: StyleTextField.getTextStyleNormal(),
+                    decoration: StyleTextField.getDecoration("Contraseña"),
                     formControlName: _keyPassword,
                     obscureText: !_visiblePassword,
                     textInputAction: TextInputAction.next,

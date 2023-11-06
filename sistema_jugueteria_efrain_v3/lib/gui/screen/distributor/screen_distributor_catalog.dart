@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/billing/billing_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_information_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
@@ -101,7 +101,7 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         children: [
           Expanded(child: Container(
             margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: ContainerStyle.getContainerRoot(),
+            decoration: StyleContainer.getContainerRoot(),
             child: const DistributorCatalogWidget(),
           )),
           Visibility(

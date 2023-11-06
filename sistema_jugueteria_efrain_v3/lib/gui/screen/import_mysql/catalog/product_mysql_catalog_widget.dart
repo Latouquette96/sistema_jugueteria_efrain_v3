@@ -1,18 +1,16 @@
-// ignore_for_file: empty_catches
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_product_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
@@ -66,7 +64,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: ContainerStyle.getContainerRoot(),
+      decoration: StyleContainer.getContainerRoot(),
       child: Column(
         children: [
           HeaderInformationWidget(
@@ -120,12 +118,14 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
 
                   for (PlutoRow row in listRow){
                     //Se recupera el producto en cuestion.
-                    Triple<Product, Distributor, double> triple = _getTripleData(row);
-                    if (event.isChecked==true){
-                      ref.read(catalogProductsImportProvider.notifier).insert(triple);
-                    }
-                    else{
-                      ref.read(catalogProductsImportProvider.notifier).remove(triple);
+                    Fourfold<Product, Distributor, double, String>? fourfold = _getFourfoldData(row);
+                    if (fourfold!=null){
+                      if (event.isChecked==true){
+                        ref.read(catalogProductsImportProvider.notifier).insert(fourfold);
+                      }
+                      else{
+                        ref.read(catalogProductsImportProvider.notifier).remove(fourfold);
+                      }
                     }
                   }
                 }
@@ -133,13 +133,15 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                   //Si la fila no es nula.
                   if (event.row!=null){
                     //Se recupera el producto en cuestion.
-                    Triple<Product, Distributor, double> triple = _getTripleData(event.row!);
+                    Fourfold<Product, Distributor, double, String>? fourfold = _getFourfoldData(event.row!);
                     //Se notifica al catalogo de acuerdo
-                    if (ref.watch(catalogProductsImportProvider).contains(triple)){
-                      ref.read(catalogProductsImportProvider.notifier).remove(triple);
-                    }
-                    else{
-                      ref.read(catalogProductsImportProvider.notifier).insert(triple);
+                    if (fourfold!=null){
+                      if (ref.watch(catalogProductsImportProvider).contains(fourfold)){
+                        ref.read(catalogProductsImportProvider.notifier).remove(fourfold);
+                      }
+                      else{
+                        ref.read(catalogProductsImportProvider.notifier).insert(fourfold);
+                      } 
                     }
                   }
                 }
@@ -157,7 +159,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
   }
 
   
-  Triple<Product, Distributor, double> _getTripleData(PlutoRow row){
+  Fourfold<Product, Distributor, double, String>? _getFourfoldData(PlutoRow row){
     int rowID = row.cells[Product.getKeyID()]!.value;
     if (rowID!=0){
       return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getID()==rowID);
@@ -168,8 +170,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
         return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getBarcode()==rowBarcode);
       }
       else{
-        String rowInternalCode = row.cells[Product.getKeyInternalCode()]!.value;
-        return ref.read(importProductMySQLProvider).firstWhere((element) => element.getValue1().getInternalCode()==rowInternalCode);
+        return null;
       }
     }
   }

@@ -14,8 +14,8 @@ class StyleElevatedButton {
   ///StyleElevatedButton: Devuelve el estilo para el boton.
   static ButtonStyle getStyleLogin(){
     return ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueGrey.shade50,
-        foregroundColor: Colors.blue.shade600,
+        backgroundColor: Colors.lightBlue.shade100,
+        foregroundColor: Colors.blue.shade900,
         disabledBackgroundColor: Colors.grey.shade300,
         disabledForegroundColor: Colors.black26,
     );
@@ -24,8 +24,8 @@ class StyleElevatedButton {
   ///StyleElevatedButton: Devuelve el estilo para el boton.
   static ButtonStyle getStyleLoginCancel(){
     return ElevatedButton.styleFrom(
-      backgroundColor: Colors.red.withRed(200),
-      foregroundColor: Colors.white,
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.redAccent,
       disabledBackgroundColor: Colors.grey.shade300,
       disabledForegroundColor: Colors.black26,
     );

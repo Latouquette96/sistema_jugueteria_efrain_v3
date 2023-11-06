@@ -6,16 +6,16 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/triple.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ImportProductMySQLProvider: Modela las operaciones CRUD sobre MySQL.
-class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Distributor, double>>> {
+class ImportProductMySQLProvider extends StateNotifier<List<Fourfold<Product, Distributor, double, String>>> {
   //Atributos de clase
-  final StateNotifierProviderRef<ImportProductMySQLProvider, List<Triple<Product, Distributor, double>>> ref;
+  final StateNotifierProviderRef<ImportProductMySQLProvider, List<Fourfold<Product, Distributor, double, String>>> ref;
 
   ///Constructor privado de ImportProductMySQLProvider
   ImportProductMySQLProvider(this.ref): super([]);
@@ -32,7 +32,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
 
       final content = await APICall.get(url: url, route: "/mysql/products");
 
-      List<Triple<Product, Distributor, double>> list = [];
+      List<Fourfold<Product, Distributor, double, String>> list = [];
       if (content.isResponseSuccess()){
         List<Product> listProducts = ref.watch(productCatalogProvider);
 
@@ -44,24 +44,24 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
 
           //Construye el producto de acuerdo al producto de MySQL.
           Product productRow = ConvertFromMySQL.getProductFromMySQL(mapProductRow);
-          //Bandera para comprobar si se inserta el triple o no.
-          bool insertTriple = false;
+          //Bandera para comprobar si se inserta el fourfold o no.
+          bool insertFourfold = false;
 
           //Si no hay productos actualmente en la base de datos, entonces insertar directamente.
           if (listProducts.isEmpty){
-            insertTriple = true;
+            insertFourfold = true;
           }
           else{
             //Se obtiene el producto existente de la lista o devuelve null.
             Product? productExisting = _isExistingProduct(listProducts, productRow);
-            insertTriple = (productExisting!=null) ? _isProductModified(productExist: productExisting, productMySQL: productRow) : true;
-            if (insertTriple) productRow.setID((productExisting!=null) ? productExisting.getID() : 0);
+            insertFourfold = (productExisting!=null) ? _isProductModified(productExist: productExisting, productMySQL: productRow) : true;
+            if (insertFourfold) productRow.setID((productExisting!=null) ? productExisting.getID() : 0);
           }
 
-          //Si se debe insertar triple, entonces...
-          if (insertTriple){
+          //Si se debe insertar fourfold, entonces...
+          if (insertFourfold){
             //Si está definido el producto
-            if (productRow.getBarcode()!="-" && productRow.getInternalCode()!="-" && productRow.getTitle()!="-" && productRow.getDescription()!="-"){
+            if (productRow.getBarcode()!="-" && productRow.getTitle()!="-" && productRow.getDescription()!="-"){
               //Si no está duplicado en la lista a insertar.
               if (list.indexWhere((element){ return _equals(produc1: element.getValue1(), product2: productRow); }) ==-1){
 
@@ -74,12 +74,13 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
 
                 productRow.buildPlutoRow();
 
-                //Triple es una tripla de valores: (producto, distribuidora, precio_base)
-                list.add(Triple<Product, Distributor, double>(
+                //Fourfold es una tripla de valores: (producto, distribuidora, precio_base)
+                list.add(Fourfold<Product, Distributor, double, String>(
                     v1: productRow,
                     v2: distributorRow,
-                    v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString()))
-                );
+                    v3: double.tryParse(mapProductPriceRow['p_pricebase'].toString()),
+                    v4: mapProductPriceRow['p_internal_code']
+                ));
               }
 
             }
@@ -128,7 +129,6 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   bool _isProductModified({required Product productExist, required Product productMySQL}){
     return (
       productExist.getBarcode()!=productMySQL.getBarcode() ||
-      productExist.getInternalCode()!=productMySQL.getInternalCode() ||
       productExist.getTitle()!=productMySQL.getTitle() ||
       productExist.getBrand()!=productMySQL.getBrand() ||
       productExist.getDescription()!=productMySQL.getDescription() ||
@@ -147,7 +147,6 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   bool _equals({required Product produc1, required Product product2}){
     return (
         produc1.getBarcode()==product2.getBarcode() &&
-            produc1.getInternalCode()==product2.getInternalCode() &&
             produc1.getTitle()==product2.getTitle() &&
             produc1.getBrand()==product2.getBrand() &&
             produc1.getPricePublic()==product2.getPricePublic()
@@ -168,10 +167,10 @@ class ImportProductMySQLProvider extends StateNotifier<List<Triple<Product, Dist
   }
 
   ///ImportProductMySQLProvider: Remueve el producto de la lista.
-  void remove(Triple<Product, Distributor, double> triple){
-    state.remove(triple);
+  void remove(Fourfold<Product, Distributor, double, String> fourfold){
+    state.remove(fourfold);
   }
 }
 
 ///importProductMySQLProvider es un proveedor que permite importar los productos almacenados en el servidor de MySQL.
-final importProductMySQLProvider = StateNotifierProvider<ImportProductMySQLProvider, List<Triple<Product, Distributor, double>>>((ref) => ImportProductMySQLProvider(ref));
+final importProductMySQLProvider = StateNotifierProvider<ImportProductMySQLProvider, List<Fourfold<Product, Distributor, double, String>>>((ref) => ImportProductMySQLProvider(ref));

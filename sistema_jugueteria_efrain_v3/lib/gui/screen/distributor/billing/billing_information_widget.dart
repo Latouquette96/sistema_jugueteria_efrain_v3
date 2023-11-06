@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/distributor_billing_model.dart';
@@ -68,7 +68,7 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     return Container(
       width: 400,
       margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-      decoration: ContainerStyle.getContainerChild(),
+      decoration: StyleContainer.getContainerChild(),
       child: ReactiveForm(
         formGroup: _form,
         child: Column(
@@ -121,8 +121,8 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                       children: [
                         _sizedBoxHeight,
                         ReactiveTextField(
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Fecha/Hora"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Fecha/Hora"),
                           formControlName: DistributorBilling.getKeyDatetime(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -136,8 +136,8 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                         ),
                         _sizedBoxHeight,
                         ReactiveTextField(
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("Monto Total (sin IVA)"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("Monto Total (sin IVA)"),
                           formControlName: DistributorBilling.getKeyTotal(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){
@@ -150,8 +150,8 @@ class _BillingInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
                         ),
                         _sizedBoxHeight,
                         ReactiveTextField(
-                          style: StyleForm.getStyleTextField(),
-                          decoration: StyleForm.getDecorationTextField("URL del archivo"),
+                          style: StyleTextField.getTextStyleNormal(),
+                          decoration: StyleTextField.getDecoration("URL del archivo"),
                           formControlName: DistributorBilling.getKeyUrlFile(),
                           textInputAction: TextInputAction.next,
                           onSubmitted: (_){

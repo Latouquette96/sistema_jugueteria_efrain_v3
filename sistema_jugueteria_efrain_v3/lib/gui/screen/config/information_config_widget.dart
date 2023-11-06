@@ -1,7 +1,7 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
@@ -31,12 +31,12 @@ class _InformationConfigWidgetState extends ConsumerState<InformationConfigWidge
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 400,
-        margin: const EdgeInsets.fromLTRB(10, 10, 5, 10),
         child: ReactiveForm(
             formGroup: _form,
             child: ExpansionTileContainerWidget(
+                borderRadius: 0,
                 title: "Informacion",
                 descriptionShow: true,
                 subtitle: "Muestra/oculta la información de los contenedores expandibles.",
@@ -64,31 +64,24 @@ class _InformationConfigWidgetState extends ConsumerState<InformationConfigWidge
                   }
                 },
                 children: [
-                  SizedBox(
-                    height: 100,
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Container(
-                              decoration: const BoxDecoration(color: Colors.white, border: BorderDirectional(
-                                start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 1),
-                                top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 1),
-                                end: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 1),
-                                bottom: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 1),
-                              ),
-                                  borderRadius: BorderRadius.all(Radius.circular(5))
-                              ),
-                              padding: const EdgeInsets.all(7.5),
-                              child: Text(
-                                _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value
-                                    ? "Información de ayuda mostrada en los bloques expansivos"
-                                    : "Información de ayuda oculta en los bloques expansivos",
-                                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                              ),
-                            )
-                        ),
-                        IconButton(
-                            onPressed: () async {
+                  const SizedBox(height: 5,),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    child: ListTile(
+                      title: const Text("Mostrar descripción en bloques expansibles"),
+                      subtitle: Row(
+                        children: [
+                          FlutterSwitch(
+                            activeColor: Colors.black.withOpacity(0.65),
+                            activeTextColor: Colors.white,
+                            inactiveTextColor: Colors.white,
+                            width: 50,
+                            height: 25,
+                            toggleSize: 22.5,
+                            borderRadius: 20,
+                            value: _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value,
+                            showOnOff: false,
+                            onToggle: (bool val) async {
                               try{
                                 setState(() {
                                   _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value = !_form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value;
@@ -97,16 +90,16 @@ class _InformationConfigWidgetState extends ConsumerState<InformationConfigWidge
                               // ignore: empty_catches
                               catch(e){}
                             },
-                            icon: Icon(
-                              _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value
-                                  ? MdiIcons.fromString("check-circle")
-                                  : MdiIcons.fromString("check-circle-outline"),
-                              color: _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value
-                                  ? Colors.blue
-                                  : Colors.grey,
-                            )
-                        )
-                      ],
+                          ),
+                          const SizedBox(width: 5,),
+                          Expanded(child: Text(
+                            _form.control(ConfigurationLocal.getKeyInfoExpansionTile()).value
+                                ? "Información visible."
+                                : "Información oculta.",
+                            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                          )),
+                        ],
+                      ),
                     ),
                   ),
                 ]

@@ -82,14 +82,6 @@ class PlutoConfig {
         },
       ),
       PlutoColumn(
-        title: 'Cód. Int.',
-        enableEditingMode: false,
-        width: 100,
-        minWidth: 100,
-        field: Product.getKeyInternalCode(),
-        type: PlutoColumnType.text(),
-      ),
-      PlutoColumn(
         title: 'Titulo',
         enableEditingMode: false,
         field: Product.getKeyTitle(),

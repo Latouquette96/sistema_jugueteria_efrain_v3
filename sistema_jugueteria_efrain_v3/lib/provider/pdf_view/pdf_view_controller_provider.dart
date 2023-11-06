@@ -57,7 +57,7 @@ final pdfTextSearchResultProvider = StateNotifierProvider<PdfTextSearchResultPro
       PdfTextSearchResult? toReturn;
       //Si el controlador de pdf no es nulo.
       if (ref.read(pdfViewControllerProvider)!=null){
-        PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider)!.searchText(element.getBarcode() ?? element.getInternalCode() ?? "");
+        PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider)!.searchText(element.getBarcode());
         //PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBrand());
         textSearchResult.addListener(() {
           //Si se ha obtenido el resultado.
@@ -87,7 +87,7 @@ final pdfExtractTextTextSearchResultProvider = StateNotifierProvider<PdfTextSear
       PdfTextSearchResult? toReturn;
       //Si el controlador de pdf no es nulo.
       if (ref.read(pdfExtractTextViewControllerProvider)!=null){
-        PdfTextSearchResult textSearchResult = ref.read(pdfExtractTextViewControllerProvider)!.searchText(element.getBarcode() ?? element.getInternalCode() ?? "");
+        PdfTextSearchResult textSearchResult = ref.read(pdfExtractTextViewControllerProvider)!.searchText(element.getBarcode());
         //PdfTextSearchResult textSearchResult = ref.read(pdfViewControllerProvider).searchText(p.getBrand());
         textSearchResult.addListener(() {
           //Si se ha obtenido el resultado.

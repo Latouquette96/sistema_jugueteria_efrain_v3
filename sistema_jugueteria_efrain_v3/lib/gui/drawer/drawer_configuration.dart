@@ -31,6 +31,7 @@ class _DrawerConfigurationState extends ConsumerState<DrawerConfiguration> with 
         Expanded(child: ListView(
           children: const [
             DirectoryConfigWidget(),
+            SizedBox(height: 5,),
             InformationConfigWidget()
           ],
         ))

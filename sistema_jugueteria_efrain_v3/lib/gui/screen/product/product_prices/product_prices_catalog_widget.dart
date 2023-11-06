@@ -7,7 +7,10 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/new_product_prices_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_image_carousel_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_listview_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/form_group/formgroup_product_price.dart';
@@ -98,7 +101,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
     return Container(
       width: 375,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: StyleForm.getDecorationContainer(),
+      decoration: StyleContainer.getDecoration(),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -158,18 +161,18 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
      return Container(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: StyleForm.getDecorationFormControl(),
+      decoration: StyleContainer.getDecorationFormControl(),
       child: ReactiveForm(
         formGroup: _formProductPrice,
         child: ListTile(
           //Title: Distribuidora.
-          title: Text("Precio de producto al público", style: StyleForm.getTextStyleTitle()),
+          title: Text("Precio de producto al público", style: StyleListTile.getTextStyleTitle()),
           //Subtitle
           subtitle: Container(
             margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
             child: ReactiveTextField(
-              style: StyleForm.getStyleTextField(),
-              decoration: StyleForm.getDecorationTextField("Precio público"),
+              style: StyleTextField.getTextStyleNormal(),
+              decoration: StyleTextField.getDecoration("Precio público"),
               formControlName: Product.getKeyPricePublic(),
               validationMessages: {
                 ValidationMessage.required: (error) => "(Requerido) Precio al público es requerido."

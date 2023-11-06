@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
 
@@ -96,7 +97,7 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
                   top: 165,
                   left: 50,
                   child: Container(
-                    decoration: StyleForm.getDecorationControlImage(),
+                    decoration: StyleContainer.getDecorationImage(),
                     width: 100,
                     height: 35,
                     child: Row(
@@ -157,7 +158,7 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
               height: 175,
               width:  175,
               padding: const EdgeInsets.all(10),
-              decoration: StyleForm.getDecorationControlImage(),
+              decoration: StyleContainer.getDecorationImage(),
               child: Center(child:
               Column(
                 children: [
@@ -174,7 +175,7 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
               top: 165,
               left: (175-cantOptions*50)/2,
               child: Container(
-                decoration: StyleForm.getDecorationControlImage(),
+                decoration: StyleContainer.getDecorationImage(),
                 width: cantOptions*50,
                 height: 35,
                 child: Row(
@@ -268,7 +269,7 @@ class _ImageCustomState extends ConsumerState<ImageCustom>{
             top: 165,
             left: 50,
             child: Container(
-              decoration: StyleForm.getDecorationControlImage(),
+              decoration: StyleContainer.getDecorationImage(),
               width: 100,
               height: 35,
               child: Row(

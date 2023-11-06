@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
@@ -47,11 +50,6 @@ class NewProductPricesWidget extends ConsumerStatefulWidget {
   StateNotifierProvider<ElementStateProvider<Product>, Product?> getProvider(){
     return _providerProduct;
   }
-
-/*
-  StateNotifierProvider<ElementStateProvider<ProductPrice>, ProductPrice?> getProviderProductPrice(){
-    return _providerProductPrice;
-  }*/
 }
 
 class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>{
@@ -71,21 +69,21 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
     return Container(
         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-        decoration: StyleForm.getDecorationFormControl(),
+        decoration: StyleContainer.getDecorationFormControl(),
         height: 250,
         child: ReactiveForm(
           formGroup: _formNewPP,
           child: ListTile(
             //Title: Distribuidora.
-            title: Text("Ingresar nuevo precio de producto", style: StyleForm.getTextStyleTitle()),
+            title: Text("Ingresar nuevo precio de producto", style: StyleListTile.getTextStyleTitle()),
             //Subtitle
             subtitle: Container(
                 margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Column(
                   children: [
                     ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Código interno"),
+                      style: StyleTextField.getTextStyleNormal(),
+                      decoration: StyleTextField.getDecoration("Código interno"),
                       formControlName: ProductPrice.getKeyInternalCode(),
                     ),
                     const SizedBox(
@@ -93,8 +91,8 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
                     ),
                     ReactiveDropdownField<Distributor>(
                       formControlName: "${ProductPrice.getKeyDistributor()}Object",
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Distribuidora"),
+                      style: StyleTextField.getTextStyleNormal(),
+                      decoration: StyleTextField.getDecoration("Distribuidora"),
                       items: distributorsFree.map((e) => DropdownMenuItem<Distributor>(
                         value: e,
                         child: Text(e.getName()),
@@ -111,8 +109,8 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
                       height: 10,
                     ),
                     ReactiveTextField(
-                      style: StyleForm.getStyleTextField(),
-                      decoration: StyleForm.getDecorationTextField("Precio base (sin impuestos)"),
+                      style: StyleTextField.getTextStyleNormal(),
+                      decoration: StyleTextField.getDecoration("Precio base (sin impuestos)"),
                       formControlName: ProductPrice.getKeyPriceBase(),
                       validationMessages: {
                         ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
@@ -129,7 +127,7 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
                             icon: Row(
                               children: [
                                 Icon(MdiIcons.fromString("content-save")),
-                                Text("\tGuardar", style: StyleForm.getTextStyleListTileSubtitle(),),
+                                Text("\tGuardar", style: StyleListTile.getTextStyleSubtitle(),),
                               ],
                             ),
                             onPressed: () async{
@@ -153,7 +151,7 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
                             icon: Row(
                               children: [
                                 Icon(MdiIcons.fromString("eraser")),
-                                Expanded(child: Text("\tLimpiar", style: StyleForm.getTextStyleListTileSubtitle(),)),
+                                Expanded(child: Text("\tLimpiar", style: StyleListTile.getTextStyleSubtitle(),)),
                               ],
                             ),
                             onPressed: (){

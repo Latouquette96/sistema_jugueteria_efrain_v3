@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
@@ -53,7 +53,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
     return Container(
       width: 600,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
-      decoration: ContainerStyle.getContainerRoot(),
+      decoration: StyleContainer.getContainerRoot(),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -141,8 +141,8 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
                   ),
                   Expanded(child: 
                     (ref.read(pdfTextSearchResultProvider)!=null)
-                    ? Center(child: Text("${ref.watch(pdfTextSearchResultProvider)!.currentInstanceIndex}/${ref.watch(pdfTextSearchResultProvider)!.totalInstanceCount}", style: StyleForm.getStyleTextField(),))
-                    : Center(child: Text("Sin resultados", style: StyleForm.getStyleTextField()),)
+                    ? Center(child: Text("${ref.watch(pdfTextSearchResultProvider)!.currentInstanceIndex}/${ref.watch(pdfTextSearchResultProvider)!.totalInstanceCount}", style: StyleTextField.getTextStyleNormal(),))
+                    : Center(child: Text("Sin resultados", style: StyleTextField.getTextStyleNormal()),)
                   ),
                   Expanded(child: 
                     IconButton(

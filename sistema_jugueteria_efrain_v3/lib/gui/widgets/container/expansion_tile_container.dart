@@ -1,7 +1,7 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/text_style_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_expansion_tile.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local.dart';
 
 ///Clase ExpansionTileContainerWidget: Modela un ExpansionTileCard con un estilo personalizado.
@@ -15,6 +15,8 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   final bool? descriptionShow;
   final Function()? functionLeading;
   final IconData? iconLeading;
+  final double borderRadius;
+  final Widget? trailing;
 
   ///Constructor de ExpansionTileContainerWidget
   ///
@@ -25,6 +27,8 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   /// [descriptionShow] (Opcional) si es null, por defecto respetará la opción de mostrar/ocultar ayuda de configuraciones.
   /// [functionLeading] (opcional) Se utiliza para agregar un boton que realice una determinada tarea.
   /// [iconLeading] (opcional) Permite definir el icono del boton de funcion.
+  /// [borderRadius] (opcional) Permite definir el radio del borde (circular).
+  /// [trailing] (opcional) Permite poner botones del lado derecho.
   const ExpansionTileContainerWidget({super.key,
     required this.title,
     this.subtitle,
@@ -33,7 +37,9 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
     this.expanded = true,
     this.descriptionShow,
     this.functionLeading,
-    this.iconLeading
+    this.iconLeading,
+    this.borderRadius = 5,
+    this.trailing
   });
 
   @override
@@ -60,7 +66,8 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
     }
 
     return ExpansionTileCard(
-      borderRadius: BorderRadius.circular(5),
+      trailing: widget.trailing,
+      borderRadius: BorderRadius.circular(widget.borderRadius),
       expandedTextColor: Colors.black,
       expandedColor: Colors.grey.shade200,
       baseColor: Colors.blueGrey.shade100,
@@ -75,7 +82,7 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
                 widget.functionLeading!.call();
               },
             )
-          : null,
+          : (widget.iconLeading==null) ? null : Icon(widget.iconLeading),
       children: [
         Container(
           margin: const EdgeInsets.all(5),

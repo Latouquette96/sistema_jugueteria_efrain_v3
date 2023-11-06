@@ -7,9 +7,10 @@ import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login_mysql.dart'
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/distributor_mysql_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/product_mysql_catalog_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/container_style.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_form.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
@@ -68,9 +69,9 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
               children: [
                 Container(
                   margin: getMarginInformationForms(),
-                  decoration: StyleForm.getDecorationContainer(),
+                  decoration: StyleContainer.getDecoration(),
                   child: ListTile(
-                    title: Text("Importación de distribuidoras", style: StyleForm.getTextStyleListTileTitle(),),
+                    title: Text("Importación de distribuidoras", style: StyleListTile.getTextStyleTitle(),),
                     subtitle: Column(
                       children: [
                         Row(
@@ -117,9 +118,9 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                 ),
                 Container(
                   margin: getMarginInformationForms(),
-                  decoration: StyleForm.getDecorationContainer(),
+                  decoration: StyleContainer.getDecoration(),
                   child: ListTile(
-                    title: Text("Importación de productos", style: StyleForm.getTextStyleListTileTitle(),),
+                    title: Text("Importación de productos", style: StyleListTile.getTextStyleTitle(),),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -176,7 +177,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                     child: Expanded(
                         child: Container(
                           margin: getMarginInformationForms(),
-                          decoration: ContainerStyle.getContainerRoot(),
+                          decoration: StyleContainer.getContainerRoot(),
                           child: const DistributorMySQLCatalogWidget(),
                         )
                     ),
@@ -186,7 +187,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                     child: Expanded(
                         child: Container(
                           margin: getMarginInformationForms(),
-                          decoration: ContainerStyle.getContainerRoot(),
+                          decoration: StyleContainer.getContainerRoot(),
                           child: const ProductMySQLCatalogWidget(),
                         )
                     ),
