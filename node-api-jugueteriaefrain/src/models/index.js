@@ -22,5 +22,6 @@ db.products = require("./product.model.js")(sequelize, Sequelize);
 db.distributors = require("./distributor.model.js")(sequelize, Sequelize);
 db.products_prices = require("./products_prices.model.js")(sequelize, Sequelize);
 db.billings = require("./billing.model.js")(sequelize, Sequelize);
+db.code_generated = require("./code_generated.model.js")(sequelize, Sequelize);
 
 module.exports = db;

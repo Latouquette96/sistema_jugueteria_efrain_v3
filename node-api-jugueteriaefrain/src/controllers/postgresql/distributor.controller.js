@@ -3,7 +3,6 @@ const Distributors = db.distributors;
 
 //Crear y guardar una nueva distribuidora.
 exports.create = (req, res) => {
-  console.log(req.body)
     //Validacion de datos.
     if (!req.body) {
       res.status(400).json({
@@ -18,7 +17,6 @@ exports.create = (req, res) => {
   
     //Crea una distribuidora.
     const distribuidora = {
-        d_id: req.body.d_id, 
         d_cuit: req.body.d_cuit, 
         d_name: req.body.d_name, 
         d_address: req.body.d_address, 
@@ -115,14 +113,28 @@ exports.findAll = (req, res) => {
     });
 };
 
-
 //Actualiza los datos de una distribuidora con identificador id.
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Distributors.update(req.body, { where: { d_id: id } })
+    console.log(req.body);
+    console.log("id: " + id);
+
+    //Crea una distribuidora.
+    const distribuidora = {
+        d_id: req.body.d_id,
+        d_cuit: req.body.d_cuit,
+        d_name: req.body.d_name,
+        d_address: req.body.d_address,
+        d_email: req.body.d_email,
+        d_cel: req.body.d_cel,
+        d_website: req.body.d_website,
+        d_iva: req.body.d_iva
+    };
+
+    Distributors.update(distribuidora, { where: { d_id: id } })
         .then(num => {
-            if (num === 1) {
+            if (num[0] === 1) {
               res.status(200).json({
                 status: 200, 
                 title: "Operación exitosa",

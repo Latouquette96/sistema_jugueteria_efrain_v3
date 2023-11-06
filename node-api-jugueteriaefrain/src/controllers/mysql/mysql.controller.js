@@ -95,7 +95,7 @@ exports.close = (req, res) => {
 
 //Recupera todos los productos (junto a datos de la distribuidora y del precio del producto) de la base de datos.
 exports.findAllProducts = (req, res) => {
-    const sql = "SELECT json_object('p_id', p_id, 'p_codebar', p_codebar, 'p_title', p_title, 'p_brand', p_brand, 'p_description', p_description, 'p_sizeblister', p_sizeblister, 'p_sizeproduct', p_sizeproduct, 'p_category', p_category, 'p_subcategory', p_subcategory, 'p_stock', p_stock, 'p_iva', p_iva, 'p_pricepublic', p_pricepublic, 'p_linkimage', p_linkimage, 'p_datecreated', p_datecreated, 'p_dateupdated', p_dateupdated, 'p_minimumage', p_minimumage, 'p_internal_code', p_internal_code) as product, d_cuit, json_object('p_dateupdated', p_dateupdated, 'p_pricebase', p_pricebase) as price_product FROM db_jugueteria_efrain.products, db_jugueteria_efrain.distributors WHERE p_distributor=d_id " +
+    const sql = "SELECT json_object('p_id', p_id, 'p_codebar', p_codebar, 'p_title', p_title, 'p_brand', p_brand, 'p_description', p_description, 'p_sizeblister', p_sizeblister, 'p_sizeproduct', p_sizeproduct, 'p_category', p_category, 'p_subcategory', p_subcategory, 'p_stock', p_stock, 'p_iva', p_iva, 'p_pricepublic', p_pricepublic, 'p_linkimage', p_linkimage, 'p_datecreated', p_datecreated, 'p_dateupdated', p_dateupdated, 'p_minimumage', p_minimumage) as product, d_cuit, json_object('p_internal_code', p_internal_code, 'p_dateupdated', p_dateupdated, 'p_pricebase', p_pricebase) as price_product FROM db_jugueteria_efrain.products, db_jugueteria_efrain.distributors WHERE p_distributor=d_id " +
         " and ((p_codebar is not null) or (p_internal_code is not null));";
 
     if (connection===undefined){

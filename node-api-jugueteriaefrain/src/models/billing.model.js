@@ -1,8 +1,8 @@
 ///Construye el modelo para billings.
 module.exports = (sequelize, Sequelize) => {
 
-    const Billings = sequelize.define(
-        "billings", 
+    return sequelize.define(
+        "billings",
         {
             db_id: {
                 type: Sequelize.INTEGER,
@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
             },
             db_total: {
-                type: Sequelize.NUMERIC(12,3),
+                type: Sequelize.NUMERIC(12, 3),
                 allowNull: false,
                 defaultValue: 0
             },
@@ -33,6 +33,4 @@ module.exports = (sequelize, Sequelize) => {
             updatedAt: false,
         }
     );
-  
-    return Billings;
   };

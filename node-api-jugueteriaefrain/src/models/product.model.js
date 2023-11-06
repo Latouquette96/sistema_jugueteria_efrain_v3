@@ -1,8 +1,8 @@
 ///Construye el modelo para products.
 module.exports = (sequelize, Sequelize) => {
 
-    const Product = sequelize.define(
-        "products", 
+    return sequelize.define(
+        "products",
         {
             p_id: {
                 type: Sequelize.INTEGER,
@@ -11,11 +11,6 @@ module.exports = (sequelize, Sequelize) => {
             },
             p_barcode: {
                 type: Sequelize.STRING(48),
-                allowNull: true,
-                unique: true
-            },
-            p_internal_code: {
-                type: Sequelize.STRING(10),
                 allowNull: true,
                 unique: true
             },
@@ -34,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
                 defaultValue: "IMPORT."
             },
             p_price_public: {
-                type: Sequelize.NUMERIC(8,2),
+                type: Sequelize.NUMERIC(8, 2),
                 allowNull: false,
                 defaultValue: 0.00
             },
@@ -75,6 +70,4 @@ module.exports = (sequelize, Sequelize) => {
             updatedAt: false,
         }
     );
-  
-    return Product;
   };

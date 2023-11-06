@@ -73,7 +73,7 @@ exports.findOne = (req, res) => {
       res.status(500).json({
         status: 500, 
         title: "Error 500",
-        message: 'Error::Product.findOne(): Ocurrió un problema al recuperar la factura de la base de datos.',
+        message: 'Error::CodeGenerated.findOne(): Ocurrió un problema al recuperar la factura de la base de datos.',
         error: err,
         value: null
         });
@@ -119,7 +119,7 @@ exports.update = (req, res) => {
 
     Billings.update(factura, { where: { db_id: id } })
       .then(num => {
-        if (num === 1) {
+        if (num[0] === 1) {
             res.status(200).json({
               status: 200, 
               title: "Operación exitosa",

@@ -1,8 +1,8 @@
 ///Construye el modelo para distributors.
 module.exports = (sequelize, Sequelize) => {
 
-    const Distributors = sequelize.define(
-        "distributors", 
+    return sequelize.define(
+        "distributors",
         {
             d_id: {
                 type: Sequelize.INTEGER,
@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: true,
             },
             d_iva: {
-                type: Sequelize.DECIMAL(3,2),
+                type: Sequelize.DECIMAL(3, 2),
                 allowNull: false,
                 defaultValue: 1.00
             }
@@ -45,6 +45,4 @@ module.exports = (sequelize, Sequelize) => {
             updatedAt: false,
         }
     );
-  
-    return Distributors;
   };

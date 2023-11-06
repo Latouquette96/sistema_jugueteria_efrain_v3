@@ -118,7 +118,7 @@ exports.update = (req, res) => {
 
     ProductsPrices.update(req.body, { where: { pp_id: id } })
       .then(num => {
-        if (num === 1) {
+        if (num[0] === 1) {
             res.status(200).json({
               status: 200, 
               title: "Operación exitosa",

@@ -18,8 +18,7 @@ exports.create = (req, res) => {
     //Crea un producto.
     const producto = {
         p_barcode: req.body.p_barcode, 
-        p_internal_code: req.body.p_internal_code, 
-        p_title: req.body.p_title, 
+        p_title: req.body.p_title,
         p_description: req.body.p_description, 
         p_brand: req.body.p_brand, 
         p_price_public: req.body.p_price_public, 
@@ -125,7 +124,7 @@ exports.update = (req, res) => {
 
     Products.update(req.body, { where: { p_id: id } })
         .then(num => {
-            if (num === 1) {
+            if (num[0] === 1) {
                 res.status(200).json({
                   status: 200, 
                   title: "Operación exitosa",
@@ -162,7 +161,7 @@ exports.updatePricePublic = (req, res) => {
 
   Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
       .then(num => {
-        if (num === 1) {
+        if (num[0] === 1) {
           res.status(200).json({
             status: 200, 
             title: "Operación exitosa",
@@ -198,6 +197,7 @@ exports.delete = (req, res) => {
 
     Products.destroy({ where: { p_id: id } })
         .then(num => {
+            console.log(num);
           if (num === 1) {
             res.status(200).json({
               status: 200, 

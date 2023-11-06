@@ -1,8 +1,8 @@
 ///Construye el modelo para billings.
 module.exports = (sequelize, Sequelize) => {
 
-    const ProductPrices = sequelize.define(
-        "products_prices", 
+    return sequelize.define(
+        "products_prices",
         {
             pp_id: {
                 type: Sequelize.INTEGER,
@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
             },
             pp_price_base: {
-                type: Sequelize.NUMERIC(10,2),
+                type: Sequelize.NUMERIC(10, 2),
                 allowNull: false,
                 defaultValue: 0
             },
@@ -40,6 +40,4 @@ module.exports = (sequelize, Sequelize) => {
             updatedAt: false,
         }
     );
-  
-    return ProductPrices;
   };
