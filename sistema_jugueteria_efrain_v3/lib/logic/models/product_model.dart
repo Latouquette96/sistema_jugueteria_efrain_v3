@@ -87,7 +87,7 @@ class Product extends JSONalizable<Product> {
   ///Product: Constructor de Product limpio (sin datos definidos).
   Product.clean() {
     _id = 0;
-    _barcode = "-";
+    _barcode = "";
     _title = "-";
     _description = "-";
     _brand = "IMPORT.";
@@ -454,7 +454,7 @@ class Product extends JSONalizable<Product> {
     }
     _minimumAge = (map[_keyMinimumAge] as MinimumAge).getMinimumAgeID();
 
-    plutoRow = buildPlutoRow();
+    plutoRow = (plutoRow==null) ? buildPlutoRow() : plutoRow;
   }
   
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.

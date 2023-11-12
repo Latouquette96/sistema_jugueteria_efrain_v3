@@ -41,7 +41,7 @@ class StyleContainer {
 
   static BoxDecoration getDecoration(){
     return BoxDecoration(
-        gradient: LinearGradient(colors: [Colors.blueGrey.shade300, Colors.blueGrey.shade200, Colors.blueGrey.shade300]),
+        gradient: LinearGradient(colors: [Colors.grey.shade500, Colors.grey.shade400, Colors.grey.shade500]),
         border: const BorderDirectional(
           start: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),
           top: BorderSide(color: Color.fromARGB(255, 211, 211, 211), width: 3),

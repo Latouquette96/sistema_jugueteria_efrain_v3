@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.d
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_state_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
@@ -38,6 +39,13 @@ final newProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
       //TODO: ExportToDrive.getInstance().updateSheets(product);
       //Inserta el nuevo producto
       ref.read(productCatalogProvider.notifier).insert(ref.read(productProvider)!);
+
+      //Si hay un código que fue generado.
+      if (ref.watch(generatedCodeProvider)!=null){
+        if (GeneratedCodeNotifier.isGenerateCode(product.getBarcode())){
+          await ref.read(generatedCodeProvider.notifier).reserveCode();
+        }
+      }
     }
 
     return responseAPI;
@@ -57,6 +65,14 @@ final updateProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
   );
 
   if (responseAPI.isResponseSuccess()){
+
+    //Si hay un código que fue generado.
+    if (ref.watch(generatedCodeProvider)!=null){
+      if (GeneratedCodeNotifier.isGenerateCode(product.getBarcode())){
+        await ref.read(generatedCodeProvider.notifier).reserveCode();
+      }
+    }
+
     //Actualiza el catalogo de Google Drive
     //TODO: ExportToDrive.getInstance().updateSheets(product);
     //Refrezca las marcas cargadas.

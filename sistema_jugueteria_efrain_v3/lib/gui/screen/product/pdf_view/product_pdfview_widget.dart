@@ -50,6 +50,31 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
   @override
   Widget build(BuildContext context) {
 
+    Widget widgetPDF;
+
+    if (_isFileWeb==false && _file==null){
+      widgetPDF = Text("Seleccione un archivo PDF del sistema o copia el link de un archivo en internet.", style: StyleContainer.getTextStyleChildren());
+    }
+    else{
+      if (_isFileWeb || _file==null){
+        widgetPDF = SfPdfViewer.network(
+          _linkPDF.getLink(),
+          controller: _pdfViewerController,
+          currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
+          otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
+        );
+      }
+      else{
+        widgetPDF = SfPdfViewer.file(
+          _file!,
+          controller: _pdfViewerController,
+          currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
+          otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
+        );
+      }
+    }
+
+
     return Container(
       width: 600,
       margin: const EdgeInsets.fromLTRB(0, 10, 5, 10),
@@ -108,19 +133,7 @@ class _ProductPDFViewWidgetState extends ConsumerState<ProductPDFViewWidget> {
               ],
             ),
             Expanded(
-              child: (_isFileWeb || _file==null)
-                ? SfPdfViewer.network(
-                    _linkPDF.getLink(), 
-                    controller: _pdfViewerController,
-                    currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
-                    otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
-                  )
-                : SfPdfViewer.file(
-                    _file!, 
-                    controller: _pdfViewerController,
-                    currentSearchTextHighlightColor: Colors.blue.withOpacity(0.5),
-                    otherSearchTextHighlightColor: Colors.blueAccent.withOpacity(0.3),
-                  )
+              child: widgetPDF
             ),
             Container(
               color: Colors.black54,

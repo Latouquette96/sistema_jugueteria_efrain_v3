@@ -132,7 +132,6 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                         ProductPriceListViewWidget(
                           providerProduct: widget.getProvider(),
                           providerPriceDistributor: widget.getProviderID(),
-                          widthTreeNode: 270,
                         )
                       ],
                     )
@@ -142,11 +141,7 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
                     visible: distributorFree.isNotEmpty,
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                      child: ExpansionTileContainerWidget(
-                          expanded: false,
-                          title: "Registrar nuevo precio del producto",
-                          subtitle: "Permite insertar un nuevo precio para el producto en cuestión.",
-                          children: [NewProductPricesWidget(providerProduct: widget.getProvider(), formGroup: _formNewPP)]),
+                      child: NewProductPricesWidget(providerProduct: widget.getProvider(), formGroup: _formNewPP)
                     )
                   )
                 ],

@@ -3,6 +3,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.d
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///serviceProvider: Provider que permite controlar los servicios.
@@ -22,6 +23,8 @@ class ServiceProvider {
   Future<ResponseSystem> run() async {
     ResponseSystem responseSystem;
     try{
+      //Comprueba el estado de los códigos generados en verificación de crear nuevos.
+      await ref.read(generatedCodeBlockProvider.future);
       //Inicializa los servicios.
       await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
       await ref.read(productCatalogProvider.notifier).initialize();

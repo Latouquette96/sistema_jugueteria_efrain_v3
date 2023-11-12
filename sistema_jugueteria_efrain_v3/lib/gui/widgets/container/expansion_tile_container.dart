@@ -7,7 +7,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/config/configuration_local
 ///Clase ExpansionTileContainerWidget: Modela un ExpansionTileCard con un estilo personalizado.
 class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
 
-  final String title;
+  final String? title;
   final String? subtitle;
   final List<Widget> children;
   final bool isRow;
@@ -17,6 +17,7 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   final IconData? iconLeading;
   final double borderRadius;
   final Widget? trailing;
+  final bool isChildren;
 
   ///Constructor de ExpansionTileContainerWidget
   ///
@@ -29,8 +30,9 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   /// [iconLeading] (opcional) Permite definir el icono del boton de funcion.
   /// [borderRadius] (opcional) Permite definir el radio del borde (circular).
   /// [trailing] (opcional) Permite poner botones del lado derecho.
+  /// [isChildren] Permite definir si es un EsxpansionTile children o root.
   const ExpansionTileContainerWidget({super.key,
-    required this.title,
+    this.title,
     this.subtitle,
     required this.children,
     this.isRow=false,
@@ -39,7 +41,8 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
     this.functionLeading,
     this.iconLeading,
     this.borderRadius = 5,
-    this.trailing
+    this.trailing,
+    this.isChildren = false
   });
 
   @override
@@ -66,14 +69,15 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
     }
 
     return ExpansionTileCard(
-      trailing: widget.trailing,
       borderRadius: BorderRadius.circular(widget.borderRadius),
       expandedTextColor: Colors.black,
-      expandedColor: Colors.grey.shade200,
-      baseColor: Colors.blueGrey.shade100,
+      expandedColor: (widget.isChildren) ? Colors.brown.shade50.withOpacity(0.85) : Colors.grey.shade200,
+      baseColor: (widget.isChildren) ? Colors.brown.shade100 : Colors.brown.shade100,
       initiallyExpanded: widget.expanded,
       contentPadding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-      title: Center(child: Text(widget.title, style: StyleExpansionTile.getStyleTitleExpansionTile())),
+      title: (widget.trailing!=null)
+          ? widget.trailing!
+          : Center(child: Text(widget.title ?? "Sin definir título", style: StyleExpansionTile.getStyleTitleExpansionTile())),
       subtitle: subtitle,
       leading: (widget.functionLeading!=null)
           ? IconButton(

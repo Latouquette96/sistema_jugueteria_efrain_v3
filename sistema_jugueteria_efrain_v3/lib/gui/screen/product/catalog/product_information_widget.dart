@@ -11,10 +11,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/p
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_dropdown.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_elevated_button.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/style/style_expansion_tile.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_area.dart';
-
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/container/expansion_tile_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
@@ -27,10 +26,11 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/json/category_model.da
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/minimum_age.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_singleton.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_state_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
@@ -46,7 +46,7 @@ class ProductInformationWidget extends ConsumerStatefulWidget {
   }
 }
 
-class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidget> with ContainerParameters, SingleTickerProviderStateMixin {
+class _ProductInformationWidgetState extends ConsumerState<ProductInformationWidget> with ContainerParameters, SingleTickerProviderStateMixin {
 
   //Atributos de instancia.
   late final FormGroup _form, _formNewPP;
@@ -65,7 +65,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     _formNewPP = FormGroupProductPrices.buildFormGroupProductPrices(ref, productProvider);
     _brandManual = false;
   }
-
   
   @override
   Widget build(BuildContext context) {
@@ -176,7 +175,35 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     int index = -1;
 
     return ExpansionTileContainerWidget(
-      title: "Imágenes del producto",
+      trailing: Row(
+        children: [
+          Expanded(child: Center(child: Text("Imágenes del producto", style: StyleExpansionTile.getStyleTitleExpansionTile(),),)),
+          IconButton(
+              onPressed: () async {
+                ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
+
+                if (cdata!=null){
+                  String textData = cdata.text!;
+                  if (textData.contains(',')){
+                    for (String textLink in textData.split(',')){
+                      if (textLink.isNotEmpty){
+                        (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(textLink));
+                      }
+                    }
+                  }
+                  else{
+                    (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(cdata.text!));
+                  }
+                  if (mounted){
+                    setState(() {});
+                  }
+                }
+              },
+              tooltip: "Inserta el link de la imagen almacenada en el portapapeles.",
+              icon: const Icon(Icons.paste, color: Colors.black54)
+          )
+        ],
+      ),
       subtitle: "[Obligatorio] Administre las imagenes del producto (debe haber al menos una imagen). ",
       children: [
         Visibility(
@@ -203,39 +230,6 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.all(5),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                  style: StyleElevatedButton.getStyleElevatedButtom(),
-                  onPressed: () async {
-                    ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-
-                    if (cdata!=null){
-                      String textData = cdata.text!;
-                      if (textData.contains(',')){
-                        for (String textLink in textData.split(',')){
-                          if (textLink.isNotEmpty){
-                            (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(textLink));
-                          }
-                        }
-                      }
-                      else{
-                        (_form.control(Product.getKeyImages()).value as List<ResourceLink>).add(ResourceLink(cdata.text!));
-                      }
-                      if (mounted){
-                        setState(() {});
-                      }
-                    }
-                  },
-                  child: const Text("Insertar link")
-              ),
-            ],
-          ),
-        )
       ],
     );
   }
@@ -564,8 +558,9 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     return ExpansionTileContainerWidget(
         title: "Código de barra",
         subtitle: "[Obligatorio] El código de barra debe ser definido ya que permite la búsqueda del producto de manera rápida y sin errores.",
+        isRow: true,
         children: [
-          ReactiveTextField(
+          Expanded(child: ReactiveTextField(
             maxLength: Product.getMaxCharsBarcode(),
             style: StyleTextField.getTextStyleNormal(),
             decoration: StyleTextField.getDecoration("Código de barras"),
@@ -578,8 +573,24 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
             validationMessages: {
               ValidationMessage.required: (error) => "(Requerido) Ingrese el código de barras del producto."
             },
-          ),
-        ]
+          )),
+          Container(
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.brown.shade200
+            ),
+            margin: const EdgeInsets.fromLTRB(5, 0, 0, 25),
+            child: IconButton(
+                tooltip: "Genera un código de barras.",
+                onPressed: () async {
+                  String code = await ref.read(generatedCodeProvider.notifier).generateCode();
+                  _form.control(Product.getKeyBarcode()).value = code;
+                },
+                icon: Icon(MdiIcons.fromString("barcode"))
+            ),
+          )
+        ],
     );
   }
 
@@ -590,26 +601,30 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
     //Precios del producto
     return ReactiveForm(
         formGroup: _formNewPP,
-        child: ExpansionTileContainerWidget(
-          title: "Precios en distribuidoras",
-          subtitle: "Permite definir los distintos precios del producto en distintas distribuidoras.\n\n"
-              "${ ref.read(productProvider)!.getID()==0
-                ? "Importante: Solo puede ser ingresados precio de distribuidoras sobre productos previamente guardados, "
+        child: Column(
+          children: [
+            ExpansionTileContainerWidget(
+              title: "Precios en distribuidoras",
+              subtitle: "Permite definir los distintos precios del producto en distintas distribuidoras.\n\n"
+                  "${ ref.read(productProvider)!.getID()==0
+                  ? "Importante: Solo puede ser ingresados precio de distribuidoras sobre productos previamente guardados, "
                   "por tal motivo, debe presionar sobre el botón de guardado y luego se"
                   "habilitará el ingreso de precios."
-                : "Importante: Los precios son actualizados de manera inmediata, por tal motivo, solo alcanza con presionar el boton 'insertar' (caso de nuevo precio)"
+                  : "Importante: Los precios son actualizados de manera inmediata, por tal motivo, solo alcanza con presionar el boton 'insertar' (caso de nuevo precio)"
                   " o el icono de guardar para un precio existente."
-          }",
-          children: [
-            //Construye el ListView
-            Visibility(
-              visible: ref.read(productProvider)!.getID()!=0,
-              child: ProductPriceListViewWidget(
-                  providerProduct: productProvider,
-                  providerPriceDistributor: productPricesByIDProvider,
-              )
+              }",
+              children: [
+                //Construye el ListView
+                Visibility(
+                    visible: ref.read(productProvider)!.getID()!=0,
+                    child: ProductPriceListViewWidget(
+                      providerProduct: productProvider,
+                      providerPriceDistributor: productPricesByIDProvider,
+                    )
+                ),
+              ],
             ),
-            //LISTTILE para crear un nuevo registro.
+            const SizedBox(height: 5,),
             Visibility(
                 visible: distributorFree.isNotEmpty && ref.read(productProvider)!.getID()!=0,
                 child: NewProductPricesWidget(providerProduct: productProvider, formGroup: _formNewPP)
@@ -630,15 +645,13 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     if (response.isResponseSuccess()){
       //Inserta el nuevo registro por el actualizado.
-      ref.read(stateManagerProductProvider.notifier).insert(productProvider);
-      //Actualizar datos de ultima actualizacion
-      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      StateManagerSingleton.getInstance().getStateManager()!.insertRows(0, [ref.read(productProvider)!.getPlutoRow()!]);
+
       //Notifica con exito en la operacion
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
 
       //Libera el producto del proveedor.
       ref.read(productProvider.notifier).free();
-      setState(() {});
     }
     else{
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
@@ -654,8 +667,20 @@ class _ProductInformationWidgetState extends ConsumerState<ConsumerStatefulWidge
 
     if (response.isResponseSuccess()){
       ref.read(stateManagerProductProvider.notifier).update(productProvider);
-      //Actualizar datos de ultima actualizacion
-      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+      StateManagerSingleton.getInstance().getStateManager()!.setShowLoading(true);
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Product product = ref.read(productProvider)!;
+
+        product.getPlutoRow()!.cells[Product.getKeyBarcode()]!.value = product.getBarcode();
+        product.getPlutoRow()!.cells[Product.getKeyTitle()]!.value = product.getTitle();
+        product.getPlutoRow()!.cells[Product.getKeyBrand()]!.value = product.getBrand();
+        product.getPlutoRow()!.cells[Product.getKeyPricePublic()]!.value = product.getPricePublic();
+        product.getPlutoRow()!.cells[Product.getKeyStock()]!.value = product.getStock();
+
+        StateManagerSingleton.getInstance().getStateManager()!.setShowLoading(false);
+      });
+
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
 
       //Libera el producto del proveedor.

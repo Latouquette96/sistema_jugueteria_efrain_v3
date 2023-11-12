@@ -9,6 +9,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart'
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_state_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
 final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Fourfold<Product, Distributor, double, String>>, List<Fourfold<Product, Distributor, double, String>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
@@ -43,7 +44,13 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
       if (response.isResponseSuccess()){
         //Si ademas el producto en cuestion se trataba de un producto nuevo, entonces se carga su respectivo
         if (fourfold.getValue1().getID()==0){
+          //Establece el id obtenido del producto insertado
           fourfold.getValue1().setID(response.getValue()['p_id']);
+
+          //Comprueba si es un código generado.
+          if (GeneratedCodeNotifier.isGenerateCode(fourfold.getValue1().getBarcode())){
+            GeneratedCodeNotifier.reserveGeneratedCode(url, fourfold.getValue1(), fourfold.getValue1().getBarcode());
+          }
 
           final productPrice = ProductPrice(
               id: 0,

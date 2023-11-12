@@ -23,7 +23,7 @@ class StyleListTile {
     const border =  BorderSide(color: Color.fromARGB(255, 98, 98, 98), width: 1);
 
     return BoxDecoration(
-      gradient: LinearGradient(colors: [Colors.blue.shade100, Colors.grey.shade100, Colors.grey.shade100]),
+      gradient: LinearGradient(colors: [Colors.brown.shade100, Colors.grey.shade100, Colors.brown.shade100]),
       border: const BorderDirectional(
         start: border,
         top: border,
