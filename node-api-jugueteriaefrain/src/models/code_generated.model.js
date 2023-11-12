@@ -1,22 +1,29 @@
-///Construye el modelo para la generacion de códigos internos.
-module.exports = (sequelize, Sequelize) => {
+const {Model} = require('sequelize');
 
-    return sequelize.define(
-        "code_generated",
+///Construye el modelo para la generacion de códigos internos.
+module.exports = (sequelize, DataTypes) => {
+
+    class CodeGenerated extends Model {}
+
+    CodeGenerated.init(
         {
             cg_id: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
             cg_product: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: true
             },
         },
         {
+            sequelize,
+            tableName: "code_generateds",
             createdAt: false,
             updatedAt: false,
         }
     );
+
+    return CodeGenerated;
 };

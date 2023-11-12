@@ -1,43 +1,50 @@
-///Construye el modelo para billings.
-module.exports = (sequelize, Sequelize) => {
+const {Model} = require('sequelize');
 
-    return sequelize.define(
-        "products_prices",
+///Construye el modelo para billings.
+module.exports = (sequelize, DataTypes) => {
+
+    class ProductPrices extends Model {}
+
+    ProductPrices.init(
         {
             pp_id: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
             pp_internal_code: {
-                type: Sequelize.STRING(20),
+                type: DataTypes.STRING(20),
                 allowNull: true,
             },
             pp_product: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             pp_distributor: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
             pp_price_base: {
-                type: Sequelize.NUMERIC(10, 2),
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0
             },
             pp_date_update: {
-                type: Sequelize.BIGINT,
+                type: DataTypes.BIGINT,
                 allowNull: false
             },
             pp_website: {
-                type: Sequelize.STRING(150),
+                type: DataTypes.STRING(150),
                 allowNull: true,
             },
         },
         {
+            sequelize,
+            tableName: "product_prices",
             createdAt: false,
             updatedAt: false,
         }
     );
+
+    return ProductPrices;
   };

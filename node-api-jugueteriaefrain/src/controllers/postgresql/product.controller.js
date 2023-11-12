@@ -1,8 +1,10 @@
 const db = require("../../models");
-const Products = db.products;
+const Product = db.products;
+
+const Product_controller = {};
 
 //Crear y guardar un nuevo producto.
-exports.create = (req, res) => {
+Product_controller.create = async (req, res) => {
     //Validacion de datos.
     if (!req.body) {
       res.status(400).json({
@@ -32,7 +34,7 @@ exports.create = (req, res) => {
     };
   
     //Guarda el producto en la base de datos.
-    Products.create(producto)
+    await Product.create(producto)
       .then(data => {
         res.status(201).json({
           status: 201, 
@@ -54,10 +56,10 @@ exports.create = (req, res) => {
 };
 
 //Realiza la busqueda de un producto con identificador id.
-exports.findOne = (req, res) => {
+Product_controller.findOne = async (req, res) => {
     const id = req.params.id;
 
-    Products.findByPk(id)
+    await Product.findByPk(id)
       .then(data => {
         if (data) {
           res.status(200).json({
@@ -89,9 +91,9 @@ exports.findOne = (req, res) => {
 };
 
 //Recupera todos los productos de la base de datos.
-exports.findAll = (req, res) => {
+Product_controller.findAll = async (req, res) => {
 
-  Products.findAll({ 
+  await Product.findAll({
     where: {},
     order: [
       ['p_title', 'ASC'],
@@ -119,10 +121,10 @@ exports.findAll = (req, res) => {
 };
 
 //Actualiza los datos de un producto con identificador id.
-exports.update = (req, res) => {
+Product_controller.update = async (req, res) => {
     const id = req.params.id;
 
-    Products.update(req.body, { where: { p_id: id } })
+    await Product.update(req.body, { where: { p_id: id } })
         .then(num => {
             if (num[0] === 1) {
                 res.status(200).json({
@@ -155,11 +157,11 @@ exports.update = (req, res) => {
 };
 
 //Actualiza los datos de un producto con identificador id.
-exports.updatePricePublic = (req, res) => {
+Product_controller.updatePricePublic = async (req, res) => {
   const id = req.params.id;
   const {p_price_public} = req.body;
 
-  Products.update({p_price_public: p_price_public}, { where: { p_id: id } })
+  await Product.update({p_price_public: p_price_public}, { where: { p_id: id } })
       .then(num => {
         if (num[0] === 1) {
           res.status(200).json({
@@ -192,10 +194,10 @@ exports.updatePricePublic = (req, res) => {
 };
 
 //Elimina un producto con un determinado id.
-exports.delete = (req, res) => {
+Product_controller.delete = async (req, res) => {
     const id = req.params.id;
 
-    Products.destroy({ where: { p_id: id } })
+    await Product.destroy({ where: { p_id: id } })
         .then(num => {
             console.log(num);
           if (num === 1) {
@@ -229,8 +231,8 @@ exports.delete = (req, res) => {
 };
 
 //Elimina todos los productos de la base de datos.
-exports.deleteAll = (req, res) => {
-    Products.destroy({ where: {}, truncate: false})
+Product_controller.deleteAll = async (req, res) => {
+    await Product.destroy({ where: {}, truncate: false})
         .then(nums => {
           res.status(200).json({
             status: 200, 
@@ -250,3 +252,5 @@ exports.deleteAll = (req, res) => {
           });
         });
 };
+
+module.exports = Product_controller;

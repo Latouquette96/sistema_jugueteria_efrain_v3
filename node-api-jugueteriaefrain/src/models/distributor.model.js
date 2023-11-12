@@ -1,48 +1,55 @@
-///Construye el modelo para distributors.
-module.exports = (sequelize, Sequelize) => {
+const {Model} = require('sequelize');
 
-    return sequelize.define(
-        "distributors",
+///Construye el modelo para distributors.
+module.exports = (sequelize, DataTypes) => {
+
+    class Distributor extends Model {}
+
+    Distributor.init(
         {
             d_id: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
             d_cuit: {
-                type: Sequelize.STRING(13),
+                type: DataTypes.STRING(13),
                 allowNull: true,
                 unique: false
             },
             d_name: {
-                type: Sequelize.STRING(50),
+                type: DataTypes.STRING(50),
                 allowNull: false,
             },
             d_address: {
-                type: Sequelize.STRING(75),
+                type: DataTypes.STRING(75),
                 allowNull: true,
             },
             d_email: {
-                type: Sequelize.STRING(150),
+                type: DataTypes.STRING(150),
                 allowNull: true
             },
             d_cel: {
-                type: Sequelize.STRING(15),
+                type: DataTypes.STRING(15),
                 allowNull: true,
             },
             d_website: {
-                type: Sequelize.STRING(150),
+                type: DataTypes.STRING(150),
                 allowNull: true,
             },
             d_iva: {
-                type: Sequelize.DECIMAL(3, 2),
+                type: DataTypes.DECIMAL(3, 2),
                 allowNull: false,
                 defaultValue: 1.00
             }
         },
         {
+            sequelize,
+            tableName: "distributors",
             createdAt: false,
             updatedAt: false,
         }
     );
+
+    return Distributor;
   };

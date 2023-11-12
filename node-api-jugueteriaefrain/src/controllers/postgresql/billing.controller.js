@@ -1,8 +1,10 @@
 const db = require("../../models");
 const Billings = db.billings;
 
+const billings_controller = {};
+
 //Crear y guardar una nueva factura.
-exports.create = (req, res) => {
+billings_controller.create = async (req, res) => {
     //Validacion de datos.
     if (!req.body) {
       res.status(400).json({
@@ -24,7 +26,7 @@ exports.create = (req, res) => {
     };
   
     //Guarda el factura en la base de datos.
-    Billings.create(factura)
+    await Billings.create(factura)
     .then(data => {
       res.status(201).json({
         status: 201, 
@@ -46,10 +48,10 @@ exports.create = (req, res) => {
 };
 
 //Realiza la busqueda de una factura con identificador id.
-exports.findOne = (req, res) => {
+billings_controller.findOne = async (req, res) => {
     const id = req.params.id;
 
-    Billings.findByPk(id)
+    await Billings.findByPk(id)
     .then(data => {
       if (data) {
         res.status(200).json({
@@ -81,10 +83,10 @@ exports.findOne = (req, res) => {
 };
 
 //Recupera todas las facturas de una distribuidora en particular.
-exports.findAll = (req, res) => {
+billings_controller.findAll = async (req, res) => {
     const id = parseInt(req.params.id)
 
-    Billings.findAll({ where: { db_distributor: id} })
+    await Billings.findAll({ where: { db_distributor: id} })
     .then(data => {
       res.status(200).json({
         status: 200, 
@@ -106,7 +108,7 @@ exports.findAll = (req, res) => {
 };
 
 //Actualiza los datos de una factura con identificador id.
-exports.update = (req, res) => {
+billings_controller.update = async (req, res) => {
     const id = req.params.id;
 
     //Crea una factura.
@@ -117,7 +119,7 @@ exports.update = (req, res) => {
         db_url_file: req.body.db_url_file
     };
 
-    Billings.update(factura, { where: { db_id: id } })
+    await Billings.update(factura, { where: { db_id: id } })
       .then(num => {
         if (num[0] === 1) {
             res.status(200).json({
@@ -150,10 +152,10 @@ exports.update = (req, res) => {
 };
 
 //Elimina una factura con una determinado id.
-exports.delete = (req, res) => {
+billings_controller.delete = async (req, res) => {
     const id = req.params.id;
 
-    Billings.destroy({ where: { db_id: id } })
+    await Billings.destroy({ where: { db_id: id } })
       .then(num => {
         if (num === 1) {
           res.status(200).json({
@@ -186,10 +188,10 @@ exports.delete = (req, res) => {
 };
 
 //Elimina todos los facturas para una determinada distribuidora.
-exports.deleteAll = (req, res) => {
+billings_controller.deleteAll = async (req, res) => {
     const id = req.params.id;
 
-    Billings.destroy({ where: {db_distributor: id}, truncate: false})
+    await Billings.destroy({ where: {db_distributor: id}, truncate: false})
     .then(nums => {
       res.status(200).json({
         status: 200, 
@@ -209,3 +211,5 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+module.exports = billings_controller;

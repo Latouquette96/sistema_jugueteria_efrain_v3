@@ -1,8 +1,10 @@
 const db = require("../../models");
-const Distributors = db.distributors;
+const Distributor = db.distributors;
+
+const distributor_controller = {}
 
 //Crear y guardar una nueva distribuidora.
-exports.create = (req, res) => {
+distributor_controller.create = async (req, res) => {
     //Validacion de datos.
     if (!req.body) {
       res.status(400).json({
@@ -27,7 +29,7 @@ exports.create = (req, res) => {
     };
   
     //Guarda el distribuidora en la base de datos.
-    Distributors.create(distribuidora)
+    await Distributor.create(distribuidora)
       .then(data => {
         res.status(201).json({
           status: 201, 
@@ -49,10 +51,10 @@ exports.create = (req, res) => {
 };
 
 //Realiza la busqueda de una distribuidora con identificador id.
-exports.findOne = (req, res) => {
+distributor_controller.findOne = async (req, res) => {
     const id = req.params.id;
 
-    Distributors.findByPk(id)
+    await Distributor.findByPk(id)
     .then(data => {
       if (data) {
         res.status(200).json({
@@ -84,9 +86,9 @@ exports.findOne = (req, res) => {
 };
 
 //Recupera todos los distribuidoras de la base de datos.
-exports.findAll = (req, res) => {
+distributor_controller.findAll = async (req, res) => {
 
-  Distributors.findAll({ 
+  await Distributor.findAll({ 
     where: {} ,
     order: [
       ['d_name', 'ASC'],
@@ -114,11 +116,8 @@ exports.findAll = (req, res) => {
 };
 
 //Actualiza los datos de una distribuidora con identificador id.
-exports.update = (req, res) => {
+distributor_controller.update = async (req, res) => {
     const id = req.params.id;
-
-    console.log(req.body);
-    console.log("id: " + id);
 
     //Crea una distribuidora.
     const distribuidora = {
@@ -132,7 +131,7 @@ exports.update = (req, res) => {
         d_iva: req.body.d_iva
     };
 
-    Distributors.update(distribuidora, { where: { d_id: id } })
+    await Distributor.update(distribuidora, { where: { d_id: id } })
         .then(num => {
             if (num[0] === 1) {
               res.status(200).json({
@@ -165,10 +164,10 @@ exports.update = (req, res) => {
 };
 
 //Elimina una distribuidora con una determinado id.
-exports.delete = (req, res) => {
+distributor_controller.delete = async (req, res) => {
     const id = req.params.id;
 
-    Distributors.destroy({ where: { d_id: id } })
+    await Distributor.destroy({ where: { d_id: id } })
         .then(num => {
             if (num === 1) {
                 res.status(200).json({
@@ -201,8 +200,8 @@ exports.delete = (req, res) => {
 };
 
 //Elimina todos los distribuidoras de la base de datos.
-exports.deleteAll = (req, res) => {
-    Distributors.destroy({ where: {}, truncate: false})
+distributor_controller.deleteAll = async (req, res) => {
+    await Distributor.destroy({ where: {}, truncate: false})
         .then(nums => {
           res.status(200).json({
             status: 200, 
@@ -222,3 +221,5 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
+
+module.exports = distributor_controller;

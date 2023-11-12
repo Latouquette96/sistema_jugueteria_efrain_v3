@@ -15,7 +15,8 @@ let price_products_routes = require('./routes/postgresql/prices_products_route')
 let billing_routes = require('./routes/postgresql/billing_route'); 
 let function_routes = require('./routes/function_route'); 
 let mysql_routes = require('./routes/mysql/mysql.routes'); 
-let filter_routes = require('./routes/postgresql/filter_route'); 
+let filter_routes = require('./routes/postgresql/filter_route');
+let code_generated_routes = require('./routes/postgresql/code_generated_route');
 
 //cargar middlewares: un metodo que se ejecuta antes que llegue a un controlador
 //Se configura bodyParser para que convierta el body de nuestras peticiones a JSON
@@ -34,6 +35,7 @@ app.use('/', billing_routes);
 app.use('/', function_routes);
 app.use('/', mysql_routes);
 app.use('/', filter_routes);
+app.use('/', code_generated_routes)
 
 //Se exporta este módulo para poder usar la letiable app fuera de este archivo
 module.exports = app;

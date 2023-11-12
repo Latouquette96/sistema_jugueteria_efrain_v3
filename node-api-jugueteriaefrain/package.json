@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@afipsdk/afip.js": "^0.7.11",
+    "@afipsdk/afip.js": "^0.8.1",
     "body-parser": "^1.20.2",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
@@ -15,8 +15,9 @@
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "nodemon": "^3.0.1",
-    "pg": "^8.11.1",
+    "pg": "^8.11.3",
     "pg-format": "^1.0.4",
-    "sequelize": "^6.33.0"
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.34.0"
   }
 }

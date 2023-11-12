@@ -1,73 +1,80 @@
-///Construye el modelo para products.
-module.exports = (sequelize, Sequelize) => {
+const {Model} = require('sequelize');
 
-    return sequelize.define(
-        "products",
+///Construye el modelo para products.
+module.exports = (sequelize, DataTypes) => {
+    class Product extends Model {}
+
+    Product.init(
         {
             p_id: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
             p_barcode: {
-                type: Sequelize.STRING(48),
+                type: DataTypes.STRING(48),
                 allowNull: true,
                 unique: true
             },
             p_title: {
-                type: Sequelize.STRING(65),
+                type: DataTypes.STRING(65),
                 allowNull: false,
                 unique: true
             },
             p_description: {
-                type: Sequelize.STRING(9999),
+                type: DataTypes.STRING(9999),
                 allowNull: false
             },
             p_brand: {
-                type: Sequelize.STRING(100),
+                type: DataTypes.STRING(100),
                 allowNull: false,
                 defaultValue: "IMPORT."
             },
             p_price_public: {
-                type: Sequelize.NUMERIC(8, 2),
+                type: DataTypes.DECIMAL(8, 2),
                 allowNull: false,
                 defaultValue: 0.00
             },
             p_stock: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0
             },
             p_subcategory: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0
             },
             p_images: {
-                type: Sequelize.STRING(3000),
+                type: DataTypes.STRING(3000),
                 allowNull: true,
                 defaultValue: 'https://drive.google.com/uc?export=view&id=1Mh8yFhGtvhq7AkKzs09jad8d5pjwADKi'
             },
             p_sizes: {
-                type: Sequelize.STRING(500),
+                type: DataTypes.STRING(500),
                 allowNull: true,
             },
             p_date_updated: {
-                type: Sequelize.BIGINT,
+                type: DataTypes.BIGINT,
                 defaultValue: 0
             },
             p_date_created: {
-                type: Sequelize.BIGINT,
+                type: DataTypes.BIGINT,
                 defaultValue: 0
             },
             p_minimum_age: {
-                type: Sequelize.SMALLINT,
+                type: DataTypes.SMALLINT,
                 defaultValue: 1
             }
         },
         {
+            sequelize,
             createdAt: false,
             updatedAt: false,
+            tableName: "products"
+            //freezeTableName: true //Previene el plural del nombre de la tabla.
         }
-    );
-  };
+    )
+
+    return Product;
+};

@@ -1,8 +1,10 @@
 const db = require("../../models");
-const ProductsPrices = db.products_prices;
+const ProductPrices = db.products_prices;
+
+const product_prices_controller = {};
 
 //Crear y guardar un nuevo precio del producto.
-exports.create = (req, res) => {
+product_prices_controller.create = async (req, res) => {
     //Validacion de datos.
     if (!req.body) {
       res.status(400).json({
@@ -26,7 +28,7 @@ exports.create = (req, res) => {
     };
   
     //Guarda el precio del producto en la base de datos.
-    ProductsPrices.create(price_product)
+    await ProductPrices.create(price_product)
     .then(data => {
       res.status(201).json({
         status: 201, 
@@ -48,11 +50,19 @@ exports.create = (req, res) => {
 };
 
 //Realiza la busqueda de un precio del producto con identificador id.
-exports.findOne = (req, res) => {
-    const id = req.params.id;
+product_prices_controller.findOne = async (req, res) => {
+    const pp_id = req.params.id;
 
-    ProductsPrices.findByPk(id)
-      .then(data => {
+    await sequelize.query(
+        "SELECT * FROM product_prices WHERE pp_id = ?",
+        {
+            replacements: [pp_id],
+            type: QueryTypes.SELECT,
+            model: ProductPrices,
+            mapToModel: true
+        }
+    )
+    .then(data => {
         if (data) {
           res.status(200).json({
             status: 200, 
@@ -83,10 +93,10 @@ exports.findOne = (req, res) => {
 };
 
 //Recupera todos los precios del producto en particular.
-exports.findAll = (req, res) => {
+product_prices_controller.findAll = async (req, res) => {
     const id = parseInt(req.params.id)
 
-    ProductsPrices.findAll({ 
+    await ProductPrices.findAll({
       where: { pp_product: id},
       order: [
         ['pp_price_base', 'ASC']
@@ -113,10 +123,10 @@ exports.findAll = (req, res) => {
 };
 
 //Actualiza los datos de un precio del producto con identificador id.
-exports.update = (req, res) => {
+product_prices_controller.update = async (req, res) => {
     const id = req.params.id;
 
-    ProductsPrices.update(req.body, { where: { pp_id: id } })
+    await ProductPrices.update(req.body, { where: { pp_id: id } })
       .then(num => {
         if (num[0] === 1) {
             res.status(200).json({
@@ -149,10 +159,10 @@ exports.update = (req, res) => {
 };
 
 //Elimina un precio del producto con un determinado id.
-exports.delete = (req, res) => {
+product_prices_controller.delete = async (req, res) => {
     const id = req.params.id;
 
-    ProductsPrices.destroy({ where: { pp_id: id } })
+    await ProductPrices.destroy({ where: { pp_id: id } })
     .then(num => {
       if (num === 1) {
         res.status(200).json({
@@ -185,10 +195,10 @@ exports.delete = (req, res) => {
 };
 
 //Elimina todos los precio del productos de la base de datos.
-exports.deleteAll = (req, res) => {
+product_prices_controller.deleteAll = async (req, res) => {
   const id = req.params.id;
 
-  ProductsPrices.destroy({ where: {pp_product: id}, truncate: false})
+  await ProductPrices.destroy({ where: {pp_product: id}, truncate: false})
   .then(nums => {
     res.status(200).json({
       status: 200, 
@@ -208,3 +218,5 @@ exports.deleteAll = (req, res) => {
     });
   });
 };
+
+module.exports = product_prices_controller;

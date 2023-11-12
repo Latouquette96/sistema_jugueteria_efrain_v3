@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Sincroniza la base de datos (puede eliminarla).
-db.sequelize.sync()
+db.sequelize.sync({force:false})
   .then(() => {
     console.log("Base de datos sincronizada.");
   })
