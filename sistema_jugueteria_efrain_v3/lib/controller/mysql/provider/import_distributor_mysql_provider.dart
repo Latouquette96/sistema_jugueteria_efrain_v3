@@ -3,9 +3,9 @@ import 'package:sistema_jugueteria_efrain_v3/controller/mysql/convert/convert_fr
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor_mysql.dart';
 
 ///Clase ImportDistributorMySQLProvider: Modela las operaciones CRUD sobre MySQL.
 class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
@@ -28,7 +28,7 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
       List<Distributor> list = [];
 
       if (content.isResponseSuccess()){
-        List<Distributor> listDistributors = ref.read(catalogDistributorProvider);
+        List<Distributor> listDistributors = StateManagerDistributor.getInstance().getElements();
 
         //Para cada fila de los resultados obtenidos.
         for (var row in content.getValue()){
@@ -59,8 +59,8 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
       }
 
       //Notifica al catalogo.
-      if (ref.read(stateManagerDistributorMySQLProvider)!=null){
-        ref.read(stateManagerDistributorMySQLProvider)!.insertRows(0, list.map((e) => e.getPlutoRow()!).toList());
+      if (StateManagerDistributorMySQL.getInstance().getStateManager()!=null){
+        StateManagerDistributorMySQL.getInstance().getStateManager()!.insertRows(0, list.map((e) => e.getPlutoRow()).toList());
       }
 
       //Actualiza el estado.
@@ -111,8 +111,8 @@ class ImportDistributorMySQLProvider extends StateNotifier<List<Distributor>> {
   ///ImportDistributorMySQLProvider: Refrezca el listado de distribuidoras.
   Future<ResponseAPI> refresh() async {
     //Limpia el catalogo de todas las filas.
-    if (ref.read(stateManagerDistributorMySQLProvider)!=null){
-      ref.read(stateManagerDistributorMySQLProvider)!.removeAllRows();
+    if (StateManagerDistributorMySQL.getInstance().getStateManager()!=null){
+      StateManagerDistributorMySQL.getInstance().getStateManager()!.removeAllRows();
     }
     //Limpia el estado actual.
     state = [];

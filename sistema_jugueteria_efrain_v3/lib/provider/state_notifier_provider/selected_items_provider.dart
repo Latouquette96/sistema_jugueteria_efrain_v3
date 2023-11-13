@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
   //Atributos de clase
   final StateNotifierProviderRef<SelectedItemsProvider, List<T>> ref;
-  final StateNotifierProvider<dynamic, List<T>> provider;
+  final List<T> listElements;
 
   //Constructor de SelectedItemsProvider
-  SelectedItemsProvider(this.ref, this.provider): super([]);
+  SelectedItemsProvider(this.ref, this.listElements): super([]);
 
   ///SelectedItemsProvider: Inserta un nuevo elemento a la lista.
   void insert(T element){
@@ -17,7 +17,7 @@ class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
   ///SelectedItemsProvider: Inserta todos los elementos del catalogo de elementos.
   void insertAll(){
     state = [];
-    state = [...ref.read(provider)];
+    state = [...listElements];
   }
 
   ///SelectedItemsProvider: Remueve todos los elementos del catalogo.

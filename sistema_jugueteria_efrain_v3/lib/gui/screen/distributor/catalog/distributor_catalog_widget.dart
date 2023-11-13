@@ -7,11 +7,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///DistributorCatalogWidget: Widget que permite visualizar el catalogo de distribuidoras.
@@ -53,13 +51,11 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
                   onPressed: (){
                     if (ref.read(distributorStateProvider)!=null){
                       ref.read(distributorStateProvider.notifier).free();
-                      ref.read(plutoRowProvider.notifier).free();
                     }
                     else{
                       //Busca el distribuidor de acuerdo a la fila.
                       Distributor distributor = _getDistributorForRendererContext(rendererContext);
                       ///Carga un distribuidor al proveedor para que pueda ser editado.
-                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                       ref.read(distributorStateProvider.notifier).load(distributor);
                     }
                   }, 
@@ -141,8 +137,8 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
     ));
 
     //Agrega las filas.
-    _rows.addAll(ref.read(catalogDistributorProvider).map((e){
-      return e.getPlutoRow()!;
+    _rows.addAll(StateManagerDistributor.getInstance().getElements().map((e){
+      return e.getPlutoRow();
     }).toList());
   }
 
@@ -159,10 +155,10 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
         mode: PlutoGridMode.popup,
         columns: _columns,
         rows: _rows,
-        onLoaded: (event) {
+        onLoaded: (event) async {
           if (mounted){
-            ref.read(stateManagerDistributorProvider.notifier).load(event.stateManager);
-            ref.read(catalogDistributorProvider.notifier).refresh();
+            StateManagerDistributor.getInstance().loadStateManager(event.stateManager);
+            await StateManagerDistributor.getInstance().initialize(ref.read(urlAPIProvider));
           }
         },
         configuration: PlutoConfig.getConfiguration()
@@ -172,25 +168,19 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
 
   ///DistributorCatalogWidget: Remueve la distribuidora de la grilla y del servidor.
   Future<void> _remove(Distributor distributor) async{
-    ref.read(distributorStateRemoveProvider.notifier).load(distributor);
+    String url = ref.read(urlAPIProvider);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseAPI response = await ref.read(removeDistributorWithAPIProvider.future);
+    ResponseAPI response = await StateManagerDistributor.getInstance().remove(url, distributor);
     //Si ocurre error, entonces se procede a notificar del éxito de la operación y a cerrar el widget.
     if (context.mounted){
       ElegantNotificationCustom.showNotificationAPI(context, response);
-
-      if (response.isResponseSuccess()){
-        // ignore: unused_result
-        ref.read(stateManagerDistributorProvider)!.removeRows([ref.read(distributorStateRemoveProvider)!.getPlutoRow()!]);
-        ref.read(distributorStateRemoveProvider.notifier).free();
-      }
     }
   }
 
   ///DistributorCatalogWidget: Devuelve la distribuidora de una fila.
   Distributor _getDistributor(PlutoRow row){
     int rowID = row.cells[Distributor.getKeyID()]!.value;
-    return ref.read(catalogDistributorProvider).firstWhere((element) => element.getID()==rowID);
+    return StateManagerDistributor.getInstance().getElements().firstWhere((element) => element.getID()==rowID);
   }
 
   ///DistributorCatalogWidget: Devuelve la distribuidora del contexto.

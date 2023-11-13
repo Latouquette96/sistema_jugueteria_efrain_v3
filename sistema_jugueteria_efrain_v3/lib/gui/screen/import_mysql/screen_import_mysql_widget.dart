@@ -10,10 +10,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/pro
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
-
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
 ///Clase ScreenImportProductWidget: Modela un catálogo de productos provenientes de MySQL.
@@ -83,7 +82,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                         Row(
                           children: [
                             Text("• Distribuidoras en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(ref.watch(catalogDistributorProvider).length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
+                            Text(StateManagerDistributor.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
                           ],
                         )
                       ],
@@ -133,7 +132,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                         Row(
                           children: [
                             Text("• Productos en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(ref.watch(productCatalogProvider).length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
+                            Text(StateManagerProduct.getInstanceProduct().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
                           ],
                         )
                       ],

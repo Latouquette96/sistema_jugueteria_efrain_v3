@@ -7,9 +7,9 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ImportProductMySQLProvider: Modela las operaciones CRUD sobre MySQL.
@@ -28,13 +28,13 @@ class ImportProductMySQLProvider extends StateNotifier<List<Fourfold<Product, Di
     ResponseAPI toReturn;
 
     try{
-      List<Distributor> distributors = ref.watch(catalogDistributorProvider);
+      List<Distributor> distributors = StateManagerDistributor.getInstance().getElements();
 
       final content = await APICall.get(url: url, route: "/mysql/products");
 
       List<Fourfold<Product, Distributor, double, String>> list = [];
       if (content.isResponseSuccess()){
-        List<Product> listProducts = ref.watch(productCatalogProvider);
+        List<Product> listProducts = StateManagerProduct.getInstanceProduct().getElements();
 
         //Para cada fila de los resultados obtenidos.
         for (Map<String, dynamic> row in content.getValue()){
@@ -92,7 +92,7 @@ class ImportProductMySQLProvider extends StateNotifier<List<Fourfold<Product, Di
       state = [...list];
       //Notifica al catalogo.
       if (ref.read(stateManagerProductMySQLProvider)!=null){
-        ref.read(stateManagerProductMySQLProvider)!.insertRows(0, state.map((e) => e.getValue1().getPlutoRow()!).toList());
+        ref.read(stateManagerProductMySQLProvider)!.insertRows(0, state.map((e) => e.getValue1().getPlutoRow()).toList());
       }
 
       toReturn = content;

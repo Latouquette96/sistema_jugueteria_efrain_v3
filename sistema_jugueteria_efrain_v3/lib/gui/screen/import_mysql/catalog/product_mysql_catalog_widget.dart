@@ -11,11 +11,10 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
@@ -52,7 +51,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
     ));
     //Agrega las filas.
     _rows.addAll(ref.read(importProductMySQLProvider).map((e){
-      return e.getValue1().getPlutoRow()!;
+      return e.getValue1().getPlutoRow();
     }).toList());
   }
 
@@ -81,8 +80,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                   if (context.mounted){
                     ElegantNotificationCustom.showNotificationAPI(context, response);
                     if (response.isResponseSuccess()) {
-                      await ref.read(productCatalogProvider.notifier).refresh();
-                      ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                      await StateManagerProduct.getInstanceProduct().refresh(ref.read(urlAPIProvider));
                       await ref.read(importProductMySQLProvider.notifier).refresh();
                       await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
                       await ref.read(notifyImportsProvider.future);
@@ -145,10 +143,6 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
                     }
                   }
                 }
-                try{
-
-                }
-                catch(e){}
               },
               configuration: PlutoConfig.getConfiguration(),
             ),

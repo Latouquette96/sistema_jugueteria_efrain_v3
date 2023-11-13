@@ -165,4 +165,7 @@ class DistributorBilling extends JSONalizable<DistributorBilling> {
   PlutoRow? buildPlutoRow() {
     return null;
   }
+
+  @override
+  void updatePlutoRow() {}
 }

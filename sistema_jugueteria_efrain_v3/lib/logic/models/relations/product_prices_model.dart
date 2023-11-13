@@ -197,4 +197,9 @@ class ProductPrice extends JSONalizable<ProductPrice>{
   PlutoRow? buildPlutoRow() {
     return null;
   }
+
+  @override
+  void updatePlutoRow() {
+    // TODO: implement updatePlutoRow
+  }
 }

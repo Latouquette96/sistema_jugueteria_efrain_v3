@@ -5,8 +5,9 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view/product_price_pdfview_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
@@ -53,7 +54,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
               //Cierra las pantallas abiertas.
               if (ref.read(productSearchPDFPriceProvider)!=null) ref.read(productSearchPDFPriceProvider.notifier).free();
               //Refrezca el catálogo de productos.
-              await ref.read(productCatalogPDFProvider.notifier).refresh();
+              await StateManagerProduct.getInstanceProductPDF().refresh(ref.read(urlAPIProvider));
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",

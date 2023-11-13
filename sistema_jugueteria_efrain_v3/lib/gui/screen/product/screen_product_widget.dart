@@ -3,16 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/catalog_prueba.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/builder_pdf/builder_pdf.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_singleton.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
@@ -107,19 +106,12 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           ),
           IconButton(
             onPressed: () async {
-              StateManagerSingleton.getInstance().getStateManager()!.removeAllRows();
-
-              //Actualiza la fecha de sincronización.
-              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
               //Cierra las pantallas abiertas.
               if (ref.read(productProvider)!=null) ref.read(productProvider.notifier).free();
               if (ref.read(productBillingProvider)!=null) ref.read(productBillingProvider.notifier).free();
 
               //Refrezca el catálogo de productos.
-              await ref.read(productCatalogProvider.notifier).refresh();
-
-              //Carga el componente con los productos.
-              StateManagerSingleton.getInstance().getStateManager()!.insertRows(0, ref.watch(productCatalogProvider).map((e) => e.getPlutoRow()!).toList());
+              await StateManagerProduct.getInstanceProduct().refresh(ref.read(urlAPIProvider));
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",
@@ -131,7 +123,7 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
           Expanded(child: Container(
             margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
             decoration: StyleContainer.getContainerRoot(),
-            child: const PruebaCatalogWidget(),
+            child: const ProductCatalogWidget(),
           )),
           Visibility(
               visible: ref.watch(productProvider) != null,

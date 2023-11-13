@@ -226,7 +226,12 @@ class Distributor extends JSONalizable<Distributor> {
       _iva = double.parse(map[_keyIVA]);
     }
 
-    plutoRow = buildPlutoRow();
+    try{
+      plutoRow = (plutoRow!=null) ? plutoRow : buildPlutoRow();
+    }
+    catch(e){
+      plutoRow = buildPlutoRow();
+    }
   }
 
   @override
@@ -248,5 +253,17 @@ class Distributor extends JSONalizable<Distributor> {
     );
 
     return plutoRow!;
+  }
+
+  @override
+  void updatePlutoRow() {
+    plutoRow!.cells[Distributor.getKeyID()]!.value = getID();
+    plutoRow!.cells[Distributor.getKeyCUIT()]!.value = _cuit;
+    plutoRow!.cells[Distributor.getKeyName()]!.value = _name;
+    plutoRow!.cells[Distributor.getKeyAddress()]!.value = _address ?? "-";
+    plutoRow!.cells[Distributor.getKeyCel()]!.value = _cel ?? "-";
+    plutoRow!.cells[Distributor.getKeyEmail()]!.value = _email ?? "-";
+    plutoRow!.cells[Distributor.getKeyIVA()]!.value = _iva;
+    plutoRow!.cells[Distributor.getKeyWebsite()]!.value = _website ?? "-";
   }
 }

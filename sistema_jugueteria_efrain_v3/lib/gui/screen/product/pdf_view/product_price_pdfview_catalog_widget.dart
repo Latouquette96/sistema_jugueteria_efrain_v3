@@ -5,10 +5,8 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///ProductPricePDFViewCatalogWidget: Widget que permite visualizar el catalogo de productos.
 class ProductPricePDFViewCatalogWidget extends ConsumerStatefulWidget {
@@ -47,14 +45,12 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
                 IconButton(
                     onPressed: (){
                       if ( ref.read(productSearchPDFPriceProvider)!=null){
-                        ref.read(plutoRowPDFProvider.notifier).free();
                         ref.read(productSearchPDFPriceProvider.notifier).free();
                       }
                       else{
                         //Busca el producto de acuerdo a la fila.
                         Product product = _getProductForRendererContext(rendererContext);
                         ///Carga un producto al proveedor para que pueda ser editado.
-                        ref.read(plutoRowPDFProvider.notifier).load(rendererContext.row);
                         ref.read(pdfTextSearchResultProvider.notifier).search(product);
                       }
                     },
@@ -68,8 +64,8 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
     ));
 
     //Agrega las filas.
-    _rows.addAll(ref.read(productCatalogPDFProvider).map((e){
-      return e.getPlutoRow()!;
+    _rows.addAll(StateManagerProduct.getInstanceProductPDF().getElements().map((e){
+      return e.getPlutoRow();
     }).toList());
   }
 
@@ -84,20 +80,18 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
         rows: _rows,
         onRowDoubleTap: (event) {
           if ( ref.read(productSearchPDFPriceProvider)!=null){
-              ref.read(plutoRowPDFProvider.notifier).free();
               ref.read(productSearchPDFPriceProvider.notifier).free();
             }
             else{
               //Busca el producto de acuerdo a la fila.
               Product product = _getProduct(event.row);
               ///Carga un producto al proveedor para que pueda ser editado.
-              ref.read(plutoRowPDFProvider.notifier).load(event.row);
               ref.read(pdfTextSearchResultProvider.notifier).search(product);
             }
         },
         onLoaded: (event) {
           if (context.mounted){
-            ref.read(stateManagerProductPricePDFProvider.notifier).load(event.stateManager);
+            StateManagerProduct.getInstanceProductPDF().loadStateManager(event.stateManager);
           }
         },
         configuration: PlutoConfig.getConfiguration()
@@ -107,10 +101,10 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
 
   Product _getProduct(PlutoRow row){
     int rowID = row.cells[Product.getKeyID()]!.value;
-    return ref.read(productCatalogPDFProvider).firstWhere((element) => element.getID()==rowID);
+    return StateManagerProduct.getInstanceProductPDF().getElements().firstWhere((element) => element.getID()==rowID);
   }
 
-  ///
+
   Product _getProductForRendererContext(PlutoColumnRendererContext rendererContext){
     PlutoRow row = rendererContext.row;
     return _getProduct(row);

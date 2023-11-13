@@ -28,10 +28,9 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_singleton.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_state_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/generated_code_controller.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
@@ -584,7 +583,8 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
             child: IconButton(
                 tooltip: "Genera un código de barras.",
                 onPressed: () async {
-                  String code = await ref.read(generatedCodeProvider.notifier).generateCode();
+                  String url = ref.read(urlAPIProvider);
+                  String code = await GeneratedCodeController.getInstance().generateCode(url, product);
                   _form.control(Product.getKeyBarcode()).value = code;
                 },
                 icon: Icon(MdiIcons.fromString("barcode"))
@@ -638,18 +638,15 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
 
   ///ProductInformationWidget: Realiza la inserción del producto.
   Future<void> _insert(BuildContext context) async{
+    String url = ref.read(urlAPIProvider);
     //Carga los datos del formulario en el producto.
     ref.read(productProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseAPI response = await ref.read(newProductWithAPIProvider.future);
+    ResponseAPI response = await StateManagerProduct.getInstanceProduct().insert(url, ref.read(productProvider)!);
 
     if (response.isResponseSuccess()){
-      //Inserta el nuevo registro por el actualizado.
-      StateManagerSingleton.getInstance().getStateManager()!.insertRows(0, [ref.read(productProvider)!.getPlutoRow()!]);
-
       //Notifica con exito en la operacion
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
-
       //Libera el producto del proveedor.
       ref.read(productProvider.notifier).free();
     }
@@ -660,32 +657,16 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
 
   ///ProductInformationWidget: Actualiza el producto.
   Future<void> _update(BuildContext context) async{
+    String url = ref.read(urlAPIProvider);
     //Carga los datos del formulario en el producto.
     ref.read(productProvider)?.fromJSON(_form.value);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseAPI response = await ref.watch(updateProductWithAPIProvider.future);
+    ResponseAPI response = await StateManagerProduct.getInstanceProduct().update(url, ref.read(productProvider)!);
 
     if (response.isResponseSuccess()){
-      ref.read(stateManagerProductProvider.notifier).update(productProvider);
-      StateManagerSingleton.getInstance().getStateManager()!.setShowLoading(true);
-
-      Future.delayed(const Duration(milliseconds: 500), () {
-        Product product = ref.read(productProvider)!;
-
-        product.getPlutoRow()!.cells[Product.getKeyBarcode()]!.value = product.getBarcode();
-        product.getPlutoRow()!.cells[Product.getKeyTitle()]!.value = product.getTitle();
-        product.getPlutoRow()!.cells[Product.getKeyBrand()]!.value = product.getBrand();
-        product.getPlutoRow()!.cells[Product.getKeyPricePublic()]!.value = product.getPricePublic();
-        product.getPlutoRow()!.cells[Product.getKeyStock()]!.value = product.getStock();
-
-        StateManagerSingleton.getInstance().getStateManager()!.setShowLoading(false);
-      });
-
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
-
       //Libera el producto del proveedor.
       ref.read(productProvider.notifier).free();
-      setState(() {});
     }
     else{
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);

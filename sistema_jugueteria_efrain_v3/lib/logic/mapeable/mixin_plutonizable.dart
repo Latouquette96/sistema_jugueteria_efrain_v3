@@ -15,8 +15,11 @@ mixin MixinPlutonizable {
   PlutoRow? buildPlutoRow();
 
   ///MixinPlutonizable: Devuelve el objeto PlutoRow.
-  PlutoRow? getPlutoRow(){
+  PlutoRow getPlutoRow(){
     plutoRow ??= buildPlutoRow();
     return plutoRow!;
   }
+
+  ///MixinPlutonizable: Actualiza las celdas del objeto PlutoRow con los valores del elemento.
+  void updatePlutoRow();
 }

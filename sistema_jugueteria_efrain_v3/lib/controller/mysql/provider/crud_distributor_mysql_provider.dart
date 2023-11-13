@@ -4,7 +4,7 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor_mysql.dart';
 
 ///Proveedor para crear un Distributoro en particular.
 final importDistributorWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
@@ -55,9 +55,9 @@ final notifyImportsProvider = FutureProvider((ref) async{
   await Future.delayed(const Duration(seconds: 1));
   final List<Distributor> listImport = ref.watch(importDistributorMySQLProvider);
 
-  if (ref.read(stateManagerDistributorMySQLProvider)!=null){
-    ref.read(stateManagerDistributorMySQLProvider)!.removeRows(
-        listImport.map((e) => e.getPlutoRow()!).toList()
+  if (StateManagerDistributorMySQL.getInstance().getStateManager()!=null){
+    StateManagerDistributorMySQL.getInstance().getStateManager()!.removeRows(
+        listImport.map((e) => e.getPlutoRow()).toList()
     );
 
     for (Distributor d in ref.read(importDistributorMySQLProvider)){

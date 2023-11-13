@@ -8,9 +8,8 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
@@ -48,7 +47,7 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
     ));
     //Agrega las filas.
     _rows.addAll(ref.read(importDistributorMySQLProvider).isEmpty ? [] : ref.read(importDistributorMySQLProvider).map((e){
-      return e.getPlutoRow()!;
+      return e.getPlutoRow();
     }).toList());
   }
 
@@ -77,8 +76,7 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
                     if (context.mounted){
                       ElegantNotificationCustom.showNotificationAPI(context, response);
                       if (response.isResponseSuccess()){
-                        await ref.read(catalogDistributorProvider.notifier).refresh();
-                        ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+                        await StateManagerDistributor.getInstance().refresh(ref.read(urlAPIProvider));
                         await ref.read(importDistributorMySQLProvider.notifier).refresh();
                         ref.read(notifyImportsProvider.future);
                       }

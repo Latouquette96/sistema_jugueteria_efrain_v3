@@ -6,13 +6,10 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/dist
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/distributor/catalog/distributor_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/distributor/distributor_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/distributor/catalog_distributor_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
 
 ///Clase ScreenDistributorCatalog: Modela un catálogo de distribuidoras.
 class ScreenDistributorCatalog extends ConsumerStatefulWidget {
@@ -60,12 +57,12 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(stateManagerDistributorProvider.notifier).toggleShowColumnFilter();
+              StateManagerDistributor.getInstance().toggleShowFilter();
               setState(() {});
             },
             icon: Icon(
               MdiIcons.fromString("filter"),
-              color:  ref.watch(stateManagerDistributorProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+              color:  StateManagerDistributor.getInstance().isShowFilter() ? Colors.yellow : Colors.grey,
             ),
             tooltip: "Mostrar/ocultar filtro",
           ),
@@ -73,7 +70,6 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
             onPressed: (){
               if (ref.read(distributorStateProvider)!=null){
                 ref.read(distributorStateProvider.notifier).free();
-                ref.read(plutoRowProvider.notifier).free();
               }
               else{
                 ref.read(distributorStateProvider.notifier).load(Distributor());
@@ -84,13 +80,10 @@ class _ScreenDistributorCatalogState extends ConsumerState<ScreenDistributorCata
           ),
           IconButton(
             onPressed: (){
-              //Actualiza la fecha de sincronización.
-              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
               //Cierra las pantallas abiertas.
               if (ref.read(distributorStateProvider)!=null) ref.read(distributorStateProvider.notifier).free();
               //Refrezca el catálogo de distribuidoras.
-              ref.read(catalogDistributorProvider.notifier).refresh();
-              ref.read(lastUpdateProvider.notifier).state = DatetimeCustom.getDatetimeStringNow();
+              StateManagerDistributor.getInstance().refresh(ref.read(urlAPIProvider));
             },
             icon: Icon(MdiIcons.fromString("reload")),
             tooltip: "Recargar catálogo.",

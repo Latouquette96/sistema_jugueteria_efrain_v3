@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
@@ -50,4 +50,4 @@ final descriptionProductSharingProvider = Provider<String>((ref) {
 });
 
 ///productSharingProvider es un proveedor que almacena la lista de productos seleccionados para compartir.
-final productSharingProvider = StateNotifierProvider<SelectedItemsProvider<Product>, List<Product>>((ref) => SelectedItemsProvider(ref, productCatalogProvider));
+final productSharingProvider = StateNotifierProvider<SelectedItemsProvider<Product>, List<Product>>((ref) => SelectedItemsProvider(ref, StateManagerProduct.getInstanceProduct().getElements()));

@@ -6,13 +6,11 @@ import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notificati
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///ProductCatalogWidget: Widget que permite visualizar el catalogo de productos.
 class ProductCatalogWidget extends ConsumerStatefulWidget {
@@ -24,7 +22,7 @@ class ProductCatalogWidget extends ConsumerStatefulWidget {
   }
 }
 
-class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
+class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
   //Atributos de instancia
   final List<PlutoColumn> _columns = [];
   final List<PlutoRow> _rows = [];
@@ -44,6 +42,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
         enableHideColumnMenuItem: false,
         enableSetColumnsMenuItem: false,
         type: PlutoColumnType.text(),
+        enableRowDrag: true,
         enableRowChecked: true,
         enableEditingMode: false,
         enableFilterMenuItem: false,
@@ -54,18 +53,16 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
             children: [
               //IconButton para mostrar informacion del producto.
               Expanded(child:
-                IconButton(
+              IconButton(
                   onPressed: () async{
                     if (ref.read(productProvider)==null){
                       //Busca el producto de acuerdo a la fila.
                       Product product = _getProductForRendererContext(rendererContext);
                       ///Carga un producto al proveedor para que pueda ser editado.
-                      ref.read(plutoRowProvider.notifier).load(rendererContext.row);
                       ref.read(productProvider.notifier).load(product);
                       await ref.read(productPricesByIDProvider.notifier).refresh();
                     }
                     else{
-                      ref.read(plutoRowProvider.notifier).free();
                       ref.read(productProvider.notifier).free();
                     }
                   },
@@ -76,6 +73,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
               Expanded(child:
               IconButton(
                   onPressed: () async {
+                    rendererContext.stateManager.removeRows([rendererContext.row]);
                     //Busca el producto de acuerdo a la fila.
                     Product product = _getProductForRendererContext(rendererContext);
                     //Elimina el producto.
@@ -101,8 +99,8 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     ));
 
     //Agrega las filas.
-    _rows.addAll(ref.read(productCatalogProvider).map((e){
-      return e.getPlutoRow()!;
+    _rows.addAll(StateManagerProduct.getInstanceProduct().getElements().map((e){
+      return e.getPlutoRow();
     }).toList());
   }
 
@@ -116,13 +114,15 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     return Container(
       padding: const EdgeInsets.all(15),
       child: PlutoGrid(
-        mode: PlutoGridMode.popup,
+        mode: PlutoGridMode.selectWithOneTap,
         columns: _columns,
         rows: _rows,
-        onLoaded: (event) {
-          if (context.mounted){
-            ref.read(stateManagerProductProvider.notifier).load(event.stateManager);
-          }
+        onChanged: (PlutoGridOnChangedEvent event){
+          StateManagerProduct.getInstanceProduct().getStateManager()!.notifyListeners();
+        },
+        onLoaded: (event) async {
+          StateManagerProduct.getInstanceProduct().loadStateManager(event.stateManager);
+          await StateManagerProduct.getInstanceProduct().refresh(ref.read(urlAPIProvider));
         },
         //Si se selecciona/deselecciona la casilla checked.
         onRowChecked:(event) {
@@ -142,16 +142,16 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
           else{
             //Si la fila no es nula.
             if (event.row!=null){
-                //Se recupera el producto en cuestion.
-                Product product = _getProduct(event.row!);
-                //Se notifica al catalogo de acuerdo 
-                if (ref.read(productSharingProvider.notifier).contains(product)){
-                  ref.read(productSharingProvider.notifier).remove(product);
-                }
-                else{
-                  ref.read(productSharingProvider.notifier).insert(product);
-                }
-            } 
+              //Se recupera el producto en cuestion.
+              Product product = _getProduct(event.row!);
+              //Se notifica al catalogo de acuerdo
+              if (ref.read(productSharingProvider.notifier).contains(product)){
+                ref.read(productSharingProvider.notifier).remove(product);
+              }
+              else{
+                ref.read(productSharingProvider.notifier).insert(product);
+              }
+            }
           }
         },
         configuration: PlutoConfig.getConfiguration(),
@@ -161,15 +161,17 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 
   ///ProductCatalogWidget: Remueve el producto.
   Future<void> _remove(Product product) async{
+    String url = ref.read(urlAPIProvider);
+
     ref.read(productRemoveProvider.notifier).load(product);
     //Obtiene un valor async que corresponde a la respuesta futura de una peticion de modificacion.
-    ResponseAPI response = await ref.read(removeProductWithAPIProvider.future);
+    ResponseAPI response = await StateManagerProduct.getInstanceProduct().remove(url, product);
 
     if (mounted){
       ElegantNotificationCustom.showNotificationAPI(context, response);
 
       if (response.isResponseSuccess()){
-        ref.read(stateManagerProductProvider)!.removeRows([ref.read(productRemoveProvider)!.getPlutoRow()!]);
+        StateManagerProduct.getInstanceProduct().getStateManager()!.removeCurrentRow();
         ref.read(productRemoveProvider.notifier).free();
       }
     }
@@ -178,7 +180,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   ///ProductCatalogWidget: Devuelve el producto almacenado en la fila.
   Product _getProduct(PlutoRow row){
     int rowID = row.cells[Product.getKeyID()]!.value;
-    return ref.read(productCatalogProvider).firstWhere((element) => element.getID()==rowID);
+    return StateManagerProduct.getInstanceProduct().getElements().firstWhere((element) => element.getID()==rowID);
   }
 
   ///ProductCatalogWidget: Devuelve el producto renderizado.

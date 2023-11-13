@@ -454,12 +454,18 @@ class Product extends JSONalizable<Product> {
     }
     _minimumAge = (map[_keyMinimumAge] as MinimumAge).getMinimumAgeID();
 
-    plutoRow = (plutoRow==null) ? buildPlutoRow() : plutoRow;
+    try{
+      plutoRow = (plutoRow==null) ? buildPlutoRow() : plutoRow;
+    }
+    catch(e){
+      plutoRow = buildPlutoRow();
+    }
   }
   
   ///Product: Carga los dato del producto con un mapeo proveniente del servidor.
   void fromJSONServer(Map<String, dynamic> map) {
-    String imageString =  map[_keyImages].toString().replaceAll("[", "");
+    try{
+      String imageString =  map[_keyImages].toString().replaceAll("[", "");
       imageString =  imageString.replaceAll("]", "");
 
       _id = map[_keyID];
@@ -475,8 +481,12 @@ class Product extends JSONalizable<Product> {
       _dateCreate = int.parse(map[_keyDateCreated].toString());
       _dateUpdate = int.parse(map[_keyDateUpdated].toString());
       _minimumAge = map[_keyMinimumAge];
-      
+
+      plutoRow = (plutoRow!=null) ? plutoRow : buildPlutoRow();
+    }
+    catch(e){
       plutoRow = buildPlutoRow();
+    }
   }
 
   //--------------------GRAFICOS---------------------
@@ -500,5 +510,18 @@ class Product extends JSONalizable<Product> {
        },
     );
     return plutoRow!; 
+  }
+
+  @override
+  void updatePlutoRow() {
+    var categoryPair = FactoryCategory.getInstance().search(getSubcategory());
+
+    plutoRow!.cells[Product.getKeyID()]!.value = getID();
+    plutoRow!.cells[Product.getKeyBarcode()]!.value = getBarcode();
+    plutoRow!.cells[Product.getKeyTitle()]!.value = getTitle();
+    plutoRow!.cells[Product.getKeyBrand()]!.value = getBrand();
+    plutoRow!.cells[Product.getKeyCategory()]!.value = "${categoryPair.getValue1()!.getCategoryName()} > ${categoryPair.getValue2()!.getSubCategoryName()}";
+    plutoRow!.cells[Product.getKeyStock()]!.value = getStock();
+    plutoRow!.cells[Product.getKeyPricePublic()]!.value = getPricePublic();
   }
 }

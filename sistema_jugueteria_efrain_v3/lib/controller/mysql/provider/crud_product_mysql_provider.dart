@@ -8,11 +8,11 @@ import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.d
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/datetime_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_state_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product_mysql.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/generated_code_controller.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 
-final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Fourfold<Product, Distributor, double, String>>, List<Fourfold<Product, Distributor, double, String>>>((ref) => SelectedItemsProvider(ref, importProductMySQLProvider));
+final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Fourfold<Product, Distributor, double, String>>, List<Fourfold<Product, Distributor, double, String>>>((ref) => SelectedItemsProvider(ref, ref.read(importProductMySQLProvider)));
 
 ///Proveedor para crear un producto en particular.
 final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
@@ -48,8 +48,8 @@ final importProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
           fourfold.getValue1().setID(response.getValue()['p_id']);
 
           //Comprueba si es un código generado.
-          if (GeneratedCodeNotifier.isGenerateCode(fourfold.getValue1().getBarcode())){
-            GeneratedCodeNotifier.reserveGeneratedCode(url, fourfold.getValue1(), fourfold.getValue1().getBarcode());
+          if (GeneratedCodeController.isGenerateCode(fourfold.getValue1().getBarcode())){
+            GeneratedCodeController.reserveGeneratedCode(url, fourfold.getValue1(), fourfold.getValue1().getBarcode());
           }
 
           final productPrice = ProductPrice(
@@ -100,9 +100,9 @@ final notifyImportsProvider = FutureProvider((ref) async{
   await Future.delayed(const Duration(seconds: 1));
   final List<Fourfold<Product, Distributor, double, String>> listImport = ref.watch(catalogProductsImportProvider);
 
-  if (ref.watch(stateManagerProductMySQLProvider)!=null){
-    ref.read(stateManagerProductMySQLProvider)!.removeRows(
-        listImport.map((e) => e.getValue1().getPlutoRow()!).toList()
+  if (StateManagerProductMySQL.getInstance().getStateManager()!=null){
+    StateManagerProductMySQL.getInstance().getStateManager()!.removeRows(
+        listImport.map((e) => e.getValue1().getPlutoRow()).toList()
     );
 
     for (Fourfold<Product, Distributor, double, String> fourfold in ref.read(catalogProductsImportProvider)){

@@ -6,13 +6,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
-
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/product/catalog_product_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 ///Clase PDFViewExtractTextWidget: Permite mostrar y actualizar la información de un producto.
@@ -97,7 +96,7 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
                             _file = File(result.files.first.path!);
 
                             //Si se abre un nuevo documento, se libera el producto en busqueda.
-                            ResponseAPI response = await ref.read(extractTextFromPDFProvider.notifier).extractText(result.files.first.path!, ref.read(productCatalogProvider));
+                            ResponseAPI response = await ref.read(extractTextFromPDFProvider.notifier).extractText(result.files.first.path!, StateManagerProduct.getInstanceProductPDFAdvanced().getElements());
                             if (mounted){
                               ElegantNotificationCustom.showNotificationAPI(context, response);
                             }
