@@ -1,3 +1,4 @@
+import 'package:sistema_jugueteria_efrain_v3/controller/services/export_to_drive.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
@@ -76,7 +77,7 @@ class StateManagerProduct extends StateManager<Product>{
       //Refrezca las marcas cargadas.
       //await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
       //Actualiza el catalogo de Google Drive
-      //TODO: ExportToDrive.getInstance().updateSheets(product);
+      ExportToDrive.getInstance().updateSheets(element);
       //Inserta el nuevo producto
 
       //Si hay un código que fue generado.
@@ -106,7 +107,7 @@ class StateManagerProduct extends StateManager<Product>{
 
     if (responseAPI.isResponseSuccess()){
       //Elimino del archivo de Google Drive
-      //TODO: await //ExportToDrive.getInstance().removeSheets(product);
+      await ExportToDrive.getInstance().removeSheets(element);
       product.setBarcode("-1");
 
       //Refrezca las marcas cargadas.
@@ -146,7 +147,7 @@ class StateManagerProduct extends StateManager<Product>{
       });
 
       //Actualiza el catalogo de Google Drive
-      //TODO: ExportToDrive.getInstance().updateSheets(product);
+      await ExportToDrive.getInstance().updateSheets(element);
       //Refrezca las marcas cargadas.
       //await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
     }

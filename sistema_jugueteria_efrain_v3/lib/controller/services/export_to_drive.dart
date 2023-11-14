@@ -1,4 +1,4 @@
-/*import 'package:gsheets/gsheets.dart';
+import 'package:gsheets/gsheets.dart';
 import 'package:sistema_jugueteria_efrain_v3/controller/json/factory_category.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
@@ -49,9 +49,7 @@ class ExportToDrive {
     await initialize();
 
     //Buscar código de barra en el formulario.
-    int rowAux = (p.getBarcode()!=null)
-      ? await _sheet!.values.rowIndexOf(p.getBarcode()!)
-      : await _sheet!.values.rowIndexOf(p.getInternalCode()!);
+    int rowAux = await _sheet!.values.rowIndexOf(p.getBarcode());
 
     //Obtengo la posicion de modificación del registro
     int rowReg = (rowAux==-1)
@@ -67,7 +65,7 @@ class ExportToDrive {
       SubCategory subCategory = factoryCategory.search(p.getSubcategory()).getValue2()!;
       //Inserta la fila de producto en la fila rowReg
       await _sheet!.values.insertRow(rowReg, [
-        (p.getBarcode()!=null) ? p.getBarcode() : p.getInternalCode(),
+        p.getBarcode(),
         p.getTitle(),
         _getDescriptionComplete(p),
         subCategory.getSubCategoryIDGoogle(),
@@ -87,9 +85,7 @@ class ExportToDrive {
     await initialize();
 
     //Buscar código de barra en el formulario.
-    int rowAux = (p.getBarcode()!=null)
-        ? await _sheet!.values.rowIndexOf(p.getBarcode()!)
-        : await _sheet!.values.rowIndexOf(p.getInternalCode()!);
+    int rowAux = await _sheet!.values.rowIndexOf(p.getBarcode());
 
     //Si se encontró la fila del producto.
     if (rowAux>0){
@@ -127,4 +123,4 @@ class ExportToDrive {
   static ExportToDrive getInstance(){
     return _instance;
   }
-}*/
+}
