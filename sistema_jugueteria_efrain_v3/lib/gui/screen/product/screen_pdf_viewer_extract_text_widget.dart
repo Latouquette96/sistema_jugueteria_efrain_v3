@@ -6,6 +6,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/pdf_view_manual/
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/product_prices/product_prices_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 
@@ -59,7 +60,8 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenPDFViewerEx
               width: 375,
               child: ProductPricesCatalogWidget(
                   providerProduct: productExtractTextProvider,
-                  providerPriceDistributor: productPricesExtractTextPDFProvider
+                  providerPriceDistributor: productPricesExtractTextPDFProvider,
+                  providerStateManager: StateManagerProduct.getInstanceProductPDFAdvanced(),
               )
             )
           )

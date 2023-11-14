@@ -10,6 +10,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/style_text_field.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/extract_text/extract_text_pdf_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pdf_view/pdf_view_controller_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -92,6 +93,7 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
                           );
 
                           if (result != null) {
+                            await StateManagerProduct.getInstanceProductPDFAdvanced().refresh(ref.read(urlAPIProvider));
                             //Si se abre un nuevo documento, se libera el producto en busqueda.
                             _file = File(result.files.first.path!);
 

@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/distributor_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/fourfold.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product_mysql.dart';
 
 ///Clase SelectedItemsProvider: Provider que se emplea con la finalidad de tener como estado un listado de elementos [T] seleccionados para alguna operación en particular.
 class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
@@ -18,6 +22,12 @@ class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
   void insertAll(){
     state = [];
     state = [...listElements];
+  }
+
+  ///SelectedItemsProvider: Inserta todos los elementos del catalogo de elementos.
+  void insertMultiple(List<T> list){
+    state = [];
+    state = [...list];
   }
 
   ///SelectedItemsProvider: Remueve todos los elementos del catalogo.
@@ -40,3 +50,5 @@ class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
     state = [];
   }
 }
+
+final catalogProductsImportProvider = StateNotifierProvider<SelectedItemsProvider<Fourfold<Product, Distributor, double, String>>, List<Fourfold<Product, Distributor, double, String>>>((ref) => SelectedItemsProvider(ref, StateManagerProductMySQL.getInstance().getElements()));

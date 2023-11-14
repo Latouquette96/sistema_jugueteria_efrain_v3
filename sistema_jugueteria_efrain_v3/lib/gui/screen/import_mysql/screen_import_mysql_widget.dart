@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_products_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_login_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/distributor_mysql_catalog_widget.dart';
@@ -10,9 +8,15 @@ import 'package:sistema_jugueteria_efrain_v3/gui/screen/import_mysql/catalog/pro
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product_mysql.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
 ///Clase ScreenImportProductWidget: Modela un catálogo de productos provenientes de MySQL.
@@ -76,7 +80,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                         Row(
                           children: [
                             Text("• Distribuidoras nuevas/modificadas (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(ref.watch(importDistributorMySQLProvider).length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
+                            Text(StateManagerDistributorMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
                           ],
                         ),
                         Row(
@@ -96,8 +100,9 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             tooltip: "Refrescar el listado de distribuidoras a importar.",
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
+                              String url = ref.watch(urlAPIProvider);
                               //Refrescar el catálogo de productos.
-                              ResponseAPI response = await ref.read(importDistributorMySQLProvider.notifier).refresh();
+                              ResponseAPI response = await StateManagerDistributorMySQL.getInstance().refresh(url);
                               if (mounted){
                                 ElegantNotificationCustom.showNotificationAPI(context, response);
                               }
@@ -126,7 +131,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                         Row(
                           children: [
                             Text("• Productos nuevos/modificados (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(ref.watch(importProductMySQLProvider).length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),),
+                            Text(StateManagerProductMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),),
                           ],
                         ),
                         Row(
@@ -146,8 +151,9 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                             tooltip: "Refrescar el listado de productos a importar.",
                             icon: Icon(Icons.update, color: Colors.blue.shade700,),
                             onPressed: () async{
+                              String url = ref.watch(urlAPIProvider);
                               //Refrescar el catálogo de productos.
-                              ResponseAPI response = await ref.read(importProductMySQLProvider.notifier).refresh();
+                              ResponseAPI response = await StateManagerProductMySQL.getInstance().refresh(url);
                               if (mounted){
                                 ElegantNotificationCustom.showNotificationAPI(context, response);
                               }
@@ -187,7 +193,42 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
                         child: Container(
                           margin: getMarginInformationForms(),
                           decoration: StyleContainer.getContainerRoot(),
-                          child: const ProductMySQLCatalogWidget(),
+                          child: Column(
+                            children: [
+                              HeaderInformationWidget(
+                                titleHeader: "Productos disponibles (Sistema v2)",
+                                tooltipClose: "Cerrar tabla.",
+                                onClose: (){
+                                  ref.read(showImportProductsMySQL.notifier).toggle();
+                                },
+                                onCustom: (){
+                                  StateManagerProductMySQL.getInstance().toggleShowFilter();
+                                },
+                                iconCustom: Icons.filter_list_alt,
+                                onButton: IconButton(
+                                  onPressed: () async {
+                                    if (ref.read(catalogProductsImportProvider).isNotEmpty){
+                                      String url = ref.read(urlAPIProvider);
+                                      ResponseAPI response = await StateManagerProductMySQL.getInstance().import(url, ref.watch(catalogProductsImportProvider));
+
+                                      if (context.mounted){
+                                        ElegantNotificationCustom.showNotificationAPI(context, response);
+
+                                        if (response.isResponseSuccess()) {
+                                          await StateManagerProduct.getInstanceProduct().refresh(url);
+                                          await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+                                        }
+                                      }
+                                    }
+                                  },
+                                  icon: const Icon(Icons.download, color: Colors.yellow,),
+                                ),
+                                isButtonVisible: ref.watch(catalogProductsImportProvider).isNotEmpty,
+                                tooltipCustom: "Importar todos los productos seleccionados.",
+                              ),
+                              const Expanded(child: ProductMySQLCatalogWidget())
+                            ],
+                          ),
                         )
                     ),
                   ),

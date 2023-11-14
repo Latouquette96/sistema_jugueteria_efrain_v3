@@ -19,10 +19,10 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/relations/product_prices_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/structure_data/pair.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
@@ -30,7 +30,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
 
   late final StateNotifierProvider<ElementStateProvider<Product>, Product?> _providerProduct;
   late final StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> _providerPriceDistributor;
-  late final StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?>? _providerStateManager;
+  late final StateManagerProduct _providerStateManager;
   late final StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?>? _providerPlutoRow;
 
   ///Constructor de ProductPricesCatalogWidget
@@ -43,7 +43,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
     super.key,
     required StateNotifierProvider<ElementStateProvider<Product>, Product?> providerProduct,
     required StateNotifierProvider<ProductPriceSearchProvider, List<Pair<Distributor, ProductPrice>>> providerPriceDistributor,
-    StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?>? providerStateManager,
+    required StateManagerProduct providerStateManager,
     StateNotifierProvider<ElementStateProvider<PlutoRow>, PlutoRow?>? providerPlutoRow,
   }){
    _providerPlutoRow = providerPlutoRow;
@@ -65,7 +65,7 @@ class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
     return _providerPriceDistributor;
   }
 
-  StateNotifierProvider<PlutoGridStateManagerProvider, PlutoGridStateManager?>? getProviderStateManager(){
+  StateManagerProduct getProviderStateManager(){
     return _providerStateManager;
   }
 
@@ -190,13 +190,13 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
               }
 
               if (response.isResponseSuccess()){
-                if (widget.getProviderPlutoRow()!=null && widget.getProviderStateManager()!=null){
+                if (widget.getProviderPlutoRow()!=null && widget.getProviderStateManager().getStateManager()!=null){
                   //Recupero la posición del registro del producto.
-                  int index = ref.read(widget.getProviderStateManager()!)!.rows.indexOf(ref.read(widget.getProviderPlutoRow()!)!);
+                  int index = widget.getProviderStateManager().getStateManager()!.rows.indexOf(ref.read(widget.getProviderPlutoRow()!)!);
                   //Si está dentro del arreglo.
                   if (index>-1){
                     //Reemplaza el registro por el actualizado.
-                    ref.read(widget.getProviderStateManager()!)!.refRows.setAll(index, [ref.read(widget.getProvider())!.buildPlutoRow()]);
+                    widget.getProviderStateManager().getStateManager()!.refRows.setAll(index, [ref.read(widget.getProvider())!.buildPlutoRow()]);
                   }
                 }
 

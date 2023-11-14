@@ -135,11 +135,6 @@ class _DistributorCatalogWidgetState extends ConsumerState<ConsumerStatefulWidge
         },
       ),
     ));
-
-    //Agrega las filas.
-    _rows.addAll(StateManagerDistributor.getInstance().getElements().map((e){
-      return e.getPlutoRow();
-    }).toList());
   }
 
   @override

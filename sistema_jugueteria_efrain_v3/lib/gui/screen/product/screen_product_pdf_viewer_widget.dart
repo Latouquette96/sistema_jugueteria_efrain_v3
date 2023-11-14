@@ -9,8 +9,6 @@ import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart'
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_row_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 
 class ScreenProductPDFViewerWidget extends ConsumerStatefulWidget {
@@ -40,12 +38,12 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(stateManagerProductPricePDFProvider.notifier).toggleShowColumnFilter();
+              StateManagerProduct.getInstanceProductPDF().toggleShowFilter();
               setState(() {});
             },
             icon: Icon(
               MdiIcons.fromString("filter"),
-              color:  ref.watch(stateManagerProductPricePDFProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+              color:  StateManagerProduct.getInstanceProductPDF().isShowFilter() ? Colors.yellow : Colors.grey,
             ),
             tooltip: "Mostrar/ocultar filtro",
           ),
@@ -89,8 +87,7 @@ class _ScreenProductPDFViewerWidgetState extends ConsumerState<ScreenProductPDFV
                   Expanded(child: ProductPricesCatalogWidget(
                     providerProduct: productSearchPDFPriceProvider, 
                     providerPriceDistributor: productPricesPDFByIDProvider, 
-                    providerStateManager: stateManagerProductPricePDFProvider, 
-                    providerPlutoRow: plutoRowPDFProvider,
+                    providerStateManager: StateManagerProduct.getInstanceProductPDF(),
                   ))
                 ],
               ))

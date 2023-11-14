@@ -78,6 +78,9 @@ class _ProductPricePDFViewCatalogWidgetState extends ConsumerState<ConsumerState
         mode: PlutoGridMode.popup,
         columns: _columns,
         rows: _rows,
+        onChanged: (PlutoGridOnChangedEvent event){
+          StateManagerProduct.getInstanceProductPDF().getStateManager()!.notifyListeners();
+        },
         onRowDoubleTap: (event) {
           if ( ref.read(productSearchPDFPriceProvider)!=null){
               ref.read(productSearchPDFPriceProvider.notifier).free();

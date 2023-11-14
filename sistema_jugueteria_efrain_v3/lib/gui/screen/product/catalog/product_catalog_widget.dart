@@ -132,8 +132,16 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
           }
 
           if (event.isAll){
+            int total = StateManagerProduct.getInstanceProduct().getElements().length;
             if (event.isChecked==true){
-              ref.read(productSharingProvider.notifier).insertAll();
+              int isChecked = StateManagerProduct.getInstanceProduct().getStateManager()!.checkedRows.length;
+              if (total==isChecked){
+                ref.read(productSharingProvider.notifier).insertAll();
+              }
+              else{
+                List<Product> list = StateManagerProduct.getInstanceProduct().getStateManager()!.checkedRows.map((e) => _getProduct(e)).toList();
+                ref.read(productSharingProvider.notifier).insertMultiple(list);
+              }
             }
             else{
               ref.read(productSharingProvider.notifier).removeAll();

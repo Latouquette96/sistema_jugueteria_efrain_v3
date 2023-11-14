@@ -13,7 +13,6 @@ import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/s
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {
@@ -57,12 +56,12 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
         actions: [
           IconButton(
             onPressed: (){
-              ref.read(stateManagerProductProvider.notifier).toggleShowColumnFilter();
+              StateManagerProduct.getInstanceProduct().toggleShowFilter();
               setState(() {});
             },
             icon: Icon(
               MdiIcons.fromString("filter"),
-              color:  ref.watch(stateManagerProductProvider.notifier).isShowColumnFilter() ? Colors.yellow : Colors.grey,
+              color:  StateManagerProduct.getInstanceProduct().isShowFilter() ? Colors.yellow : Colors.grey,
             ),
             tooltip: "Mostrar/ocultar filtro",
           ),

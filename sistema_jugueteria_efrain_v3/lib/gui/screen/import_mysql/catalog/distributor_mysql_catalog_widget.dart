@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/crud_distributor_mysql_provider.dart';
-import 'package:sistema_jugueteria_efrain_v3/controller/mysql/provider/import_distributor_mysql_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
@@ -10,7 +8,7 @@ import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_in
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/pluto_state/pluto_grid_state_manager_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
 ///DistributorMySQLCatalogWidget: Widget que permite visualizar el catalogo de distribuidoras a importar de MySQL.
@@ -31,6 +29,7 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
   @override
   initState(){
     super.initState();
+
     //Agrega las columnas
     _columns.addAll(PlutoConfig.getPlutoColumnsDistributor(
       options: PlutoColumn(
@@ -46,9 +45,12 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
       ),
     ));
     //Agrega las filas.
-    _rows.addAll(ref.read(importDistributorMySQLProvider).isEmpty ? [] : ref.read(importDistributorMySQLProvider).map((e){
-      return e.getPlutoRow();
-    }).toList());
+    _rows.addAll(StateManagerDistributorMySQL.getInstance().getElements().isEmpty
+        ? []
+        : StateManagerDistributorMySQL.getInstance().getElements().map((e){
+              return e.getPlutoRow();
+        }
+    ).toList());
   }
 
   @override
@@ -68,17 +70,17 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
             onClose: (){
               ref.read(showImportDistributorsMySQL.notifier).toggle();
             },
-            onCustom: ref.watch(importDistributorMySQLProvider).isNotEmpty
+            onCustom: StateManagerDistributorMySQL.getInstance().getElements().isNotEmpty
                 ? () async {
+                    String url = ref.read(urlAPIProvider);
                     ResponseAPI response;
-                    response = await ref.read(importDistributorWithAPIProvider.future);
+                    response = await StateManagerDistributorMySQL.getInstance().import(url, StateManagerDistributorMySQL.getInstance().getElements());
 
                     if (context.mounted){
                       ElegantNotificationCustom.showNotificationAPI(context, response);
                       if (response.isResponseSuccess()){
                         await StateManagerDistributor.getInstance().refresh(ref.read(urlAPIProvider));
-                        await ref.read(importDistributorMySQLProvider.notifier).refresh();
-                        ref.read(notifyImportsProvider.future);
+                        await StateManagerDistributorMySQL.getInstance().refresh(url);
                       }
                     }
                   }
@@ -92,9 +94,12 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
               mode: PlutoGridMode.popup,
               columns: _columns,
               rows: _rows,
+              onChanged: (PlutoGridOnChangedEvent event){
+                StateManagerDistributorMySQL.getInstance().getStateManager()!.notifyListeners();
+              },
               onLoaded: (event) {
                 if (context.mounted){
-                  ref.read(stateManagerDistributorMySQLProvider.notifier).load(event.stateManager);
+                  StateManagerDistributorMySQL.getInstance().loadStateManager(event.stateManager);
                 }
               },
               configuration: PlutoConfig.getConfiguration(),
