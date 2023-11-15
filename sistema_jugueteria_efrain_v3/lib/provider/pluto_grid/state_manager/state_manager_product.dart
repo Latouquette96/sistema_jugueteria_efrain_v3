@@ -107,7 +107,7 @@ class StateManagerProduct extends StateManager<Product>{
 
     if (responseAPI.isResponseSuccess()){
       //Elimino del archivo de Google Drive
-      await ExportToDrive.getInstance().removeSheets(element);
+      //await ExportToDrive.getInstance().removeSheets(element);
       product.setBarcode("-1");
 
       //Refrezca las marcas cargadas.
@@ -147,7 +147,7 @@ class StateManagerProduct extends StateManager<Product>{
       });
 
       //Actualiza el catalogo de Google Drive
-      await ExportToDrive.getInstance().updateSheets(element);
+      //await ExportToDrive.getInstance().updateSheets(element);
       //Refrezca las marcas cargadas.
       //await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
     }

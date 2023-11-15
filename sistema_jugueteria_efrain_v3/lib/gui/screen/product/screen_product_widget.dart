@@ -4,7 +4,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/builder_pdf/builder_pdf.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
@@ -124,13 +123,6 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
             decoration: StyleContainer.getContainerRoot(),
             child: const ProductCatalogWidget(),
           )),
-          Visibility(
-              visible: ref.watch(productProvider) != null,
-              child: const SizedBox(
-                width: 1000,
-                child: ProductInformationWidget(),
-              )
-          ),
         ],
       ),
     );

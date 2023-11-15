@@ -66,175 +66,172 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
       ),
       body: Row(
         children: [
-          SizedBox(
-            width: 500,
-            child:  ListView(
-              children: [
-                Container(
-                  margin: getMarginInformationForms(),
-                  decoration: StyleContainer.getDecoration(),
-                  child: ListTile(
-                    title: Text("Importación de distribuidoras", style: StyleListTile.getTextStyleTitle(),),
-                    subtitle: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text("• Distribuidoras nuevas/modificadas (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(StateManagerDistributorMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text("• Distribuidoras en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(StateManagerDistributor.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
-                          ],
-                        )
-                      ],
-                    ),
-                    trailing: SizedBox(
-                      width: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          Expanded(child: Column(
+            children: [
+              Container(
+                margin: getMarginInformationForms(),
+                decoration: StyleContainer.getDecoration(),
+                child: ListTile(
+                  title: Text("Importación de distribuidoras", style: StyleListTile.getTextStyleTitle(),),
+                  subtitle: Column(
+                    children: [
+                      Row(
                         children: [
-                          IconButton(
-                            tooltip: "Refrescar el listado de distribuidoras a importar.",
-                            icon: Icon(Icons.update, color: Colors.blue.shade700,),
-                            onPressed: () async{
-                              String url = ref.watch(urlAPIProvider);
-                              //Refrescar el catálogo de productos.
-                              ResponseAPI response = await StateManagerDistributorMySQL.getInstance().refresh(url);
-                              if (mounted){
-                                ElegantNotificationCustom.showNotificationAPI(context, response);
-                              }
-                            },
-                          ),
-                          IconButton(
-                            tooltip: "Muestra/oculta las distribuidoras a importar.",
-                            icon: const Icon(Icons.arrow_forward),
-                            onPressed: (){
-                              ref.read(showImportDistributorsMySQL.notifier).toggle();
-                            },
-                          )
+                          Text("• Distribuidoras nuevas/modificadas (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
+                          Text(StateManagerDistributorMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
                         ],
                       ),
+                      Row(
+                        children: [
+                          Text("• Distribuidoras en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
+                          Text(StateManagerDistributor.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
+                        ],
+                      )
+                    ],
+                  ),
+                  trailing: SizedBox(
+                    width: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          tooltip: "Refrescar el listado de distribuidoras a importar.",
+                          icon: Icon(Icons.update, color: Colors.blue.shade700,),
+                          onPressed: () async{
+                            String url = ref.watch(urlAPIProvider);
+                            //Refrescar el catálogo de productos.
+                            ResponseAPI response = await StateManagerDistributorMySQL.getInstance().refresh(url);
+                            if (mounted){
+                              ElegantNotificationCustom.showNotificationAPI(context, response);
+                            }
+                          },
+                        ),
+                        IconButton(
+                          tooltip: "Muestra/oculta las distribuidoras a importar.",
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: (){
+                            ref.read(showImportDistributorsMySQL.notifier).toggle();
+                          },
+                        )
+                      ],
                     ),
                   ),
                 ),
-                Container(
-                  margin: getMarginInformationForms(),
-                  decoration: StyleContainer.getDecoration(),
-                  child: ListTile(
-                    title: Text("Importación de productos", style: StyleListTile.getTextStyleTitle(),),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              Visibility(
+                visible: ref.watch(showImportDistributorsMySQL),
+                child: Expanded(
+                    child: Container(
+                      margin: getMarginInformationForms(),
+                      decoration: StyleContainer.getContainerRoot(),
+                      child: const DistributorMySQLCatalogWidget(),
+                    )
+                ),
+              ),
+            ],
+          )),
+          Expanded(child: Column(
+            children: [
+              Container(
+                margin: getMarginInformationForms(),
+                decoration: StyleContainer.getDecoration(),
+                child: ListTile(
+                  title: Text("Importación de productos", style: StyleListTile.getTextStyleTitle(),),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text("• Productos nuevos/modificados (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
+                          Text(StateManagerProductMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text("• Productos en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
+                          Text(StateManagerProduct.getInstanceProduct().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
+                        ],
+                      )
+                    ],
+                  ),
+                  trailing: SizedBox(
+                    width: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Text("• Productos nuevos/modificados (Sistema v2): ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(StateManagerProductMySQL.getInstance().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),),
-                          ],
+                        IconButton(
+                          tooltip: "Refrescar el listado de productos a importar.",
+                          icon: Icon(Icons.update, color: Colors.blue.shade700,),
+                          onPressed: () async{
+                            String url = ref.watch(urlAPIProvider);
+                            //Refrescar el catálogo de productos.
+                            ResponseAPI response = await StateManagerProductMySQL.getInstance().refresh(url);
+                            if (mounted){
+                              ElegantNotificationCustom.showNotificationAPI(context, response);
+                            }
+                          },
                         ),
-                        Row(
-                          children: [
-                            Text("• Productos en el Sistema actual: ", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade900),),
-                            Text(StateManagerProduct.getInstanceProduct().getElements().length.toString(), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.blue.shade800),)
-                          ],
+                        IconButton(
+                          tooltip: "Muestra/oculta el listado de productos a importar.",
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: (){
+                            ref.read(showImportProductsMySQL.notifier).toggle();
+                          },
                         )
                       ],
                     ),
-                    trailing: SizedBox(
-                      width: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: ref.watch(showImportProductsMySQL),
+                child: Expanded(
+                    child: Container(
+                      margin: getMarginInformationForms(),
+                      decoration: StyleContainer.getContainerRoot(),
+                      child: Column(
                         children: [
-                          IconButton(
-                            tooltip: "Refrescar el listado de productos a importar.",
-                            icon: Icon(Icons.update, color: Colors.blue.shade700,),
-                            onPressed: () async{
-                              String url = ref.watch(urlAPIProvider);
-                              //Refrescar el catálogo de productos.
-                              ResponseAPI response = await StateManagerProductMySQL.getInstance().refresh(url);
-                              if (mounted){
-                                ElegantNotificationCustom.showNotificationAPI(context, response);
-                              }
-                            },
-                          ),
-                          IconButton(
-                            tooltip: "Muestra/oculta el listado de productos a importar.",
-                            icon: const Icon(Icons.arrow_forward),
-                            onPressed: (){
+                          HeaderInformationWidget(
+                            titleHeader: "Productos disponibles (Sistema v2)",
+                            tooltipClose: "Cerrar tabla.",
+                            onClose: (){
                               ref.read(showImportProductsMySQL.notifier).toggle();
                             },
-                          )
+                            onCustom: (){
+                              StateManagerProductMySQL.getInstance().toggleShowFilter();
+                            },
+                            iconCustom: Icons.filter_list_alt,
+                            onButton: IconButton(
+                              onPressed: () async {
+                                if (ref.read(catalogProductsImportProvider).isNotEmpty){
+                                  String url = ref.read(urlAPIProvider);
+                                  ResponseAPI response = await StateManagerProductMySQL.getInstance().import(url, ref.watch(catalogProductsImportProvider));
+
+                                  if (context.mounted){
+                                    ElegantNotificationCustom.showNotificationAPI(context, response);
+
+                                    if (response.isResponseSuccess()) {
+                                      await StateManagerProduct.getInstanceProduct().refresh(url);
+                                      await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+                                    }
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.download, color: Colors.yellow,),
+                            ),
+                            isButtonVisible: (){
+                              return ref.watch(catalogProductsImportProvider).isNotEmpty;
+                            },
+                            tooltipCustom: "Importar todos los productos seleccionados.",
+                          ),
+                          const Expanded(child: ProductMySQLCatalogWidget())
                         ],
                       ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-              child: Column(
-                children: [
-                  Visibility(
-                    visible: ref.watch(showImportDistributorsMySQL),
-                    child: Expanded(
-                        child: Container(
-                          margin: getMarginInformationForms(),
-                          decoration: StyleContainer.getContainerRoot(),
-                          child: const DistributorMySQLCatalogWidget(),
-                        )
-                    ),
-                  ),
-                  Visibility(
-                    visible: ref.watch(showImportProductsMySQL),
-                    child: Expanded(
-                        child: Container(
-                          margin: getMarginInformationForms(),
-                          decoration: StyleContainer.getContainerRoot(),
-                          child: Column(
-                            children: [
-                              HeaderInformationWidget(
-                                titleHeader: "Productos disponibles (Sistema v2)",
-                                tooltipClose: "Cerrar tabla.",
-                                onClose: (){
-                                  ref.read(showImportProductsMySQL.notifier).toggle();
-                                },
-                                onCustom: (){
-                                  StateManagerProductMySQL.getInstance().toggleShowFilter();
-                                },
-                                iconCustom: Icons.filter_list_alt,
-                                onButton: IconButton(
-                                  onPressed: () async {
-                                    if (ref.read(catalogProductsImportProvider).isNotEmpty){
-                                      String url = ref.read(urlAPIProvider);
-                                      ResponseAPI response = await StateManagerProductMySQL.getInstance().import(url, ref.watch(catalogProductsImportProvider));
-
-                                      if (context.mounted){
-                                        ElegantNotificationCustom.showNotificationAPI(context, response);
-
-                                        if (response.isResponseSuccess()) {
-                                          await StateManagerProduct.getInstanceProduct().refresh(url);
-                                          await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
-                                        }
-                                      }
-                                    }
-                                  },
-                                  icon: const Icon(Icons.download, color: Colors.yellow,),
-                                ),
-                                isButtonVisible: ref.watch(catalogProductsImportProvider).isNotEmpty,
-                                tooltipCustom: "Importar todos los productos seleccionados.",
-                              ),
-                              const Expanded(child: ProductMySQLCatalogWidget())
-                            ],
-                          ),
-                        )
-                    ),
-                  ),
-                ]
-              )
-          )
+                    )
+                ),
+              ),
+            ],
+          )),
         ],
       )
     );

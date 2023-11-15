@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
-import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
@@ -60,53 +59,50 @@ class _DistributorMySQLCatalogWidgetState extends ConsumerState<ConsumerStateful
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: StyleContainer.getContainerRoot(),
-      child: Column(
-        children: [
-          HeaderInformationWidget(
-            titleHeader: "Distribuidoras disponibles (Sistema v2)",
-            tooltipClose: "Cerrar tabla.",
-            onClose: (){
-              ref.read(showImportDistributorsMySQL.notifier).toggle();
-            },
-            onCustom: StateManagerDistributorMySQL.getInstance().getElements().isNotEmpty
-                ? () async {
-                    String url = ref.read(urlAPIProvider);
-                    ResponseAPI response;
-                    response = await StateManagerDistributorMySQL.getInstance().import(url, StateManagerDistributorMySQL.getInstance().getElements());
+    return Column(
+      children: [
+        HeaderInformationWidget(
+          titleHeader: "Distribuidoras disponibles (Sistema v2)",
+          tooltipClose: "Cerrar tabla.",
+          onClose: (){
+            ref.read(showImportDistributorsMySQL.notifier).toggle();
+          },
+          onCustom: StateManagerDistributorMySQL.getInstance().getElements().isNotEmpty
+              ? () async {
+                  String url = ref.read(urlAPIProvider);
+                  ResponseAPI response;
+                  response = await StateManagerDistributorMySQL.getInstance().import(url, StateManagerDistributorMySQL.getInstance().getElements());
 
-                    if (context.mounted){
-                      ElegantNotificationCustom.showNotificationAPI(context, response);
-                      if (response.isResponseSuccess()){
-                        await StateManagerDistributor.getInstance().refresh(ref.read(urlAPIProvider));
-                        await StateManagerDistributorMySQL.getInstance().refresh(url);
-                      }
+                  if (context.mounted){
+                    ElegantNotificationCustom.showNotificationAPI(context, response);
+                    if (response.isResponseSuccess()){
+                      await StateManagerDistributor.getInstance().refresh(ref.read(urlAPIProvider));
+                      await StateManagerDistributorMySQL.getInstance().refresh(url);
                     }
                   }
-                : null,
-            iconCustom: Icons.download,
-            tooltipCustom: "Importar todas las distribuidoras.",
-          ),
-          Expanded(
-            child: PlutoGrid(
-              key: GlobalKey(),
-              mode: PlutoGridMode.popup,
-              columns: _columns,
-              rows: _rows,
-              onChanged: (PlutoGridOnChangedEvent event){
-                StateManagerDistributorMySQL.getInstance().getStateManager()!.notifyListeners();
-              },
-              onLoaded: (event) {
-                if (context.mounted){
-                  StateManagerDistributorMySQL.getInstance().loadStateManager(event.stateManager);
                 }
-              },
-              configuration: PlutoConfig.getConfiguration(),
-            ),
-          )
-        ],
-      ),
+              : null,
+          iconCustom: Icons.download,
+          tooltipCustom: "Importar todas las distribuidoras.",
+        ),
+        Expanded(
+          child: PlutoGrid(
+            key: GlobalKey(),
+            mode: PlutoGridMode.popup,
+            columns: _columns,
+            rows: _rows,
+            onChanged: (PlutoGridOnChangedEvent event){
+              StateManagerDistributorMySQL.getInstance().getStateManager()!.notifyListeners();
+            },
+            onLoaded: (event) {
+              if (context.mounted){
+                StateManagerDistributorMySQL.getInstance().loadStateManager(event.stateManager);
+              }
+            },
+            configuration: PlutoConfig.getConfiguration(),
+          ),
+        )
+      ],
     );
   }
 }

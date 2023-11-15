@@ -63,62 +63,59 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      padding: const EdgeInsets.all(15),
-      child: PlutoGrid(
-        key: GlobalKey(),
-        mode: PlutoGridMode.selectWithOneTap,
-        columns: _columns,
-        rows: _rows,
-        onChanged: (PlutoGridOnChangedEvent event){
-          StateManagerProductMySQL.getInstance().getStateManager()!.notifyListeners();
-        },
-        onLoaded: (event) {
-          if (context.mounted){
-            StateManagerProductMySQL.getInstance().loadStateManager(event.stateManager);
-          }
-        },
-        //Si se selecciona/deselecciona la casilla checked.
-        onRowChecked:(event) {//Si no se seleccionó todos los elementos.
-          if (event.isChecked==null){
-            return;
-          }
+    return PlutoGrid(
+      key: GlobalKey(),
+      mode: PlutoGridMode.selectWithOneTap,
+      columns: _columns,
+      rows: _rows,
+      onChanged: (PlutoGridOnChangedEvent event){
+        StateManagerProductMySQL.getInstance().getStateManager()!.notifyListeners();
+      },
+      onLoaded: (event) {
+        if (context.mounted){
+          StateManagerProductMySQL.getInstance().loadStateManager(event.stateManager);
+        }
+      },
+      //Si se selecciona/deselecciona la casilla checked.
+      onRowChecked:(event) {//Si no se seleccionó todos los elementos.
+        if (event.isChecked==null){
+          return;
+        }
 
-          if (event.isAll){
-            int total = StateManagerProductMySQL.getInstance().getElements().length;
-            if (event.isChecked==true){
-              int isChecked = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.length;
-              if (total==isChecked){
-                ref.read(catalogProductsImportProvider.notifier).insertAll();
-              }
-              else{
-                List<Fourfold<Product, Distributor, double, String>> list = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.map((e) => _getFourfoldData(e)!).toList();
-                ref.read(catalogProductsImportProvider.notifier).insertMultiple(list);
-              }
+        if (event.isAll){
+          int total = StateManagerProductMySQL.getInstance().getElements().length;
+          if (event.isChecked==true){
+            int isChecked = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.length;
+            if (total==isChecked){
+              ref.read(catalogProductsImportProvider.notifier).insertAll();
             }
             else{
-              ref.read(catalogProductsImportProvider.notifier).removeAll();
+              List<Fourfold<Product, Distributor, double, String>> list = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.map((e) => _getFourfoldData(e)!).toList();
+              ref.read(catalogProductsImportProvider.notifier).insertMultiple(list);
             }
           }
           else{
-            //Si la fila no es nula.
-            if (event.row!=null){
-              //Se recupera el producto en cuestion.
-              Fourfold<Product, Distributor, double, String>? fourfold = _getFourfoldData(event.row!);
-              //Se notifica al catalogo de acuerdo
-              if (fourfold!=null){
-                if (ref.read(catalogProductsImportProvider).contains(fourfold)){
-                  ref.read(catalogProductsImportProvider.notifier).remove(fourfold);
-                }
-                else{
-                  ref.read(catalogProductsImportProvider.notifier).insert(fourfold);
-                }
+            ref.read(catalogProductsImportProvider.notifier).removeAll();
+          }
+        }
+        else{
+          //Si la fila no es nula.
+          if (event.row!=null){
+            //Se recupera el producto en cuestion.
+            Fourfold<Product, Distributor, double, String>? fourfold = _getFourfoldData(event.row!);
+            //Se notifica al catalogo de acuerdo
+            if (fourfold!=null){
+              if (ref.read(catalogProductsImportProvider).contains(fourfold)){
+                ref.read(catalogProductsImportProvider.notifier).remove(fourfold);
+              }
+              else{
+                ref.read(catalogProductsImportProvider.notifier).insert(fourfold);
               }
             }
           }
-        },
-        configuration: PlutoConfig.getConfiguration(),
-      ),
+        }
+      },
+      configuration: PlutoConfig.getConfiguration(),
     );
   }
 

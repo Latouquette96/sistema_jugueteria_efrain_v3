@@ -37,10 +37,14 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_pri
 
 ///Clase ProductInformationWidget: Permite mostrar y actualizar la información de un producto.
 class ProductInformationWidget extends ConsumerStatefulWidget {
-  const ProductInformationWidget({super.key});
+
+  //Atributos de instancia
+  final Function() onClose;
+
+  const ProductInformationWidget({super.key, required this.onClose});
   
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
+  ConsumerState<ProductInformationWidget> createState() {
     return _ProductInformationWidgetState();
   }
 }
@@ -76,15 +80,16 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
         child: Column(
           children: [
             HeaderInformationWidget(
-              titleHeader: "Información Producto",
+              titleHeader: (ref.watch(productProvider)!.getID()==0) ? "Registro: Nuevo producto" : "Registro: ${ref.watch(productProvider)!.getTitle()} - ${ref.watch(productProvider)!.getBrand()}",
               tooltipClose: "Cerrar información del producto.",
               onClose: (){
-                ref.read(productProvider.notifier).free();
+                widget.onClose.call();
               },
               onSave: () async{
                 bool isNew = ref.read(productProvider)!.getID()==0;
                 if (isNew) {await _insert(context);}
                 else  {await _update(context);}
+                widget.onClose.call();
               },
             ),
             Expanded(
@@ -97,8 +102,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(
-                          width: 300,
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -106,54 +110,46 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                               _buildWidgetImages(context, product),
                               _separadorHeight,
                               _buildWidgetDescription(context, product),
+                            ],
+                          ),
+                        ),
+                        _separadorWidth,
+                        Expanded(child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildWidgetCategory(context, product),
+                            _separadorHeight,
+                            _buildWidgetTitle(context, product),
+                            _separadorHeight,
+                            _buildWidgetProductCode(context, product),
+                            _separadorHeight,
+                            _buildWidgetBrand(context, product),
+                          ],
+                        )),
+                        _separadorWidth,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildWidgetPricePublic(context, product),
                               _separadorHeight,
                               _buildWidgetMinimumAge(context, product),
                               _separadorHeight,
-                              _buildWidgetSize(context, product)
+                              _buildWidgetSize(context, product),
                             ],
                           ),
                         ),
                         _separadorWidth,
                         Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildWidgetCategory(context, product),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        _separadorHeight,
-                                        _buildWidgetTitle(context, product),
-                                        _separadorHeight,
-                                        _buildWidgetProductCode(context, product),
-                                        _separadorHeight,
-                                        _buildWidgetBrand(context, product),
-                                      ],
-                                    )),
-                                    _separadorWidth,
-                                    Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            _separadorHeight,
-                                            _buildWidgetPricePublic(context, product),
-                                            _separadorHeight,
-                                            _buildReactiveFormProductPrices(context, distributorFree)
-                                          ],
-                                        )
-                                    )
-                                  ],
-                                )
-                              ],
-                            )
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildReactiveFormProductPrices(context, distributorFree)
+                            ],
+                          ),
                         ),
-
                       ],
                     ),
                   ),
@@ -320,31 +316,27 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
   ///ProductPriceWidget: Construye el Widget de .
   Widget _buildWidgetCategory(BuildContext context, Product product){
     return ExpansionTileContainerWidget(
-        isRow: true,
         title: "Categoria del producto",
         subtitle: "[Obligatorio] Clasifique el producto de acuerdo a una categoria y subcategoría. Esto es necesario para filtrar resultados.",
         children: [
-          SizedBox(
-            width: 250,
-            child: ReactiveDropdownField<Category>(
-              formControlName: Product.getKeyCategory(),
-              style: StyleTextField.getTextStyleNormal(),
-              decoration: StyleTextField.getDecoration("Categoria"),
-              items: FactoryCategory.getInstance().getList().map((e) => DropdownMenuItem<Category>(
-                value: e,
-                child: Text(e.getCategoryName()),
-              )).toList(),
-              onChanged: (control) {
-                setState(() {});
-                _form.focus(Product.getKeySubcategory());
-              },
-              validationMessages: {
-                ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
-              },
-            ),
+          ReactiveDropdownField<Category>(
+            formControlName: Product.getKeyCategory(),
+            style: StyleTextField.getTextStyleNormal(),
+            decoration: StyleTextField.getDecoration("Categoria"),
+            items: FactoryCategory.getInstance().getList().map((e) => DropdownMenuItem<Category>(
+              value: e,
+              child: Text(e.getCategoryName()),
+            )).toList(),
+            onChanged: (control) {
+              setState(() {});
+              _form.focus(Product.getKeySubcategory());
+            },
+            validationMessages: {
+              ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+            },
           ),
-          _separadorWidth,
-          Expanded(child: Visibility(
+          _separadorHeightBlock,
+          Visibility(
             visible: _form.control(Product.getKeyCategory()).value.getCategoryID()!=0,
             child: ReactiveDropdownField<SubCategory>(
               formControlName: Product.getKeySubcategory(),
@@ -362,7 +354,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                 ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
               },
             ),
-          ))
+          )
         ]
     );
   }
@@ -647,8 +639,6 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
     if (response.isResponseSuccess()){
       //Notifica con exito en la operacion
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
-      //Libera el producto del proveedor.
-      ref.read(productProvider.notifier).free();
     }
     else{
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
@@ -665,8 +655,6 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
 
     if (response.isResponseSuccess()){
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);
-      //Libera el producto del proveedor.
-      ref.read(productProvider.notifier).free();
     }
     else{
       if (context.mounted) ElegantNotificationCustom.showNotificationAPI(context, response);

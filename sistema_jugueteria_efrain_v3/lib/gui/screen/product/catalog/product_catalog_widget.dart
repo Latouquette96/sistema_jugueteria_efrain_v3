@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/popup_information.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/config/pluto_config.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
@@ -61,6 +62,12 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
                       ///Carga un producto al proveedor para que pueda ser editado.
                       ref.read(productProvider.notifier).load(product);
                       await ref.read(productPricesByIDProvider.notifier).refresh();
+
+                      if (context.mounted){
+                        PopupInformation.showProductInformation(context, (){
+                          ref.read(productProvider.notifier).free();
+                        });
+                      }
                     }
                     else{
                       ref.read(productProvider.notifier).free();

@@ -44,7 +44,7 @@ class _ProductImageCarouselWidgetState extends ConsumerState<ProductImageCarouse
 
     return ExpansionTileContainerWidget(
       title: "Imágenes del producto",
-      subtitle: "• Título del producto: ${product!.getTitle()} \n• Marca/Importador: ${product.getBrand()}.",
+      subtitle: "• Código de barras: ${product!.getBarcode()}\n• Título del producto: ${product.getTitle()} \n• Marca/Importador: ${product.getBrand()}.",
       descriptionShow: true,
       children: [
         Container(
