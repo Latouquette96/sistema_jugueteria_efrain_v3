@@ -62,7 +62,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
               return Container(
                 margin: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
                 child: ExpansionTileContainerWidget(
-                    isChildren: true,
+                    childrenLevel: 2,
                     expanded: false,
                     title: "",
                     trailing: Row(
@@ -139,7 +139,7 @@ class _ProductPriceListViewWidgetState extends ConsumerState<ProductPriceListVie
                       const SizedBox(height: 10,),
                       TextField(
                         readOnly: true,
-                        decoration: StyleTextField.getDecoration("Precio compra (precio base + ${((e.getValue1().getIVA()-1)*100).toStringAsFixed(0)}% de IVA)"),
+                        decoration: StyleTextField.getDecoration("Precio compra (+${((e.getValue1().getIVA()-1)*100).toStringAsFixed(0)}% de IVA)"),
                         controller: TextEditingController(text: (e.getValue2()!.getPriceBase()*e.getValue1().getIVA()).toStringAsFixed(2)),
                         onChanged: (String value){
                           e.getValue2()!.setPriceBase(double.parse(value));

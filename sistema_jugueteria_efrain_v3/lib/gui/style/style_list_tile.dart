@@ -30,7 +30,7 @@ class StyleListTile {
         end: border,
         bottom: border,
       ),
-      borderRadius: BorderRadius.circular(5),
+      //borderRadius: BorderRadius.circular(5),
     );
   }
 

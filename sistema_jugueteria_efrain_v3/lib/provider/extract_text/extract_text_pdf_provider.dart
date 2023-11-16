@@ -63,7 +63,7 @@ class TextFromPDFProvider extends StateNotifier<List<Product>> {
           for (int i=0; i<listFragments.length && !productInserted; i++){
 
             //Para el código de barra, se comprueba si dicho codebar está incluido en el fragmento.
-            if (product.getBarcode()!=null && product.getBarcode()!="-" && listFragments[i].isContains(product.getBarcode()!)){
+            if (product.getBarcode()!="-" && listFragments[i].isContains(product.getBarcode())){
               list.add(product);
               productInserted = true;
             }

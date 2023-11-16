@@ -17,7 +17,7 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   final IconData? iconLeading;
   final double borderRadius;
   final Widget? trailing;
-  final bool isChildren;
+  final int childrenLevel;
 
   ///Constructor de ExpansionTileContainerWidget
   ///
@@ -30,7 +30,7 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
   /// [iconLeading] (opcional) Permite definir el icono del boton de funcion.
   /// [borderRadius] (opcional) Permite definir el radio del borde (circular).
   /// [trailing] (opcional) Permite poner botones del lado derecho.
-  /// [isChildren] Permite definir si es un EsxpansionTile children o root.
+  /// [childrenLevel] Permite definir el nivel de altura del hijo, siendo 0 un expansion_tile padre, 1 un hijo de dicho padre, 2 un hijo del hijo del padre, y así sucesivamente.
   const ExpansionTileContainerWidget({super.key,
     this.title,
     this.subtitle,
@@ -42,7 +42,7 @@ class ExpansionTileContainerWidget extends ConsumerStatefulWidget {
     this.iconLeading,
     this.borderRadius = 5,
     this.trailing,
-    this.isChildren = false
+    this.childrenLevel = 0
   });
 
   @override
@@ -71,8 +71,8 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
     return ExpansionTileCard(
       borderRadius: BorderRadius.circular(widget.borderRadius),
       expandedTextColor: Colors.black,
-      expandedColor: (widget.isChildren) ? Colors.brown.shade50.withOpacity(0.85) : Colors.grey.shade200,
-      baseColor: (widget.isChildren) ? Colors.brown.shade100 : Colors.brown.shade100,
+      expandedColor: StyleExpansionTile.getExpandedColor(widget.childrenLevel),
+      baseColor: StyleExpansionTile.getBaseColor(widget.childrenLevel),
       initiallyExpanded: widget.expanded,
       contentPadding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       title: (widget.trailing!=null)
@@ -87,6 +87,7 @@ class _ExpansionTileContainerWidgetState extends ConsumerState<ExpansionTileCont
               },
             )
           : (widget.iconLeading==null) ? null : Icon(widget.iconLeading),
+      shadowColor: Colors.black,
       children: [
         Container(
           margin: const EdgeInsets.all(5),

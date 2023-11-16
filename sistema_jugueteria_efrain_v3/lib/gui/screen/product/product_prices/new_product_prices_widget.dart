@@ -19,6 +19,8 @@ class NewProductPricesWidget extends ConsumerStatefulWidget {
 
   late final StateNotifierProvider<ElementStateProvider<Product>, Product?> _providerProduct;
   late final FormGroup _formGroup;
+  late final int _childrenLevel;
+  late final bool _descriptionShow;
 
   ///Constructor de NewProductPricesWidget
   ///
@@ -27,14 +29,18 @@ class NewProductPricesWidget extends ConsumerStatefulWidget {
   ///[providerStateManager] el el provider del controlador del catálogo de productos.
   ///[providerPlutoRow] es el provider que almacena el PlutoRow para poder actualizarlo de ser necesario.
   ///[widgetProduct] (Opcional) widget de producto.
+  ///[childrenLevel] Nivel en la jerarquia de arbol. Por defecto es 0 (root).
   NewProductPricesWidget({
     super.key,
     required StateNotifierProvider<ElementStateProvider<Product>, Product?> providerProduct,
-    required FormGroup formGroup
+    required FormGroup formGroup,
+    int childrenLevel = 0,
+    bool descriptionShow = false
   }){
     _providerProduct = providerProduct;
-
     _formGroup = formGroup;
+    _childrenLevel = childrenLevel;
+    _descriptionShow = descriptionShow;
   }
 
   @override
@@ -42,8 +48,16 @@ class NewProductPricesWidget extends ConsumerStatefulWidget {
     return _NewProductPricesWidgetState();
   }
 
+  int getChildrenLevel(){
+    return _childrenLevel;
+  }
+
   FormGroup getFormGroup(){
     return _formGroup;
+  }
+
+  bool isDescriptionShow(){
+    return _descriptionShow;
   }
 
   StateNotifierProvider<ElementStateProvider<Product>, Product?> getProvider(){
@@ -69,7 +83,9 @@ class _NewProductPricesWidgetState extends ConsumerState<NewProductPricesWidget>
       title: "Ingresar nuevo precio de producto",
       subtitle: "Aquí puede introducir un nuevo precio para el producto. \n\n"
           "Importante: Solo aparecerán las distribuidoras que aún no han sido utilizadas.",
+      childrenLevel: widget.getChildrenLevel(),
       expanded: false,
+      descriptionShow: (widget.isDescriptionShow()) ? true : null,
       children: [
         ReactiveForm(
           formGroup: _formNewPP,

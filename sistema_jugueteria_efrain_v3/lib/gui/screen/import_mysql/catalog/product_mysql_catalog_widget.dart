@@ -87,7 +87,7 @@ class _ProductMySQLCatalogWidgetState extends ConsumerState<ConsumerStatefulWidg
           if (event.isChecked==true){
             int isChecked = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.length;
             if (total==isChecked){
-              ref.read(catalogProductsImportProvider.notifier).insertAll();
+              ref.read(catalogProductsImportProvider.notifier).insertMultiple(StateManagerProductMySQL.getInstance().getElements());
             }
             else{
               List<Fourfold<Product, Distributor, double, String>> list = StateManagerProductMySQL.getInstance().getStateManager()!.checkedRows.map((e) => _getFourfoldData(e)!).toList();

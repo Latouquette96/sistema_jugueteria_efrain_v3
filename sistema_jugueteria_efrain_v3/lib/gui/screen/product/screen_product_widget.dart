@@ -108,6 +108,8 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
               if (ref.read(productProvider)!=null) ref.read(productProvider.notifier).free();
               if (ref.read(productBillingProvider)!=null) ref.read(productBillingProvider.notifier).free();
 
+              ref.read(productSharingProvider.notifier).clear();
+
               //Refrezca el catálogo de productos.
               await StateManagerProduct.getInstanceProduct().refresh(ref.read(urlAPIProvider));
             },

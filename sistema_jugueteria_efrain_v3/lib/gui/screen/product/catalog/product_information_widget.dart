@@ -119,11 +119,9 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                           children: [
                             _buildWidgetCategory(context, product),
                             _separadorHeight,
-                            _buildWidgetTitle(context, product),
-                            _separadorHeight,
                             _buildWidgetProductCode(context, product),
                             _separadorHeight,
-                            _buildWidgetBrand(context, product),
+                            _buildWidgetTitleBrand(context, product),
                           ],
                         )),
                         _separadorWidth,
@@ -172,7 +170,6 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
     return ExpansionTileContainerWidget(
       trailing: Row(
         children: [
-          Expanded(child: Center(child: Text("Imágenes del producto", style: StyleExpansionTile.getStyleTitleExpansionTile(),),)),
           IconButton(
               onPressed: () async {
                 ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
@@ -196,7 +193,8 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
               },
               tooltip: "Inserta el link de la imagen almacenada en el portapapeles.",
               icon: const Icon(Icons.paste, color: Colors.black54)
-          )
+          ),
+          Expanded(child: Center(child: Text("Imágenes", style: StyleExpansionTile.getStyleTitleExpansionTile(),),)),
         ],
       ),
       subtitle: "[Obligatorio] Administre las imagenes del producto (debe haber al menos una imagen). ",
@@ -225,6 +223,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
             ),
           ),
         ),
+        Text("Imagenes cargadas: ${ref.watch(productProvider)!.getLinkImages().length}", style: StyleTextField.getTextStyleNormal())
       ],
     );
   }
@@ -235,80 +234,96 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
         title: "Medidas del producto",
         subtitle: "[Opcional] Brindar medidas del producto es útil para poder tenerlas a mano para cualquier ocasión.",
         children: [
-          Container(
-              height: 200,
-              color: Colors.black26,
-              padding: const EdgeInsets.all(5),
-              child: ListView(
-                children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
-                  return Container(
-                      decoration: StyleListTile.getDecorationContainer(),
-                      child: ListTile(
-                        titleTextStyle: StyleDropdown.getTextStyle(),
-                        title: Text(e),
-                        trailing: IconButton(
-                          tooltip: "Remover",
-                          color: Colors.black,
-                          onPressed: (){
-                            (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
-                            setState(() { });
-                          },
-                          icon: Icon(MdiIcons.fromString("delete")),
-                        ),
-                      )
-                  );
-                }).toList(),
-              )
+          ExpansionTileContainerWidget(
+              title: "Listado de medidas",
+              subtitle: "Aquí se puede observar todas las medidas del producto y eliminar las que no se desean con el botón adjunto en cada medida.",
+              childrenLevel: 1,
+              descriptionShow: true,
+              children: [
+                Container(
+                    height: 200,
+                    color: Colors.brown.shade100,
+                    padding: const EdgeInsets.all(0),
+                    child: ListView(
+                      children: (_form.control(Product.getKeySizes()).value as List<String>).map((e){
+                        return Container(
+                            decoration: StyleListTile.getDecorationContainer(),
+                            child: ListTile(
+                              titleTextStyle: StyleDropdown.getTextStyle(),
+                              title: Text(e),
+                              trailing: IconButton(
+                                tooltip: "Remover",
+                                color: Colors.black,
+                                onPressed: (){
+                                  (_form.control(Product.getKeySizes()).value as List<String>).remove(e);
+                                  setState(() { });
+                                },
+                                icon: Icon(MdiIcons.fromString("delete")),
+                              ),
+                            )
+                        );
+                      }).toList(),
+                    )
+                )
+              ]
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          ReactiveDropdownField<String>(
-            isExpanded: true,
-            iconSize: 50,
-            icon: const Icon(Icons.arrow_drop_down, size: 25,),
-            formControlName: FormGroupProduct.getKeyTemplateSize(),
-            style: StyleDropdown.getTextStyle(),
-            decoration: StyleTextField.getDecoration("Selección de plantilla"),
-            items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
-              value: e,
-              child: Container(
-                margin: EdgeInsets.zero,
-                padding: EdgeInsets.zero,
-                width: 300,
-                child: Text(e),
-              ),
-            )).toList(),
-            onChanged: (control) {
-              _form.control(FormGroupProduct.getKeySizeAux()).value = _form.control(FormGroupProduct.getKeyTemplateSize()).value;
-              setState(() {});
-              _form.focus(FormGroupProduct.getKeySizeAux());
-            },
-            validationMessages: {
-              ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
-            },
-          ),
-          const SizedBox(height: 10,),
-          ReactiveTextField(
-            maxLines: 5,
-            minLines: 1,
-            style: StyleTextArea.getTextStyle(),
-            decoration: StyleTextField.getDecoration("Insertar medida"),
-            formControlName: FormGroupProduct.getKeySizeAux(),
-            textInputAction: TextInputAction.next,
-            onSubmitted: (_){
-              List<String> list = _form.control(Product.getKeySizes()).value;
-              list.add(_form.control(FormGroupProduct.getKeySizeAux()).value);
+          _separadorHeightBlock,
+          ExpansionTileContainerWidget(
+              title: "Ingresar nueva medida",
+              subtitle: "Puede utilizar una plantilla para ingresar una nueva medida, o simplemente escriba la medida en el cuadro de texto.",
+              descriptionShow: true,
+              expanded: false,
+              childrenLevel: 1,
+              children: [
+                ReactiveDropdownField<String>(
+                  isExpanded: true,
+                  iconSize: 50,
+                  icon: const Icon(Icons.arrow_drop_down, size: 25,),
+                  formControlName: FormGroupProduct.getKeyTemplateSize(),
+                  style: StyleDropdown.getTextStyle(),
+                  decoration: StyleTextField.getDecoration("Selección de plantilla"),
+                  items: FormGroupProduct.getTemplateSize().map((e) => DropdownMenuItem<String>(
+                    value: e,
+                    child: Container(
+                      margin: EdgeInsets.zero,
+                      padding: EdgeInsets.zero,
+                      width: 300,
+                      child: Text(e),
+                    ),
+                  )).toList(),
+                  onChanged: (control) {
+                    _form.control(FormGroupProduct.getKeySizeAux()).value = _form.control(FormGroupProduct.getKeyTemplateSize()).value;
+                    setState(() {});
+                    _form.focus(FormGroupProduct.getKeySizeAux());
+                  },
+                  validationMessages: {
+                    ValidationMessage.required: (error) => "(Requerido) Seleccione la categoria del producto."
+                  },
+                ),
+                const SizedBox(height: 10,),
+                ReactiveTextField(
+                  maxLines: 5,
+                  minLines: 1,
+                  style: StyleTextArea.getTextStyle(),
+                  decoration: StyleTextField.getDecoration("Insertar medida"),
+                  formControlName: FormGroupProduct.getKeySizeAux(),
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_){
+                    List<String> list = _form.control(Product.getKeySizes()).value;
+                    list.add(_form.control(FormGroupProduct.getKeySizeAux()).value);
 
-              _form.control(FormGroupProduct.getKeySizeAux()).value = "";
-              _form.focus(FormGroupProduct.getKeySizeAux());
+                    _form.control(FormGroupProduct.getKeySizeAux()).value = "";
+                    _form.focus(FormGroupProduct.getKeySizeAux());
 
-              setState(() { });
-            },
-            validationMessages: {
-              ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
-            },
-          ),
+                    setState(() { });
+                  },
+                  validationMessages: {
+                    ValidationMessage.email: (error) => '(Requerido) Ingrese una descrición para el producto.',
+                  },
+                ),
+              ]
+          )
+
         ]
     );
   }
@@ -316,7 +331,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
   ///ProductPriceWidget: Construye el Widget de .
   Widget _buildWidgetCategory(BuildContext context, Product product){
     return ExpansionTileContainerWidget(
-        title: "Categoria del producto",
+        title: "Categoria y subcategoria",
         subtitle: "[Obligatorio] Clasifique el producto de acuerdo a una categoria y subcategoría. Esto es necesario para filtrar resultados.",
         children: [
           ReactiveDropdownField<Category>(
@@ -360,12 +375,12 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
   }
 
   ///ProductPriceWidget: Construye el Widget de .
-  Widget _buildWidgetTitle(BuildContext context, Product product){
+  Widget _buildWidgetTitleBrand(BuildContext context, Product product){
 
     return ExpansionTileContainerWidget(
-        title: "Titulo del producto",
-        subtitle: "[Obligatorio] El título es el nombre por el cual se identifica al producto."
-            " Si bien no es necesario, lo ideal es que tenga un nombre no repetido con otros productos.",
+        title: "Titulo y marca/importador",
+        subtitle: "[Obligatorio] El título es el nombre por el cual se identifica al producto, mientras que la marca (o importadora) identifica "
+            "a que marca reconocida (o importadora) lo comercializa (por defecto es IMPORT.).\n",
         children: [
           ReactiveTextField(
             maxLength: Product.getMaxCharsTitle(),
@@ -380,74 +395,72 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
             validationMessages: {
               ValidationMessage.email: (error) => '(Requerido) Ingrese el título del producto.',
             },
-          )
-        ]
-    );
-  }
-
-  ///ProductPriceWidget: Construye el Widget de .
-  Widget _buildWidgetBrand(BuildContext context, Product product){
-
-    return ExpansionTileContainerWidget(
-        title: "Marca/importador del producto",
-        subtitle: "[Obligatorio] Seleccione una marca en 'buscar marca/importador' o ingrese manualmente la marca/importador del producto.",
-        children: [
-          Container(
-            margin: const EdgeInsets.all(5),
-            child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: _brandManual ? Colors.blueGrey.shade300 : Colors.grey),
-                      onPressed: (){
-                        setState(() {
-                          _brandManual = !_brandManual;
-                        });
-                      },
-                      child: Text(_brandManual ? "Modo: Nueva marca/importador" : "Modo: Busqueda de marca/importador")
-                    ),
-                  )
-                ]
-            ),
           ),
           _separadorHeightBlock,
-          Visibility(
-              visible: !_brandManual,
-              child: ReactiveDropdownField<String>(
-                formControlName: FormGroupProduct.getKeyBrandAux(),
-                style: StyleTextField.getTextStyleNormal(),
-                decoration: StyleTextField.getDecoration("Buscar marca/importador"),
-                items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
-                  value: e,
-                  child: Text(e),
-                )).toList(),
-                onChanged: (control) {
-                  _form.control(Product.getKeyBrand()).value = control.value;
-                  setState(() {});
-                  _form.focus(Product.getKeyBrand());
-                  },
-                validationMessages: {
-                  ValidationMessage.required: (error) => "(Requerido) Seleccione la marca del producto."
-                },
-              ),
-          ),
-          Visibility(
-              visible: _brandManual,
-              child: ReactiveTextField(
-                maxLines: 1,
-                maxLength: Product.getMaxCharsBrand(),
-                style: StyleTextArea.getTextStyle(),
-                decoration: StyleTextArea.getDecoration("Marca/importadora"),
-                formControlName: Product.getKeyBrand(),
-                textInputAction: TextInputAction.newline,
-                onChanged: (_){
-                  setState(() {});
-                },
-                validationMessages: {
-                  ValidationMessage.email: (error) => '(Requerido) Ingrese una marca/importadora para el producto.',
-                },
-              )
-          ),
+          SizedBox(
+            height: 65,
+            child: Row(
+                children: [
+                  Visibility(
+                    visible: !_brandManual,
+                    child: Expanded(child: ReactiveDropdownField<String>(
+                      formControlName: FormGroupProduct.getKeyBrandAux(),
+                      style: StyleTextField.getTextStyleNormal(),
+                      decoration: StyleTextField.getDecoration("Buscar marca/importador"),
+                      items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
+                        value: e,
+                        child: Text(e),
+                      )).toList(),
+                      onChanged: (control) {
+                        _form.control(Product.getKeyBrand()).value = control.value;
+                        setState(() {});
+                        _form.focus(Product.getKeyBrand());
+                      },
+                      validationMessages: {
+                        ValidationMessage.required: (error) => "(Requerido) Seleccione la marca del producto."
+                      },
+                    )),
+                  ),
+                  Visibility(
+                      visible: _brandManual,
+                      child: Expanded(child: ReactiveTextField(
+                        maxLines: 1,
+                        maxLength: Product.getMaxCharsBrand(),
+                        style: StyleTextField.getTextStyleNormal(),
+                        decoration: StyleTextField.getDecoration("Marca/importadora"),
+                        formControlName: Product.getKeyBrand(),
+                        textInputAction: TextInputAction.newline,
+                        onChanged: (_){
+                          setState(() {});
+                        },
+                        validationMessages: {
+                          ValidationMessage.email: (error) => '(Requerido) Ingrese una marca/importadora para el producto.',
+                        },
+                      ))
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.brown.shade200
+                    ),
+                    margin: EdgeInsets.fromLTRB(5, 0, 0, _brandManual ? 15 : 5),
+                    height: _brandManual ? 40 : 50,
+                    child: IconButton(
+                        icon: Icon(
+                          _brandManual ? MdiIcons.fromString("text-box-edit") : MdiIcons.fromString("form-dropdown"),
+                          color: Colors.black,
+                        ),
+                        onPressed: (){
+                          setState(() {
+                            _brandManual = !_brandManual;
+                          });
+                        },
+                        tooltip: _brandManual ? "Modo actual: Ingreso de marca/importadora" : "Modo actual: Buscador de marca/importador"
+                    ),
+                  ),
+                ]
+            ),
+          )
         ]
     );
   }
@@ -465,7 +478,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
             textInputAction: TextInputAction.none,
             onSubmitted: (_){
               setState(() {});
-              _form.focus(Product.getKeyMinimumAge());
+              _form.focus(Product.getKeyStock());
             },
             validationMessages: {
               ValidationMessage.required: (error) => "(Requerido) El precio al público del producto.",
@@ -480,7 +493,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
             textInputAction: TextInputAction.none,
             onSubmitted: (_){
               setState(() {});
-              _form.focus(Product.getKeyPricePublic());
+              _form.focus(Product.getKeyMinimumAge());
             },
             validationMessages: {
               ValidationMessage.required: (error) => "(Requerido) Inserte el stock actual del producto (-1 si 'fuera de stock').",
@@ -607,20 +620,32 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
               }",
               children: [
                 //Construye el ListView
-                Visibility(
-                    visible: ref.read(productProvider)!.getID()!=0,
-                    child: ProductPriceListViewWidget(
-                      providerProduct: productProvider,
-                      providerPriceDistributor: productPricesByIDProvider,
-                    )
+                ExpansionTileContainerWidget(
+                    title: "Lista de precios cargados",
+                    subtitle: "Aquí se puede observar todos los precios cargados para el producto. Cada precio está agrupado por distribuidora.",
+                    childrenLevel: 1,
+                    descriptionShow: true,
+                    expanded: true,
+                    children: [
+                      ProductPriceListViewWidget(
+                        providerProduct: productProvider,
+                        providerPriceDistributor: productPricesByIDProvider,
+                      ),
+                    ]
                 ),
+                //Construye el titulo
+                _separadorHeightBlock,
+                Visibility(
+                    visible: distributorFree.isNotEmpty && ref.read(productProvider)!.getID()!=0,
+                    child: NewProductPricesWidget(
+                      providerProduct: productProvider,
+                      formGroup: _formNewPP,
+                      childrenLevel: 1,
+                      descriptionShow: true,
+                    )
+                )
               ],
             ),
-            const SizedBox(height: 5,),
-            Visibility(
-                visible: distributorFree.isNotEmpty && ref.read(productProvider)!.getID()!=0,
-                child: NewProductPricesWidget(providerProduct: productProvider, formGroup: _formNewPP)
-            )
           ],
         )
     );

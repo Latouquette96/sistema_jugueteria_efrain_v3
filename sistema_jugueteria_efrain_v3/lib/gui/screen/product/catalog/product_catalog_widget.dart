@@ -47,8 +47,9 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
         enableRowChecked: true,
         enableEditingMode: false,
         enableFilterMenuItem: false,
-        width: 100,
-        minWidth: 100,
+        width: 125,
+        minWidth: 125,
+        suppressedAutoSize: true,
         renderer: (rendererContext) {
           return Row(
             children: [
@@ -143,7 +144,7 @@ class _ProductCatalogWidgetState extends ConsumerState<ProductCatalogWidget> {
             if (event.isChecked==true){
               int isChecked = StateManagerProduct.getInstanceProduct().getStateManager()!.checkedRows.length;
               if (total==isChecked){
-                ref.read(productSharingProvider.notifier).insertAll();
+                ref.read(productSharingProvider.notifier).insertMultiple(StateManagerProduct.getInstanceProduct().getElements());
               }
               else{
                 List<Product> list = StateManagerProduct.getInstanceProduct().getStateManager()!.checkedRows.map((e) => _getProduct(e)).toList();

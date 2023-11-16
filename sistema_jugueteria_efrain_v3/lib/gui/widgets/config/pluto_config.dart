@@ -10,6 +10,7 @@ class PlutoConfig {
   ///PlutoConfig: Devuelve la configuración por defecto de todos los PlutoGrid.
   static PlutoGridConfiguration getConfiguration(){
     return PlutoGridConfiguration(
+        columnSize: const PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.scale),
         localeText: PlutoConfiguration.getPlutoGridLocaleText(),
         columnFilter: PlutoGridColumnFilterConfig(
             filters: const [
@@ -84,6 +85,9 @@ class PlutoConfig {
       PlutoColumn(
         title: 'Titulo',
         enableEditingMode: false,
+        minWidth: 500,
+        width: 500,
+        suppressedAutoSize: true,
         field: Product.getKeyTitle(),
         type: PlutoColumnType.text(),
       ),

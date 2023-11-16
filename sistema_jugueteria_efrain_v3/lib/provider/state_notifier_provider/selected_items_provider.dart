@@ -19,15 +19,8 @@ class SelectedItemsProvider<T> extends StateNotifier<List<T>> {
   }
 
   ///SelectedItemsProvider: Inserta todos los elementos del catalogo de elementos.
-  void insertAll(){
-    state = [];
-    state = [...listElements];
-  }
-
-  ///SelectedItemsProvider: Inserta todos los elementos del catalogo de elementos.
   void insertMultiple(List<T> list){
-    state = [];
-    state = [...list];
+    state = list;
   }
 
   ///SelectedItemsProvider: Remueve todos los elementos del catalogo.

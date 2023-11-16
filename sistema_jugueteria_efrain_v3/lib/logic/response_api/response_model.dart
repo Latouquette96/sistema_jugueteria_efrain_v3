@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart';
+
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 
 ///Clase ResponseAPI: Modela un mensaje recibido de una solicitud a la API.
 class ResponseAPI {
@@ -8,6 +10,16 @@ class ResponseAPI {
 
   ///Constructor de ResponseAPI a partir de un Response (http).
   ResponseAPI.fromResponse({required Response response}){
+    try{
+      _response = response.data;
+    }
+    catch(e){
+      _response = jsonDecode(response.data);
+    }
+  }
+
+  ///Constructor de ResponseAPI a partir de un Response (http).
+  ResponseAPI.fromResponseHttp({required http.Response response}){
     _response = jsonDecode(response.body);
   }
 
@@ -66,6 +78,17 @@ class ResponseAPI {
         value: null,
         title: "Error 404",
         message: 'Error: No se pudo realizar la solicitud al servidor.'
+    );
+  }
+
+  ///ResponseApiJSON: Devuelve un mensaje que indica que ocurrió un problema.
+  static ResponseAPI getConnectionErrorMessage(dynamic e){
+    return ResponseAPI.manual(
+        status: 404,
+        value: null,
+        error: e.toString(),
+        title: "Error 404",
+        message: 'Error: No se pudo realizar la conexion con el servidor.'
     );
   }
 }

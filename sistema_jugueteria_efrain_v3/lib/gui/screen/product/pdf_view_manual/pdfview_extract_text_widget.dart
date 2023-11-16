@@ -104,9 +104,6 @@ class _PDFViewExtractTextWidgetState extends ConsumerState<PDFViewExtractTextWid
                             }
                             setState(() {});
                           }
-                          else {
-                            // User canceled the picker
-                          }
                         },
                       )
                   ),

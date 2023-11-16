@@ -107,7 +107,6 @@ class StateManagerDistributorMySQL extends StateManagerMySQL<Distributor, Distri
     return (
         distributorExist.getCUIT()!=distributorMySQL.getCUIT() ||
             distributorExist.getName()!=distributorMySQL.getName() ||
-            distributorExist.getIVA()!=distributorMySQL.getIVA() ||
             distributorExist.getEmail()!=distributorMySQL.getEmail() ||
             distributorExist.getAddress()!=distributorMySQL.getAddress() ||
             distributorExist.getPhone()!=distributorMySQL.getPhone() ||

@@ -22,7 +22,7 @@ class ServiceProvider {
   ///ServiceProvider: Inicializa las service del sistema.
   Future<ResponseSystem> run() async {
     ResponseSystem responseSystem;
-    String url = ref.read(urlAPIProvider);
+    String url = ref.watch(urlAPIProvider);
     try{
       //Comprueba el estado de los códigos generados en verificación de crear nuevos.
       await ref.read(generatedCodeBlockProvider.future);
