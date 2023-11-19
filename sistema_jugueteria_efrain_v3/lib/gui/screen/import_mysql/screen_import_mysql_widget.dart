@@ -10,12 +10,12 @@ import 'package:sistema_jugueteria_efrain_v3/gui/style/mixin_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_list_tile.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/widgets/header_custom/header_information_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor_mysql.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product_mysql.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/filter/state_manager_brands.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/selected_items_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/toggle/toggle_notifier.dart';
 
@@ -212,7 +212,7 @@ class _ScreenImportProductWidgetState extends ConsumerState<ScreenImportProductW
 
                                     if (response.isResponseSuccess()) {
                                       await StateManagerProduct.getInstanceProduct().refresh(url);
-                                      await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+                                      await StateManagerBrands.getInstance().refresh(url);
                                     }
                                   }
                                 }

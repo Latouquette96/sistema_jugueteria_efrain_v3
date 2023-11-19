@@ -27,10 +27,10 @@ import 'package:sistema_jugueteria_efrain_v3/logic/models/json/minimum_age.dart'
 import 'package:sistema_jugueteria_efrain_v3/logic/models/json/subcategory_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/utils/resource_link.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/generated_code_controller.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/filter/state_manager_brands.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
@@ -139,15 +139,17 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                           ),
                         ),
                         _separadorWidth,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildReactiveFormProductPrices(context, distributorFree)
-                            ],
-                          ),
-                        ),
+                        Visibility(
+                            visible: ref.read(productProvider)!.getID()!=0,
+                            child: Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildReactiveFormProductPrices(context, distributorFree)
+                                ],
+                              ),
+                            )),
                       ],
                     ),
                   ),
@@ -407,7 +409,7 @@ class _ProductInformationWidgetState extends ConsumerState<ProductInformationWid
                       formControlName: FormGroupProduct.getKeyBrandAux(),
                       style: StyleTextField.getTextStyleNormal(),
                       decoration: StyleTextField.getDecoration("Buscar marca/importador"),
-                      items: ref.watch(filterOfLoadedBrandsWithAPIProvider).map((e) => DropdownMenuItem<String>(
+                      items: StateManagerBrands.getInstance().getBrands().map((e) => DropdownMenuItem<String>(
                         value: e,
                         child: Text(e),
                       )).toList(),

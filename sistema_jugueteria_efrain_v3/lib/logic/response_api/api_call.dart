@@ -22,7 +22,6 @@ class APICall {
       return ResponseAPI.fromResponse(response: response);
     }
     catch(e){
-      print(e);
       return ResponseAPI.getConnectionErrorMessage(e);
     }
   }
@@ -44,7 +43,6 @@ class APICall {
       return ResponseAPI.fromResponse(response: response);
     }
     catch(e){
-      print(e);
       return ResponseAPI.getConnectionErrorMessage(e);
     }
   }
@@ -66,7 +64,6 @@ class APICall {
       return ResponseAPI.fromResponse(response: response);
     }
     catch(e){
-      print(e);
       return ResponseAPI.getConnectionErrorMessage(e);
     }
   }
@@ -87,7 +84,6 @@ class APICall {
       return ResponseAPI.fromResponse(response: response);
     }
     catch(e){
-      print(e);
       return ResponseAPI.getConnectionErrorMessage(e);
     }
   }

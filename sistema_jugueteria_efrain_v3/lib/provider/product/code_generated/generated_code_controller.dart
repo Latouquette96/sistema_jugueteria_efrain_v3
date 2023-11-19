@@ -30,17 +30,15 @@ class GeneratedCodeController {
   Future<bool> freeCode(String url, Product product) async {
     bool resultado = false;
 
-    if (_generateCode!=null){
+    if (isGenerateCode(product.getBarcode())){
       //Realiza la petición POST para insertar el producto.
       ResponseAPI responseAPI = await APICall.put(
           url: url,
-          route: '/code_generated/free/${product.getID()}'
+          route: '/code_generated/free/${getGenerateCodeInteger(product.getBarcode())}'
       );
 
       if (responseAPI.isResponseSuccess()){
         resultado = true;
-        //Libera el estado.
-        _generateCode = null;
       }
     }
 

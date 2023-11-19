@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_distributor.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/state_manager_product.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/code_generated/code_generated_crud_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/filter/state_manager_brands.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
 
 ///serviceProvider: Provider que permite controlar los servicios.
@@ -27,7 +27,7 @@ class ServiceProvider {
       //Comprueba el estado de los códigos generados en verificación de crear nuevos.
       await ref.read(generatedCodeBlockProvider.future);
       //Inicializa los servicios.
-      await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+      await StateManagerBrands.getInstance().initialize(url);
       await StateManagerProduct.getInstanceProduct().initialize(url);
       await StateManagerProduct.getInstanceProductPDF().initialize(url);
       await StateManagerDistributor.getInstance().initialize(url);
@@ -43,8 +43,5 @@ class ServiceProvider {
   }
 
   ///ServiceProvider: Detiene todos los servicios ene ejcución.
-  void stop() {
-    //Inicializa los servicios.
-    ref.watch(filterOfLoadedBrandsWithAPIProvider.notifier).dispose();
-  }
+  void stop() {}
 }

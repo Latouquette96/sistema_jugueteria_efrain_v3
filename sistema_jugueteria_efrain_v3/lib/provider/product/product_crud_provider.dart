@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/models/product_model.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/api_call.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/response_api/response_model.dart';
-import 'package:sistema_jugueteria_efrain_v3/provider/filter/filter_brands_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product/filter/state_manager_brands.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 
@@ -87,7 +87,7 @@ final removeSelectedProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) a
   //Si por lo menos se actualizó un elemento, entonces...
   if (responseAPI.isResponseSuccess()){
     //Refrezca las marcas cargadas.
-    await ref.read(filterOfLoadedBrandsWithAPIProvider.notifier).refresh();
+    await StateManagerBrands.getInstance().refresh(ref.watch(urlAPIProvider));
     //Refrezca el catalogo de productos.
     //await ref.read(productCatalogProvider.notifier).refresh();
   }

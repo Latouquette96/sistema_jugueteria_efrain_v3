@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/drawer/drawer_sharing.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/notification/elegant_notification_custom.dart';
+import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/popup_information.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/screen/product/catalog/product_catalog_widget.dart';
 import 'package:sistema_jugueteria_efrain_v3/gui/style/style_container.dart';
 import 'package:sistema_jugueteria_efrain_v3/logic/builder_pdf/builder_pdf.dart';
@@ -12,6 +13,7 @@ import 'package:sistema_jugueteria_efrain_v3/provider/pluto_grid/state_manager/s
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 
 ///Clase ScreenProductCatalog: Modela un catálogo de productos.
 class ScreenProductCatalog extends ConsumerStatefulWidget {
@@ -96,8 +98,16 @@ class _ScreenProductCatalogState extends ConsumerState<ScreenProductCatalog> {
             ),
           ),
           IconButton(
-            onPressed: (){
+            onPressed: () async {
+              ///Carga un producto al proveedor para que pueda ser editado.
               ref.read(productProvider.notifier).load(Product.clean());
+              await ref.read(productPricesByIDProvider.notifier).refresh();
+
+              if (context.mounted){
+                PopupInformation.showProductInformation(context, (){
+                  ref.read(productProvider.notifier).free();
+                });
+              }
             },
             icon: Icon(MdiIcons.fromString("plus-circle")),
             tooltip: "Insertar un nuevo producto.",
