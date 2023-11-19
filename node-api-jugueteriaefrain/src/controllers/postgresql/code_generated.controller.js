@@ -133,7 +133,10 @@ code_generated_controller.findByProduct = async (req, res) => {
 //Realiza la busqueda de un código interno que esté libre (o lo crea y lo retorna).
 code_generated_controller.findFirstFree = async (req, res) => {
     await CodeGenerated.findOne({
-        where: {cg_product: null}
+        where: {cg_product: null},
+        order: [
+            ['cg_id', 'ASC'],
+        ]
     },)
         .then(data => {
             res.status(200).json({
