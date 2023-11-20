@@ -59,6 +59,9 @@ class StateManagerDistributor extends StateManager<Distributor>{
     );
 
     if (responseAPI.isResponseSuccess()){
+      Map<String, dynamic> json = responseAPI.getValue();
+      element.fromJSON(json);
+      element.buildPlutoRow();
       //Inserta el nuevo registro por el actualizado.
       getStateManager()!.insertRows(0, [element.getPlutoRow()]);
       insertElement(element);

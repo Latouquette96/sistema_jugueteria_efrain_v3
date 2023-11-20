@@ -6,7 +6,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #X se le conoce como versión mayor e indica la versión principal del software. Ejemplo: 1.0.0, 3.0.0
 #Y se le conoce como versión menor e indica nuevas funcionalidades. Ejemplo: 1.2.0, 3.3.0
 #Z se le conoce como revisión e indica que se hizo una revisión del código por algun fallo. Ejemplo: 1.2.2, 3.3.4
-version: 3.1.231114-2146 #Para Z utilizo la fecha de revision en formato YYMMDD-HHMM
+version: 3.1.231120-1137 #Para Z utilizo la fecha de revision en formato YYMMDD-HHMM
 
 environment:
   sdk: '>=3.1.0-94.0.dev <4.0.0'
