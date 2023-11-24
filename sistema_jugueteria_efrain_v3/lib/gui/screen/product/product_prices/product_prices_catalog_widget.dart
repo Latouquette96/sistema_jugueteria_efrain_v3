@@ -24,6 +24,8 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product/product_crud_provi
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/distributor_free_product_price_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product_prices/product_price_search_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/state_notifier_provider/element_state_notifier.dart';
+import 'package:sistema_jugueteria_efrain_v3/provider/login/login_provider.dart';
+
 
 ///Clase ProductPricesCatalogWidget: Widget de catálogo de precios de un producto.
 class ProductPricesCatalogWidget extends ConsumerStatefulWidget {
@@ -179,10 +181,11 @@ class _ProductPricesCatalogWidgetState extends ConsumerState<ProductPricesCatalo
             padding: EdgeInsets.zero,
             icon: Icon(MdiIcons.fromString("content-save")),
             onPressed: () async{
+              String url = ref.read(urlAPIProvider);
               //Escribe el nuevo valor al público del producto.
               ref.read(widget.getProvider())!.setPricePublic(double.parse(_formProductPrice.control(Product.getKeyPricePublic()).value.toString()));
               //Realiza la peticion de escritura en el servidor.
-              ResponseAPI response = await ref.read(updatePricePublicWithAPIProvider.future);
+              ResponseAPI response = await widget.getProviderStateManager().updatePricePublic(url, ref.read(widget.getProvider())!);
 
               //Comprueba si resultó exitosa la operacion (cod. 200), en caso contrario, es error.
               if (context.mounted){

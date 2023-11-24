@@ -66,13 +66,12 @@ final pdfTextSearchResultProvider = StateNotifierProvider<PdfTextSearchResultPro
             if (textSearchResult.isSearchCompleted) {
               //Actualizar el estado.
               toReturn = textSearchResult;
-              //Si aparece el texto buscado, entonces mostrar el producto.
-              if (textSearchResult.totalInstanceCount > 0) {
-                ref.read(productPricesPDFByIDProvider.notifier).refresh();
-                ref.read(productSearchPDFPriceProvider.notifier).load(element);
-              }
             }
           }
+
+          //Mostrar el producto.
+          ref.read(productPricesPDFByIDProvider.notifier).refresh();
+          ref.read(productSearchPDFPriceProvider.notifier).load(element);
         });
       }
       return toReturn;

@@ -160,6 +160,25 @@ class StateManagerProduct extends StateManager<Product>{
     return responseAPI;
   }
 
+  Future<ResponseAPI> updatePricePublic(String url, Product product) async {
+    //Realiza la petición POST para insertar el producto.
+    ResponseAPI responseAPI = await APICall.put(
+        url: url,
+        route: '/products/price_public/${product!.getID()}',
+        body: {Product.getKeyPricePublic(): product.getPricePublic()}
+    );
+
+    getStateManager()!.setShowLoading(true);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      product.updatePlutoRow();
+      getStateManager()!.setShowLoading(false);
+    });
+
+
+    return responseAPI;
+  }
+
   @override
   List<Product> buildElement(List<dynamic> list) {
     return list.map((e) => Product.fromJSON(e)).toList();

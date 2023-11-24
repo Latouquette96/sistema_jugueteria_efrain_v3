@@ -7,27 +7,6 @@ import 'package:sistema_jugueteria_efrain_v3/provider/product/filter/state_manag
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_provider.dart';
 import 'package:sistema_jugueteria_efrain_v3/provider/product/product_sharing_provider.dart';
 
-///Proveedor para modificar un precio de producto en particular.
-final updatePricePublicWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
-  String url = ref.watch(urlAPIProvider);
-  //Recupero el producto.
-  final product = ref.watch(productProvider);
-
-  //Realiza la petición POST para insertar el producto.
-  ResponseAPI responseAPI = await APICall.put(
-      url: url,
-      route: '/products/price_public/${product!.getID()}',
-      body: {Product.getKeyPricePublic(): product.getPricePublic()}
-  );
-
-  if (responseAPI.isResponseSuccess()){
-    //Actualiza el catalogo de Google Drive
-    //TODO: ExportToDrive.getInstance().updateSheets(product);
-  }
-
-  return responseAPI;
-});
-
 ///Proveedor para eliminar una lista de productos seleccionados.
 final removeSelectedProductWithAPIProvider = FutureProvider<ResponseAPI>((ref) async {
 
